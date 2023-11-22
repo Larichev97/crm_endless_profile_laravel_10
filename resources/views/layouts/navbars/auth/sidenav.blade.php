@@ -5,7 +5,7 @@
             aria-hidden="true" id="iconSidenav"></i>
         <a class="navbar-brand m-0" href="{{ route('home') }}"
             target="_blank">
-            <img src="./img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
+            <img src="/img/logo-ct-dark.png" class="navbar-brand-img h-100" alt="main_logo">
             <span class="ms-1 font-weight-bold">Главная</span>
         </a>
     </div>
@@ -19,6 +19,15 @@
                         <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Главная</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'clients.index' ? 'active' : '' }}" href="{{ route('clients.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Клиенты</span>
                 </a>
             </li>
             <li class="nav-item mt-3 d-flex align-items-center">
@@ -36,6 +45,7 @@
                     <span class="nav-link-text ms-1">Мой профиль</span>
                 </a>
             </li>
+            {{--
             <li class="nav-item">
                 <a class="nav-link {{ str_contains(request()->url(), 'user-management') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'user-management']) }}">
                     <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
@@ -44,9 +54,11 @@
                     <span class="nav-link-text ms-1">User Management</span>
                 </a>
             </li>
+            --}}
             <li class="nav-item mt-3">
                 <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Pages</h6>
             </li>
+            {{--
             <li class="nav-item">
                 <a class="nav-link {{ str_contains(request()->url(), 'tables') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'tables']) }}">
                     <div
@@ -56,6 +68,7 @@
                     <span class="nav-link-text ms-1">Tables</span>
                 </a>
             </li>
+
             <li class="nav-item">
                 <a class="nav-link {{  str_contains(request()->url(), 'billing') == true ? 'active' : '' }}" href="{{ route('page', ['page' => 'billing']) }}">
                     <div
@@ -65,6 +78,7 @@
                     <span class="nav-link-text ms-1">Billing</span>
                 </a>
             </li>
+            --}}
             <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'virtual-reality' ? 'active' : '' }}" href="{{ route('virtual-reality') }}">
                     <div
@@ -118,5 +132,13 @@
     <div class="sidenav-footer mx-3 ">
         <a href="/docs/bootstrap/overview/argon-dashboard/index.html" target="_blank"
             class="btn btn-dark btn-sm w-100 mb-3">Документация Argon</a>
+
+        <div class="copyright text-center text-sm text-muted text-lg-start">
+            ©
+            <script>
+                document.write(new Date().getFullYear())
+            </script>,
+            Endless Profile team
+        </div>
     </div>
 </aside>
