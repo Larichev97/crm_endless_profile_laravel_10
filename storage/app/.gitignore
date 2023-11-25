@@ -1,3 +1,5 @@
 *
 !public/
+!images/
+!images/clients/
 !.gitignore

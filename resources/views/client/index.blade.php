@@ -4,11 +4,9 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Клиенты'])
 
     <div class="container-fluid py-4">
-        @if ($message = Session::get('success'))
-            <div class="alert alert-success">
-                <p>{{ $message }}</p>
-            </div>
-        @endif
+        <div id="alert">
+            @include('components.alert')
+        </div>
 
         <div class="row">
             <div class="col-12">
@@ -32,35 +30,41 @@
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">ФИО</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Моб. номер</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата рождения</th>
+{{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата рождения</th>--}}
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действие</th>
+{{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Комментарий менеджера</th>--}}
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($clients as $client)
                                         <tr>
-                                            <td>{{ ++$i }}</td>
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $client->lastname }} {{ $client->firstname }} {{ $client->surename }}</h6>
-                                            </div>
+                                            <td class="align-middle text-center">{{ $client->id }}</td>
+                                            <td class="align-middle text-center">
+                                                <div class="d-flex flex-column justify-content-center">
+                                                    <h6 class="mb-0 text-sm">{{ $client->lastname }} {{ $client->firstname }} {{ $client->surname }}</h6>
+                                                </div>
+                                            </td>
                                             <td class="align-middle text-center">{{ $client->email }}</td>
                                             <td class="align-middle text-center">{{ $client->phone_number }}</td>
-                                            <td class="align-middle text-center">
-                                                <span class="text-secondary text-xs font-weight-bold">{{ $client->bdate }}</span>
-                                            </td>
+{{--                                            <td class="align-middle text-center">--}}
+{{--                                                <span class="text-secondary text-xs font-weight-bold">{{ $client->bdate }}</span>--}}
+{{--                                            </td>--}}
                                             <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">{{ $client->id_status }}</span>
+                                                <span class="badge badge-sm bg-gradient-success">{{ $client->getStatusName(intval($client->id_status)) }}</span>
                                             </td>
+{{--                                            <td class="align-middle text-center text-sm">--}}
+{{--                                                {{ strip_tags($client->manager_comment) }}--}}
+{{--                                            </td>--}}
                                             <td class="align-middle">
                                                 <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
-                                                    <a class="btn btn-info" href="{{ route('clients.show', $client->id) }}">Просмотр</a>
-                                                    <a class="btn btn-primary" href="{{ route('clients.edit', $client->id) }}">Редактировать</a>
+                                                    <a class="btn btn-info btn-sm" href="{{ route('clients.show', $client->id) }}">Просмотр</a>
+                                                    <a class="btn btn-primary btn-sm" href="{{ route('clients.edit', $client->id) }}">Редактировать</a>
 
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button type="submit" class="btn btn-danger">Удалить</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
                                                 </form>
                                             </td>
                                         </tr>

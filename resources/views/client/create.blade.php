@@ -4,34 +4,24 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление клиента'])
 
     <div class="container-fluid py-4">
-{{--        <div class="row">--}}
-{{--            <div class="col-lg-12 margin-tb">--}}
-{{--                <div class="pull-left">--}}
-{{--                    <h2>Добавление клиента</h2>--}}
-{{--                </div>--}}
+        <div id="alert">
+            @include('components.alert')
+        </div>
 
-{{--            </div>--}}
-{{--        </div>--}}
-
-        @if ($errors->any())
-            <div class="card p-4 alert alert-danger">
-                <strong>Упссс!</strong> С вашим вводом возникли некоторые проблемы.<br><br>
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        <form class="card p-4" action="{{ route('clients.store') }}" method="POST">
+        <form class="card p-4" action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('clients.index') }}"> Назад</a>
 
             <div class="row">
-                <input type="text" name="id_status" class="form-control" hidden="hidden" value="1">
+                <input type="text" name="id_status" class="form-control" hidden="hidden" value="{{ $id_status_new }}">
 
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Фото клиента:</strong>
+                        <input type="file" name="image" id="inputImage" class="form-control @error('image') is-invalid @enderror">
+                    </div>
+                </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Имя:</strong>
@@ -65,12 +55,13 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Дата рождения:</strong>
-                        <input type="date" name="bdate" class="form-control" placeholder="Дата рождения">
+                        <input type="date" name="bdate" class="form-control" placeholder="Укажите дату рождения">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Страна:</strong>
+                        <br>
                         <select name="id_country" id="id_country">
                             <option value="1">Украина</option>
                             <option value="2">Польша</option>
@@ -80,6 +71,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Город:</strong>
+                        <br>
                         <select name="id_city" id="id_city">
                             <option value="1">Днепр</option>
                             <option value="2">Киев</option>
@@ -89,11 +81,11 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Комментарий менеджера:</strong>
-                        <textarea class="form-control" style="height:150px" name="manager_comment" placeholder="Комментарий менеджера"></textarea>
+                        <textarea class="form-control" id="exampleFormControlTextarea1" name="manager_comment" rows="3" placeholder="Комментарий менеджера..."></textarea>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">
-                    <button type="submit" class="btn btn-primary">Добавить</button>
+                    <button type="submit" class="btn btn-success btn-lg w-100">Добавить</button>
                 </div>
             </div>
 

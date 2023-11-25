@@ -19,13 +19,14 @@ return new class extends Migration
             $table->integer('id_status', false, true);
             $table->integer('id_country', false, true);
             $table->integer('id_city', false, true);
-            $table->integer('phone_number', false, true);
+            $table->string('phone_number')->unique();
             $table->string('email')->unique();
             $table->date('bdate')->nullable();
             $table->string('address')->nullable();
             $table->string('firstname')->nullable();
             $table->string('lastname')->nullable();
             $table->string('surname')->nullable();
+            $table->string('photo_name')->nullable();
             $table->text('manager_comment')->nullable();
 
             $table->timestamps();

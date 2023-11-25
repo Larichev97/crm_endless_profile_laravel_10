@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\ClientStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -25,6 +26,18 @@ class Client extends Model
         'firstname',
         'lastname',
         'surname',
+        'photo_name',
         'manager_comment',
     ];
+
+    /**
+     *  Get client status name by ID via Enum
+     *
+     * @param int $id_status
+     * @return string
+     */
+    public function getStatusName(int $id_status): string
+    {
+        return ClientStatusEnum::from($id_status)->getStatusName();
+    }
 }
