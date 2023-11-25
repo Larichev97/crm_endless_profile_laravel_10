@@ -12,8 +12,11 @@
             <div class="row gx-4">
                 <div class="col-auto">
                     <div class="avatar avatar-xl position-relative">
-{{--                        <img src="/img/re-l_profile.jpg" alt="profile_image" class="w-100 border-radius-lg shadow-sm">--}}
-                        <img src="{{@storage_path($clientPhotoPath)}}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        @if (!empty($clientPhotoPath))
+                            <img src="{{ asset($clientPhotoPath) }}" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        @else
+                            <img src="/img/user_avatar.png" alt="profile_image" class="w-100 border-radius-lg shadow-sm">
+                        @endif
                     </div>
                 </div>
                 <div class="col-auto my-auto">

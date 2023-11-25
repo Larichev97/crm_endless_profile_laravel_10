@@ -87,9 +87,8 @@ class ClientController extends Controller
 
         $clientPhotoPath = '';
 
-        if (!empty($client->photo_name) && File::exists(storage_path('app/images/clients/'.$client->photo_name))) {
-            //$clientPhotoPath = storage_path('app/images/clients/'.$client->photo_name);
-            $clientPhotoPath = 'app/images/clients/'.$client->photo_name;
+        if (!empty($client->photo_name) && File::exists(storage_path('app/public/images/clients/'.$client->photo_name))) {
+            $clientPhotoPath = 'storage/images/clients/'.$client->photo_name;
         }
 
         return view('client.show',compact(['client', 'clientPhotoPath']));
@@ -100,12 +99,15 @@ class ClientController extends Controller
      */
     public function edit($id): View
     {
-        $client = Client::query()
-            ->findOrFail($id)
-            //->with(['qrs'])
-            ->get();
+        $client = Client::query()->findOrFail($id);
 
-        return view('client.edit',compact('client'));
+        $clientPhotoPath = '';
+
+        if (!empty($client->photo_name) && File::exists(storage_path('app/public/images/clients/'.$client->photo_name))) {
+            $clientPhotoPath = 'storage/images/clients/'.$client->photo_name;
+        }
+
+        return view('client.edit',compact(['client', 'clientPhotoPath']));
     }
 
     /**
@@ -130,26 +132,18 @@ class ClientController extends Controller
 
         $params = $request->all();
 
-        // *** Проверка наличия файла и его удаление, если он существует:
         $oldPhotoName = $request->get('photo_name');
-
-        $oldPhotoPath = storage_path('app/images/clients/' . $oldPhotoName);
-
-        if (File::exists($oldPhotoPath)) {
-            File::delete($oldPhotoPath); // Удаление файла
-        }
-        // ***
 
         // *** Upload client photo:
         $photoName = time().'.'.$request->image->extension();
 
-        if (!file_exists(storage_path('app/images/clients'))) {
+        if (!file_exists(storage_path('app/public/images/clients'))) {
             //mkdir(storage_path('app/images/clients'));
         }
 
-        $request->image->storeAs('images/clients', $photoName);
+        $uploadPhoto = $request->image->storeAs('public/images/clients', $photoName);
 
-        if (!empty($photoName)) {
+        if ($uploadPhoto && !empty($photoName)) {
             $params = array_merge($params, ['photo_name' => $photoName]);
         }
         // ***
@@ -157,6 +151,14 @@ class ClientController extends Controller
         $updateClient = $client->update($params);
 
         if ($updateClient) {
+            // *** Проверка наличия файла и его удаление, если он существует:
+            $oldPhotoPath = storage_path('app/public/images/clients/' . $oldPhotoName);
+
+            if (File::exists($oldPhotoPath)) {
+                File::delete($oldPhotoPath); // Удаление файла
+            }
+            // ***
+
             return redirect()->route('clients.index')
                 ->with('success','Данные клиента успешно обновлены.');
         } else {
