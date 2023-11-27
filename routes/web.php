@@ -48,6 +48,34 @@ Route::group(['middleware' => 'auth'], function () {
 	//Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Client entity:
+    // Client entity ###################################################################################################
+    /*
     Route::resource('clients', ClientController::class);
+    */
+
+    Route::prefix('clients')->group(function () {
+        // Index: вывод списка ресурсов
+        Route::get('/', [ClientController::class, 'index'])->name('clients.index');
+
+        // Create: отображение формы создания ресурса
+        Route::get('/create', [ClientController::class, 'create'])->name('clients.create');
+
+        // Store: сохранение нового ресурса
+        Route::post('/', [ClientController::class, 'store'])->name('clients.store');
+
+        // Show: отображение конкретного ресурса
+        Route::get('/{id}', [ClientController::class, 'show'])->name('clients.show');
+
+        // Edit: отображение формы редактирования ресурса
+        Route::get('/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+
+        // Update: обновление конкретного ресурса
+        Route::post('/{client}', [ClientController::class, 'update'])->name('clients.update');
+        //Route::put('/{client}', [ClientController::class, 'update'])->name('clients.update');
+        //Route::patch('/{client}', [ClientController::class, 'update']);
+
+        // Destroy: удаление конкретного ресурса
+        Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    });
+   // ##################################################################################################################
 });

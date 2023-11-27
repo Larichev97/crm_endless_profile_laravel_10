@@ -21,4 +21,17 @@ enum ClientStatusEnum: int
             ClientStatusEnum::PREMIUM => 'Премиум',
         };
     }
+
+    /**
+     * @return array[]
+     */
+    public static function getStatusesList(): array
+    {
+        return [
+            ['id' => ClientStatusEnum::NEW->value, 'name' => ClientStatusEnum::NEW->getStatusName()],
+            ['id' => ClientStatusEnum::ACTIVE->value, 'name' => ClientStatusEnum::ACTIVE->getStatusName()],
+            ['id' => ClientStatusEnum::INACTIVE->value, 'name' => ClientStatusEnum::INACTIVE->getStatusName()],
+            ['id' => ClientStatusEnum::PREMIUM->value, 'name' => ClientStatusEnum::PREMIUM->getStatusName()],
+        ];
+    }
 }

@@ -5,10 +5,12 @@ namespace App\Models;
 use App\Enums\ClientStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Client extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -28,6 +30,8 @@ class Client extends Model
         'surname',
         'photo_name',
         'manager_comment',
+        'id_user_add',
+        'id_user_update',
     ];
 
     /**

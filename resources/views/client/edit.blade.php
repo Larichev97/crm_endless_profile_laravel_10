@@ -34,6 +34,20 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
+                        <strong>Статус:</strong>
+                        <br>
+                        @if(!empty($statuses_list_data))
+                        <select name="id_status" id="id_status">
+                            @foreach($statuses_list_data as $status_item)
+                                <option value="{{ $status_item['id'] }}" {{ old('id_status', $client->id_status) == $status_item['id'] ? 'selected' : '' }}>{{ $status_item['name'] }}</option>
+                            @endforeach
+                        </select>
+                        @endif
+                        @error('id_status') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
                         <strong>Имя:</strong>
                         <input type="text" name="firstname" class="form-control" placeholder="Имя" value="{{ old('firstname', $client->firstname) }}">
                         @error('firstname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
