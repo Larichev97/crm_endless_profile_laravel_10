@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\File;
 
 class ClientController extends Controller
 {
+    private $viewData = [];
+
     /**
      * Display a listing of the resource.
      */
@@ -53,11 +55,11 @@ class ClientController extends Controller
             'image' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $params = $request->all();
+        $this->viewData['params'] = $request->all();
 
         $params['id_user_add'] = auth()->user()->id; // Кто создал запись
 
-        if (!empty($request->image)) {
+        if ($request->hasFile('image')) {
             // *** Upload client photo:
             $photoName = time().'.'.$request->image->extension();
 
@@ -77,9 +79,9 @@ class ClientController extends Controller
 
         if ($createClient) {
             return redirect()->route('clients.index')->with('success','Клиент успешно создан.');
-        } else {
-            return redirect()->route('clients.index')->with('error','Ошибка! Клиент не создан.');
         }
+
+        return redirect()->route('clients.create')->with('error','Ошибка! Клиент не создан.');
     }
 
     /**
@@ -169,12 +171,10 @@ class ClientController extends Controller
             }
             // ***
 
-            return redirect()->route('clients.index')
-                ->with('success','Данные клиента успешно обновлены.');
-        } else {
-            return redirect()->route('clients.index')
-                ->with('error','Ошибка! Данные клиента не обновлены.');
+            return redirect()->route('clients.index')->with('success','Данные клиента успешно обновлены.');
         }
+
+        return redirect()->route('clients.index')->with('error','Ошибка! Данные клиента не обновлены.');
     }
 
     /**
@@ -187,12 +187,9 @@ class ClientController extends Controller
         $deleteClient = $client->delete();
 
         if ($deleteClient) {
-            return redirect()->route('clients.index')
-                ->with('success','Клиент успешно удалён.');
-        } else {
-            return redirect()->route('clients.index')
-                ->with('error','Ошибка! Клиент не удалён.');
+            return redirect()->route('clients.index')->with('success','Клиент успешно удалён.');
         }
 
+        return redirect()->route('clients.index')->with('error','Ошибка! Клиент не удалён.');
     }
 }
