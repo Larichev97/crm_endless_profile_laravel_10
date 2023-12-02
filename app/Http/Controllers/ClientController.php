@@ -3,22 +3,20 @@
 namespace App\Http\Controllers;
 
 use App\Enums\ClientStatusEnum;
+use App\Http\Requests\Client\ClientStoreRequest;
+use App\Http\Requests\Client\ClientUpdateRequest;
 use App\Models\Client;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
+use App\Services\ClientService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Response;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\File;
 
 class ClientController extends Controller
 {
-    private $viewData = [];
-
     /**
      * Display a listing of the resource.
      */
-    public function index(): View
+    public function index(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
     {
         $clients = Client::latest()->paginate(10);
 
@@ -29,7 +27,7 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(): View
+    public function create(): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
     {
         $id_status_new = ClientStatusEnum::NEW;
 
@@ -39,43 +37,9 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request): RedirectResponse
+    public function store(ClientStoreRequest $request, ClientService $service): RedirectResponse
     {
-        $request->validate([
-            'id_country' => 'required|min:1|integer',
-            'id_city' => 'required|min:1|integer',
-            'phone_number' => 'required',
-            'email' => 'required|email',
-            'bdate' => 'required|date',
-            'address' => '',
-            'firstname' => 'required|max:100',
-            'lastname' => 'required|max:100',
-            'surname' => 'required|max:100',
-            'manager_comment' => '',
-            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $this->viewData['params'] = $request->all();
-
-        $params['id_user_add'] = auth()->user()->id; // Кто создал запись
-
-        if ($request->hasFile('image')) {
-            // *** Upload client photo:
-            $photoName = time().'.'.$request->image->extension();
-
-            if (!File::exists(storage_path('app/images/clients'))) {
-                File::makeDirectory(storage_path('app/images/clients'), 0777, true);
-            }
-
-            $request->image->storeAs('images/clients', $photoName);
-
-            if (!empty($photoName)) {
-                $params = array_merge($params, ['photo_name' => $photoName]);
-            }
-            // ***
-        }
-
-        $createClient = Client::create($params);
+        $createClient = $service->store($request);
 
         if ($createClient) {
             return redirect()->route('clients.index')->with('success','Клиент успешно создан.');
@@ -87,7 +51,7 @@ class ClientController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id): View
+    public function show($id): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
     {
         $client = Client::query()->findOrFail($id);
 
@@ -103,7 +67,7 @@ class ClientController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id): View
+    public function edit($id): \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Foundation\Application
     {
         $client = Client::query()->findOrFail($id);
 
@@ -121,60 +85,15 @@ class ClientController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Client $client): RedirectResponse
+    public function update(ClientUpdateRequest $clientUpdateRequest, Client $client, ClientService $service): RedirectResponse
     {
-        $request->validate([
-            'id_status' => 'required|min:1|integer',
-            'id_country' => 'required|min:1|integer',
-            'id_city' => 'required|min:1|integer',
-            'phone_number' => 'required',
-            'email' => 'required|email',
-            'bdate' => 'required|date',
-            'address' => '',
-            'firstname' => 'required|max:100',
-            'lastname' => 'required|max:100',
-            'surname' => 'required|max:100',
-            'manager_comment' => '',
-            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
-
-        $params = $request->all();
-
-        $params['id_user_update'] = auth()->user()->id; // Кто редактировал запись
-
-        $oldPhotoName = $request->get('photo_name');
-
-        if (!empty($request->image)) {
-            // *** Upload client photo:
-            $photoName = time().'.'.$request->image->extension();
-
-            if (!file_exists(storage_path('app/public/images/clients'))) {
-                //mkdir(storage_path('app/images/clients'));
-            }
-
-            $uploadPhoto = $request->image->storeAs('public/images/clients', $photoName);
-
-            if ($uploadPhoto && !empty($photoName)) {
-                $params = array_merge($params, ['photo_name' => $photoName]);
-            }
-        // ***
-        }
-
-        $updateClient = $client->update($params);
+        $updateClient = $service->update($clientUpdateRequest, $client);
 
         if ($updateClient) {
-            // *** Проверка наличия файла и его удаление, если он существует:
-            $oldPhotoPath = storage_path('app/public/images/clients/' . $oldPhotoName);
-
-            if (!empty($photoName) && File::exists($oldPhotoPath)) {
-                File::delete($oldPhotoPath); // Удаление файла
-            }
-            // ***
-
             return redirect()->route('clients.index')->with('success','Данные клиента успешно обновлены.');
         }
 
-        return redirect()->route('clients.index')->with('error','Ошибка! Данные клиента не обновлены.');
+        return redirect()->route('clients.edit')->with('error','Ошибка! Данные клиента не обновлены.');
     }
 
     /**
