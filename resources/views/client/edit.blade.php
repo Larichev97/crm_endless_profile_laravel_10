@@ -8,12 +8,18 @@
             @include('components.alert')
         </div>
 
-        <form class="card p-4" action="{{ route('clients.update', ['client' => $client]) }}" method="POST" enctype="multipart/form-data">
+        <form class="card p-4" action="{{ route('clients.update', $client->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('PUT')
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('clients.index') }}"> Назад</a>
 
             <div class="row">
+                <input type="hidden" name="photo_name" class="form-control" value="{{ $client->photo_name }}">
+                <input type="hidden" name="id_client" class="form-control" value="{{ $client->id }}">
+                <input type="hidden" name="id_user_add" class="form-control" value="{{ $client->id_user_add }}">
+                <input type="hidden" name="id_user_update" class="form-control" value="{{ auth()->user()->id }}">
+
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Текущее фото клиента:</strong>

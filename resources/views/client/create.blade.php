@@ -10,11 +10,14 @@
 
         <form class="card p-4" action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+            @method('POST')
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('clients.index') }}"> Назад</a>
 
             <div class="row">
-                <input type="text" name="id_status" class="form-control" hidden="hidden" value="{{ $id_status_new }}">
+                <input type="hidden" name="id_status" class="form-control" value="{{ $id_status_new }}">
+                <input type="hidden" name="id_user_add" class="form-control" value="{{ auth()->user()->id }}">
+                <input type="hidden" name="id_user_update" class="form-control" value="0">
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">

@@ -26,14 +26,17 @@ class ClientUpdateRequest extends FormRequest
             'id_country' => 'required|min:1|integer',
             'id_city' => 'required|min:1|integer',
             'phone_number' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|max:255',
             'bdate' => 'required|date',
-            'address' => '',
+            'address' => 'nullable|max:255',
             'firstname' => 'required|max:100',
             'lastname' => 'required|max:100',
             'surname' => 'required|max:100',
-            'manager_comment' => '',
-            'image' => 'image|mimes:jpeg,png,jpg|max:2048',
+            'manager_comment' => 'nullable',
+            'photo_name' => 'nullable|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'id_user_add' => 'required|min:0|integer',
+            'id_user_update' => 'required|min:0|integer',
         ];
     }
 }

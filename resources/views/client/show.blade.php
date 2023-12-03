@@ -60,7 +60,7 @@
                         <div class="row">
                             <div class="col-md-6"><span class="text-uppercase text-sm">Информация о клиенте</span></div>
                             <div class="col-md-6 d-flex align-items-center">
-                                <a href="{{ route('clients.edit', ['client' => $client]) }}" class="btn btn-primary btn-sm ms-auto">Редактировать</a>
+                                <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-primary btn-sm ms-auto">Редактировать</a>
                             </div>
                         </div>
                     </div>

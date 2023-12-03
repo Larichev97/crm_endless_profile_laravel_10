@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\ChangePassword;
+use App\Http\Controllers\Client\ClientController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PageController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\ResetPassword;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,15 +24,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PageController;
-use App\Http\Controllers\RegisterController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\UserProfileController;
-use App\Http\Controllers\ResetPassword;
-use App\Http\Controllers\ChangePassword;
-use App\Http\Controllers\ClientController;
 
 
 Route::get('/', function () {return redirect('/dashboard');})->middleware('auth');
@@ -67,12 +66,11 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}', [ClientController::class, 'show'])->name('clients.show');
 
         // Edit: отображение формы редактирования ресурса
-        Route::get('/{client}/edit', [ClientController::class, 'edit'])->name('clients.edit');
+        Route::get('/{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
 
         // Update: обновление конкретного ресурса
-        Route::post('/{client}', [ClientController::class, 'update'])->name('clients.update');
-        //Route::put('/{client}', [ClientController::class, 'update'])->name('clients.update');
-        //Route::patch('/{client}', [ClientController::class, 'update']);
+        Route::put('/{id}', [ClientController::class, 'update'])->name('clients.update');
+        //Route::patch('/{id}', [ClientController::class, 'update']);
 
         // Destroy: удаление конкретного ресурса
         Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
