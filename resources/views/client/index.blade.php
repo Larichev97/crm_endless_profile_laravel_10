@@ -72,7 +72,8 @@
                                 </tbody>
                             </table>
 
-                            {!! $clients->links() !!}
+                            {{-- Custom pagination template: resources/views/components/pagination.blade.php --}}
+                            {!! $clients->links('components.pagination') !!}
                         </div>
                     </div>
                 </div>
