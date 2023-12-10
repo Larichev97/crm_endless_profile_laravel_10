@@ -5,6 +5,7 @@ use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\QrProfile\QrProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\UserProfileController;
@@ -76,4 +77,34 @@ Route::group(['middleware' => 'auth'], function () {
         Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
     });
    // ##################################################################################################################
+
+    // QrProfile entity ################################################################################################
+    /*
+    Route::resource('qrs', QrProfileController::class);
+    */
+
+    Route::prefix('qrs')->group(function () {
+        // Index: вывод списка ресурсов
+        Route::get('/', [QrProfileController::class, 'index'])->name('qrs.index');
+
+        // Create: отображение формы создания ресурса
+        Route::get('/create', [QrProfileController::class, 'create'])->name('qrs.create');
+
+        // Store: сохранение нового ресурса
+        Route::post('/', [QrProfileController::class, 'store'])->name('qrs.store');
+
+        // Show: отображение конкретного ресурса
+        Route::get('/{id}', [QrProfileController::class, 'show'])->name('qrs.show');
+
+        // Edit: отображение формы редактирования ресурса
+        Route::get('/{id}/edit', [QrProfileController::class, 'edit'])->name('qrs.edit');
+
+        // Update: обновление конкретного ресурса
+        Route::put('/{id}', [QrProfileController::class, 'update'])->name('qrs.update');
+        //Route::patch('/{id}', [QrProfileController::class, 'update']);
+
+        // Destroy: удаление конкретного ресурса
+        Route::delete('/{id}', [QrProfileController::class, 'destroy'])->name('qrs.destroy');
+    });
+    // ##################################################################################################################
 });

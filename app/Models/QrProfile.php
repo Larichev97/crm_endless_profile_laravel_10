@@ -2,16 +2,18 @@
 
 namespace App\Models;
 
-use App\Enums\ClientStatusEnum;
+use App\Enums\QrStatusEnum;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-final class Client extends Model
+final class QrProfile extends Model
 {
     use HasFactory;
     use SoftDeletes;
+
+    protected $table = 'qr_profiles';
 
     /**
      * The attributes that are mass assignable.
@@ -20,17 +22,25 @@ final class Client extends Model
      */
     protected $fillable = [
         'id_status',
+        'id_client',
         'id_country',
         'id_city',
-        'phone_number',
-        'email',
-        'bdate',
-        'address',
+        'birth_date',
+        'death_date',
         'firstname',
         'lastname',
         'surname',
-        'photo_name',
-        'manager_comment',
+        'cause_death',
+        'profession',
+        'hobbies',
+        'biography',
+        'last_wish',
+        'favourite_music_artist',
+        'link',
+        'geo_latitude',
+        'geo_longitude',
+        'photo_file_name',
+        'voice_message_file_name',
         'id_user_add',
         'id_user_update',
     ];
@@ -42,30 +52,26 @@ final class Client extends Model
      */
     protected $casts = [
         'id_status' => 'integer',
+        'id_client' => 'integer',
         'id_country' => 'integer',
         'id_city' => 'integer',
-        'bdate' => 'date:d-m-Y',
+        'birth_date' => 'date:d-m-Y',
+        'death_date' => 'date:d-m-Y',
     ];
 
-    /**
-     *  У одного клиент может быть много QR-профилей
-     *
-     * @return HasMany
-     */
-    public function qrProfiles(): HasMany
+    public function client(): BelongsTo
     {
-        return $this->hasMany(QrProfile::class, 'id_client');
+        return $this->belongsTo(Client::class, 'id_client');
     }
 
     /**
-     *  Get client status name by ID via Enum
+     *  Get qr profile status name by ID via Enum
      *
-     * @param int $id_status
      * @return string
      */
-    public function getStatusName(int $id_status): string
+    public function getStatusNameAttribute(): string
     {
-        return ClientStatusEnum::from($id_status)->getStatusName();
+        return QrStatusEnum::from((int) $this->id_status)->getStatusName();
     }
 
     /**
