@@ -30,6 +30,7 @@
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">ФИО</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Моб. номер</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
 {{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата рождения</th>--}}
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
 {{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Комментарий менеджера</th>--}}
@@ -47,6 +48,18 @@
                                             </td>
                                             <td class="align-middle text-center">{{ $client->email }}</td>
                                             <td class="align-middle text-center">{{ $client->phone_number }}</td>
+                                            <td class="align-middle text-center">
+                                                @php
+                                                    if ($client->id_status == 1) {
+                                                        $flagName = 'UA';
+                                                    } else if ($client->id_status == 2) {
+                                                        $flagName = 'PL';
+                                                    } else {
+                                                        $flagName = 'US';
+                                                    }
+                                                @endphp
+                                                <img src="/img/icons/flags/{{ $flagName }}.png" alt="Флаг страны" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                            </td>
 {{--                                            <td class="align-middle text-center">--}}
 {{--                                                <span class="text-secondary text-xs font-weight-bold">{{ $client->bdate }}</span>--}}
 {{--                                            </td>--}}

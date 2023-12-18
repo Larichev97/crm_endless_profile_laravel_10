@@ -29,6 +29,7 @@
                                         <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">№</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">ФИО</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата смерти</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Принадлежит клиенту</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
@@ -44,6 +45,18 @@
                                             </div>
                                         </td>
                                         <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
+                                        <td class="align-middle text-center">
+                                            @php
+                                                if ($qrProfile->id_status == 1) {
+                                                    $flagName = 'UA';
+                                                } else if ($qrProfile->id_status == 2) {
+                                                    $flagName = 'PL';
+                                                } else {
+                                                    $flagName = 'US';
+                                                }
+                                            @endphp
+                                            <img src="/img/icons/flags/{{ $flagName }}.png" alt="Флаг страны" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                        </td>
                                         <td class="align-middle text-center">{{ $qrProfile->client->fullName }}</td>
                                         <td class="align-middle text-center text-sm">
                                             <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrProfile->statusName }}</span>
