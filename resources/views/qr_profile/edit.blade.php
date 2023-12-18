@@ -194,7 +194,7 @@
                         <br/>
                         <div>
                             @if (!empty($voiceMessagePath))
-                                <a href="{{ asset($voiceMessagePath) }}" alt="qr profile voice message" class="w-100 border-radius-lg shadow-sm">{{ $qrProfile->voice_message_file_name }}</a>
+                                <a href="{{ asset($voiceMessagePath) }}" class="w-100 border-radius-lg shadow-sm">{{ $qrProfile->voice_message_file_name }}</a>
                             @else
                                 Не загружено.
                             @endif
