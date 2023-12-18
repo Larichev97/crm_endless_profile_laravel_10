@@ -5,6 +5,7 @@ namespace App\Services;
 use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
 use App\Models\Client;
+use App\Repositories\Client\ClientRepository;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
 
@@ -44,11 +45,17 @@ class ClientService
      *  Обновление записи о клиенте
      *
      * @param ClientUpdateDTO $clientUpdateDTO
+     * @param ClientRepository $clientRepository
      * @return bool
      */
-    public function processUpdate(ClientUpdateDTO $clientUpdateDTO): bool
+    public function processUpdate(ClientUpdateDTO $clientUpdateDTO, ClientRepository $clientRepository): bool
     {
-        $clientModel = Client::query()->findOrFail($clientUpdateDTO->id_client);
+        //$clientModel = Client::query()->findOrFail($clientUpdateDTO->id_client);
+        $clientModel = $clientRepository->getEditModel($clientUpdateDTO->id_client);
+
+        if (empty($clientModel)) {
+            return false;
+        }
 
         $formDataArray = $clientUpdateDTO->getFormFieldsArray();
 

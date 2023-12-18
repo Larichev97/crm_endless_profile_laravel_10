@@ -26,11 +26,14 @@
                         <br>
                         <select class="form-control" name="id_client" id="id_client" class="@error('id_client') is-invalid @enderror">
                             <option value="0" {{ $qrProfile->id_client == '0' ? 'selected' : '' }}>Выберите клиента из списка...</option>
-                            @foreach($clientsList as $clientItem)
-                                <option value="{{ $clientItem['id'] }}" {{ $qrProfile->id_client == $clientItem['id'] ? 'selected' : '' }}>
-                                    {{ $clientItem['name'] }}
-                                </option>
-                            @endforeach
+                            {{-- Массив коллекций клиентов только с полями "id" и "name" --}}
+                            @if(!empty($clientsListData))
+                                @foreach($clientsListData as $clientItem)
+                                    <option value="{{ $clientItem->id }}" {{ $qrProfile->id_client == $clientItem->id ? 'selected' : '' }}>
+                                        {{ $clientItem->name }}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>

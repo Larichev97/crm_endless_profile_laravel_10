@@ -19,6 +19,7 @@ final class Client extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'id_status',
         'id_country',
         'id_city',

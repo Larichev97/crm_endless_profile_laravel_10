@@ -48,9 +48,9 @@ final class QrProfileController extends Controller
     {
         $idStatusNew = QrStatusEnum::NEW->value;
 
-        $clientsList = $this->clientRepository->getClientsList();
+        $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name');
 
-        return view('qr_profile.create', compact(['idStatusNew', 'clientsList',]));
+        return view('qr_profile.create', compact(['idStatusNew', 'clientsListData',]));
     }
 
     /**
@@ -118,9 +118,9 @@ final class QrProfileController extends Controller
             $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
 
             $statusesListData = QrStatusEnum::getStatusesList();
-            $clientsList = $this->clientRepository->getClientsList();
+            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name');
 
-            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsList',]));
+            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

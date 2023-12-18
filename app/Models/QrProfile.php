@@ -22,6 +22,7 @@ final class QrProfile extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'id_status',
         'id_client',
         'id_country',
