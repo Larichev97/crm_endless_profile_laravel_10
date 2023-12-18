@@ -3,16 +3,16 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление клиента'])
 
-    <div class="container-fluid py-4">
-        <div id="alert">
-            @include('components.alert')
-        </div>
-
+    <div class="container-fluid py-4 mt-4">
         <form class="card p-4" action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('clients.index') }}"> Назад</a>
+
+            <div>
+                @include('components.alert')
+            </div>
 
             <div class="row">
                 <input type="hidden" name="id_status" class="form-control" value="{{ $id_status_new }}">
@@ -65,9 +65,9 @@
                     <div class="form-group">
                         <strong>Страна:</strong>
                         <br>
-                        <select name="id_country" id="id_country">
+                        <select class="form-control" name="id_country" id="id_country">
                             <option value="1">Украина</option>
-                            <option value="2">Польша</option>
+{{--                            <option value="2">Польша</option>--}}
                         </select>
                     </div>
                 </div>
@@ -75,9 +75,11 @@
                     <div class="form-group">
                         <strong>Город:</strong>
                         <br>
-                        <select name="id_city" id="id_city">
-                            <option value="1">Днепр</option>
-                            <option value="2">Киев</option>
+                        <select class="form-control" name="id_city" id="id_city">
+                            <option value="1" {{ old('id_city') == '1' ? 'selected' : '' }}>Днепр</option>
+                            <option value="2" {{ old('id_city') == '2' ? 'selected' : '' }}>Киев</option>
+                            <option value="3" {{ old('id_city') == '3' ? 'selected' : '' }}>Харьков</option>
+                            <option value="4" {{ old('id_city') == '4' ? 'selected' : '' }}>Запорожье</option>
                         </select>
                     </div>
                 </div>

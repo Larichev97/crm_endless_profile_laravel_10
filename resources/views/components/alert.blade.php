@@ -13,7 +13,7 @@
         <div class="card p-4 alert alert-danger" role="alert">
             <ul>
                 @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                    <li style="color: white">{{ $error }}</li>
                 @endforeach
             </ul>
         </div>

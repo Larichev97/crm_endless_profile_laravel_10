@@ -3,19 +3,19 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление QR-профиля'])
 
-    <div class="container-fluid py-4">
-        <div id="alert">
-            @include('components.alert')
-        </div>
-
+    <div class="container-fluid py-4 mt-4">
         <form class="card p-4" action="{{ route('qrs.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('qrs.index') }}"> Назад</a>
 
+            <div>
+                @include('components.alert')
+            </div>
+
             <div class="row">
-                <input type="hidden" name="id_status" class="form-control" value="{{ old('id_user_add', $id_status_new) }}">
+                <input type="hidden" name="id_status" class="form-control" value="{{ old('id_user_add', $idStatusNew) }}">
                 <input type="hidden" name="id_user_add" class="form-control" value="{{ old('id_user_add', auth()->user()->id) }}">
                 <input type="hidden" name="id_user_update" class="form-control" value="{{ old('id_user_update', 0) }}">
 
@@ -23,7 +23,7 @@
                     <div class="form-group">
                         <strong>Привязка к клиенту <span style="color: red">*</span></strong>
                         <br>
-                        <select name="id_client" id="id_client" class="@error('id_client') is-invalid @enderror">
+                        <select class="form-control" name="id_client" id="id_client" class="@error('id_client') is-invalid @enderror">
                             <option value="0" {{ old('id_client') == '0' ? 'selected' : '' }}>Выберите клиента из списка...</option>
                             @foreach($clientsList as $clientItem)
                                 <option value="{{ $clientItem['id'] }}" {{ old('id_client') == $clientItem['id'] ? 'selected' : '' }}>
@@ -73,19 +73,20 @@
                     <div class="form-group">
                         <strong>Страна <span style="color: red">*</span></strong>
                         <br>
-                        <select name="id_country" id="id_country" class="@error('id_country') is-invalid @enderror">
+                        <select class="form-control" name="id_country" id="id_country" class="@error('id_country') is-invalid @enderror">
                             <option value="1" {{ old('id_country') == '1' ? 'selected' : '' }}>Украина</option>
-                            <option value="2" {{ old('id_country') == '2' ? 'selected' : '' }}>Польша</option>
+                            {{--<option value="2" {{ old('id_country') == '2' ? 'selected' : '' }}>Польша</option>--}}
                         </select>
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Город <span style="color: red">*</span></strong>
-                        <br>
-                        <select name="id_city" id="id_city" class="@error('id_city') is-invalid @enderror">
+                        <label for="id_city">Город <span style="color: red">*</span></label>
+                        <select class="form-control @error('id_city') is-invalid @enderror" name="id_city" id="id_city">
                             <option value="1" {{ old('id_city') == '1' ? 'selected' : '' }}>Днепр</option>
                             <option value="2" {{ old('id_city') == '2' ? 'selected' : '' }}>Киев</option>
+                            <option value="2" {{ old('id_city') == '3' ? 'selected' : '' }}>Харьков</option>
+                            <option value="2" {{ old('id_city') == '4' ? 'selected' : '' }}>Запорожье</option>
                         </select>
                     </div>
                 </div>
@@ -115,7 +116,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Последнее желание:</strong>
+                        <strong>Последнее желание</strong>
                         <input type="text" name="last_wish" class="form-control @error('last_wish') is-invalid @enderror" placeholder="Укажите последнее желание" value="{{ old('last_wish') }}">
                     </div>
                 </div>

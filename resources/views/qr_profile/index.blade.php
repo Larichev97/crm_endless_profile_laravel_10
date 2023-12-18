@@ -4,7 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'QR-профили'])
 
     <div class="container-fluid py-4">
-        <div id="alert">
+        <div>
             @include('components.alert')
         </div>
 
@@ -16,8 +16,8 @@
                             <div class="col-6">
                                 <h6 class="">Список QR-профилей</h6>
                             </div>
-                            <div class="col-6">
-                                <a class="btn btn-success" href="{{ route('qrs.create') }}">Добавить QR-профиль</a>
+                            <div class="col-6 d-flex">
+                                <a class="btn btn-success" href="{{ route('qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>
                             </div>
                         </div>
                     </div>
@@ -43,20 +43,20 @@
                                                 <h6 class="mb-0 text-sm">{{ $qrProfile->fullName }}</h6>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center">{{ $qrProfile->death_date->format('d-m-Y') }}</td>
+                                        <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
                                         <td class="align-middle text-center">{{ $qrProfile->client->fullName }}</td>
                                         <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-success">{{ $qrProfile->statusName }}</span>
+                                            <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrProfile->statusName }}</span>
                                         </td>
                                         <td class="align-middle">
                                             <form action="{{ route('qrs.destroy', $qrProfile->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('qrs.show', $qrProfile->id) }}">Просмотр</a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('qrs.edit', $qrProfile->id) }}">Редактировать</a>
+                                                <a class="btn btn-info btn-sm" href="{{ route('qrs.show', $qrProfile->id) }}" style="margin-bottom: 0;"><i class="fas fa-eye"></i></a>
+                                                <a class="btn btn-primary btn-sm" href="{{ route('qrs.edit', $qrProfile->id) }}" style="margin-bottom: 0;"><i class="fas fa-edit"></i></a>
 
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0;"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </td>
                                     </tr>
@@ -75,7 +75,6 @@
 @endsection
 
 @push('js')
-{{--    <script src="./assets/js/plugins/chartjs.min.js"></script>--}}
     <script>
 
     </script>

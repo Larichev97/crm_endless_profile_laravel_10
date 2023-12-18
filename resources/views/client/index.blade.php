@@ -4,7 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Клиенты'])
 
     <div class="container-fluid py-4">
-        <div id="alert">
+        <div>
             @include('components.alert')
         </div>
 
@@ -16,8 +16,8 @@
                             <div class="col-6">
                                 <h6 class="">Список клиентов</h6>
                             </div>
-                            <div class="col-6">
-                                <a class="btn btn-success" href="{{ route('clients.create') }}">Добавить клиента</a>
+                            <div class="col-6 d-flex">
+                                <a class="btn btn-success" href="{{ route('clients.create') }}" style="margin-left: auto">Добавить клиента</a>
                             </div>
                         </div>
                     </div>
@@ -51,20 +51,20 @@
 {{--                                                <span class="text-secondary text-xs font-weight-bold">{{ $client->bdate }}</span>--}}
 {{--                                            </td>--}}
                                             <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success">{{ $client->getStatusName(intval($client->id_status)) }}</span>
+                                                <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $client->getStatusName(intval($client->id_status)) }}</span>
                                             </td>
 {{--                                            <td class="align-middle text-center text-sm">--}}
 {{--                                                {{ strip_tags($client->manager_comment) }}--}}
 {{--                                            </td>--}}
                                             <td class="align-middle">
                                                 <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
-                                                    <a class="btn btn-info btn-sm" href="{{ route('clients.show', $client->id) }}">Просмотр</a>
-                                                    <a class="btn btn-primary btn-sm" href="{{ route('clients.edit', $client->id) }}">Редактировать</a>
+                                                    <a class="btn btn-info btn-sm" style="margin-bottom: 0;" href="{{ route('clients.show', $client->id) }}"><i class="fas fa-eye"></i></a>
+                                                    <a class="btn btn-primary btn-sm" style="margin-bottom: 0;" href="{{ route('clients.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
 
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button type="submit" class="btn btn-danger btn-sm">Удалить</button>
+                                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0;"><i class="fas fa-trash"></i></button>
                                                 </form>
                                             </td>
                                         </tr>

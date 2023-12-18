@@ -3,16 +3,16 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Редактирование клиента'])
 
-    <div class="container-fluid py-4">
-        <div id="alert">
-            @include('components.alert')
-        </div>
-
+    <div class="container-fluid py-4 mt-4">
         <form class="card p-4" action="{{ route('clients.update', $client->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
             <a style="width: fit-content;" class="btn btn-primary" href="{{ route('clients.index') }}"> Назад</a>
+
+            <div>
+                @include('components.alert')
+            </div>
 
             <div class="row">
                 <input type="hidden" name="photo_name" class="form-control" value="{{ $client->photo_name }}">
@@ -43,11 +43,11 @@
                         <strong>Статус:</strong>
                         <br>
                         @if(!empty($statuses_list_data))
-                        <select name="id_status" id="id_status">
-                            @foreach($statuses_list_data as $status_item)
-                                <option value="{{ $status_item['id'] }}" {{ old('id_status', $client->id_status) == $status_item['id'] ? 'selected' : '' }}>{{ $status_item['name'] }}</option>
-                            @endforeach
-                        </select>
+                            <select class="form-control" name="id_status" id="id_status">
+                                @foreach($statuses_list_data as $status_item)
+                                    <option value="{{ $status_item['id'] }}" {{ old('id_status', $client->id_status) == $status_item['id'] ? 'selected' : '' }}>{{ $status_item['name'] }}</option>
+                                @endforeach
+                            </select>
                         @endif
                         @error('id_status') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
@@ -98,9 +98,9 @@
                     <div class="form-group">
                         <strong>Страна:</strong>
                         <br>
-                        <select name="id_country" id="id_country">
+                        <select class="form-control" name="id_country" id="id_country">
                             <option value="1" {{ old('id_country', $client->id_country) == 1 ? 'selected' : '' }}>Украина</option>
-                            <option value="2" {{ old('id_country', $client->id_country) == 2 ? 'selected' : '' }}>Польша</option>
+{{--                            <option value="2" {{ old('id_country', $client->id_country) == 2 ? 'selected' : '' }}>Польша</option>--}}
                         </select>
                         @error('id_country') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
@@ -109,9 +109,11 @@
                     <div class="form-group">
                         <strong>Город:</strong>
                         <br>
-                        <select name="id_city" id="id_city">
+                        <select class="form-control" name="id_city" id="id_city">
                             <option value="1" {{ old('id_city', $client->id_city) == 1 ? 'selected' : '' }}>Днепр</option>
                             <option value="2" {{ old('id_city', $client->id_city) == 2 ? 'selected' : '' }}>Киев</option>
+                            <option value="3" {{ old('id_city', $client->id_city) == 3 ? 'selected' : '' }}>Харьков</option>
+                            <option value="4" {{ old('id_city', $client->id_city) == 4 ? 'selected' : '' }}>Запорожье</option>
                         </select>
                         @error('id_city') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>

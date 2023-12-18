@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\QrStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,8 +56,8 @@ final class QrProfile extends Model
         'id_client' => 'integer',
         'id_country' => 'integer',
         'id_city' => 'integer',
-        'birth_date' => 'date:d-m-Y',
-        'death_date' => 'date:d-m-Y',
+        //'birth_date' => 'date:d-m-Y',
+        //'death_date' => 'date:d-m-Y',
     ];
 
     public function client(): BelongsTo
@@ -84,5 +85,21 @@ final class QrProfile extends Model
         $fullName = $this->lastname . ' ' . $this->firstname . ' ' . $this->surname;
 
         return trim($fullName);
+    }
+
+    /**
+     * Метод преобразовывает "Дату смерти" к формату "d-m-Y" при помощи Carbon
+     *
+     * @return string
+     */
+    public function getDeathDateFormattedAttribute(): string
+    {
+        $result = '--';
+
+        if (!empty($this->death_date)) {
+            $result = Carbon::parse($this->death_date)->format('d.m.Y');
+        }
+
+        return $result;
     }
 }

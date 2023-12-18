@@ -46,11 +46,11 @@ final class QrProfileController extends Controller
      */
     public function create(): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $id_status_new = QrStatusEnum::NEW->value;
+        $idStatusNew = QrStatusEnum::NEW->value;
 
         $clientsList = $this->clientRepository->getClientsList();
 
-        return view('qr_profile.create', compact(['id_status_new', 'clientsList',]));
+        return view('qr_profile.create', compact(['idStatusNew', 'clientsList',]));
     }
 
     /**
@@ -71,7 +71,7 @@ final class QrProfileController extends Controller
                 return redirect()->route('qrs.index')->with('success', 'QR-профиль успешно создан.');
             }
 
-            return redirect()->route('qrs.create')->with('error', 'Ошибка! QR-профиль не создан.');
+            return back()->with('error', 'Ошибка! QR-профиль не создан.')->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -91,8 +91,8 @@ final class QrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->photo_name, $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->voice_message_file_name, $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath((string) $qrProfile->photo_name, $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
 
             return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath']));
         } catch (Exception $exception) {
@@ -114,12 +114,13 @@ final class QrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->photo_name, $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->voice_message_file_name, $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath((string) $qrProfile->photo_name, $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
 
-            $statuses_list_data = QrStatusEnum::getStatusesList();
+            $statusesListData = QrStatusEnum::getStatusesList();
+            $clientsList = $this->clientRepository->getClientsList();
 
-            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statuses_list_data',]));
+            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsList',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -141,10 +142,10 @@ final class QrProfileController extends Controller
             $updateQrProfile = $qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService);
 
             if ($updateQrProfile) {
-                return redirect()->route('qrs.index')->with('success','Данные QR-профиля успешно обновлены.');
+                return redirect()->route('qrs.index')->with('success', sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
             }
 
-            return redirect()->route('qrs.edit')->with('error','Ошибка! Данные QR-профиля не обновлены.');
+            return back()->with('error','Ошибка! Данные QR-профиля не обновлены.')->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -166,7 +167,7 @@ final class QrProfileController extends Controller
                 return redirect()->route('qrs.index')->with('success','QR-профиль успешно удалён.');
             }
 
-            return redirect()->route('qrs.index')->with('error','Ошибка! QR-профиль не удалён.');
+            return back()->with('error', sprintf('Ошибка! QR-профиль #%s не удалён.', $id));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
