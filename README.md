@@ -7,11 +7,13 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Start "CRM Endless Profile":
+## Start "CRM Endless Profile" in PHP container:
 
 1. composer update
 
 2. php artisan migrate:fresh --seed
+
+3. php artisan storage:link
 
 
 ## About Laravel

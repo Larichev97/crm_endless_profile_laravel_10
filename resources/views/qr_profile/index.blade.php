@@ -4,9 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'QR-профили'])
 
     <div class="container-fluid py-4">
-        <div>
-            @include('components.alert')
-        </div>
+        @include('components.alert')
 
         <div class="row">
             <div class="col-12">
@@ -26,12 +24,13 @@
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">№</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">ФИО</th>
+                                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">#</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата смерти</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Принадлежит клиенту</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">QR-код</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                     </tr>
                                 </thead>
@@ -47,9 +46,9 @@
                                         <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
                                         <td class="align-middle text-center">
                                             @php
-                                                if ($qrProfile->id_status == 1) {
+                                                if ($qrProfile->id_country == 1) {
                                                     $flagName = 'UA';
-                                                } else if ($qrProfile->id_status == 2) {
+                                                } else if ($qrProfile->id_country == 2) {
                                                     $flagName = 'PL';
                                                 } else {
                                                     $flagName = 'US';
@@ -61,15 +60,22 @@
                                         <td class="align-middle text-center text-sm">
                                             <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrProfile->statusName }}</span>
                                         </td>
-                                        <td class="align-middle">
+                                        <td class="align-middle text-center text-sm">
+                                            @if(!empty(trim($qrProfile->qr_code_file_name)))
+                                                <i class="fas fa-check" style="color: #2dce89"></i>
+                                            @else
+                                                <i class="fas fa-cross" style="color: #f5365c"></i>
+                                            @endif
+                                        </td>
+                                        <td class="align-middle text-center">
                                             <form action="{{ route('qrs.destroy', $qrProfile->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('qrs.show', $qrProfile->id) }}" style="margin-bottom: 0;"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('qrs.edit', $qrProfile->id) }}" style="margin-bottom: 0;"><i class="fas fa-edit"></i></a>
+                                                <a class="btn btn-info btn-sm" href="{{ route('qrs.show', $qrProfile->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
+                                                <a class="btn btn-primary btn-sm" href="{{ route('qrs.edit', $qrProfile->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
 
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0;"><i class="fas fa-trash"></i></button>
+                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
                                             </form>
                                         </td>
                                     </tr>

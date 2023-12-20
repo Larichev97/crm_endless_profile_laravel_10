@@ -4,9 +4,7 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Клиенты'])
 
     <div class="container-fluid py-4">
-        <div>
-            @include('components.alert')
-        </div>
+        @include('components.alert')
 
         <div class="row">
             <div class="col-12">
@@ -26,14 +24,12 @@
                             <table class="table align-items-center mb-0">
                                 <thead>
                                     <tr>
-                                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">№</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">ФИО</th>
+                                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">#</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Моб. номер</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
-{{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата рождения</th>--}}
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
-{{--                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Комментарий менеджера</th>--}}
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                     </tr>
                                 </thead>
@@ -50,34 +46,28 @@
                                             <td class="align-middle text-center">{{ $client->phone_number }}</td>
                                             <td class="align-middle text-center">
                                                 @php
-                                                    if ($client->id_status == 1) {
+                                                    $flagName = 'US';
+
+                                                    if ($client->id_country == 1) {
                                                         $flagName = 'UA';
-                                                    } else if ($client->id_status == 2) {
+                                                    } else if ($client->id_country == 2) {
                                                         $flagName = 'PL';
-                                                    } else {
-                                                        $flagName = 'US';
                                                     }
                                                 @endphp
                                                 <img src="/img/icons/flags/{{ $flagName }}.png" alt="Флаг страны" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
                                             </td>
-{{--                                            <td class="align-middle text-center">--}}
-{{--                                                <span class="text-secondary text-xs font-weight-bold">{{ $client->bdate }}</span>--}}
-{{--                                            </td>--}}
                                             <td class="align-middle text-center text-sm">
                                                 <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $client->getStatusName(intval($client->id_status)) }}</span>
                                             </td>
-{{--                                            <td class="align-middle text-center text-sm">--}}
-{{--                                                {{ strip_tags($client->manager_comment) }}--}}
-{{--                                            </td>--}}
-                                            <td class="align-middle">
+                                            <td class="align-middle text-center">
                                                 <form action="{{ route('clients.destroy', $client->id) }}" method="POST">
-                                                    <a class="btn btn-info btn-sm" style="margin-bottom: 0;" href="{{ route('clients.show', $client->id) }}"><i class="fas fa-eye"></i></a>
-                                                    <a class="btn btn-primary btn-sm" style="margin-bottom: 0;" href="{{ route('clients.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
+                                                    <a class="btn btn-info btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('clients.show', $client->id) }}"><i class="fas fa-eye"></i></a>
+                                                    <a class="btn btn-primary btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('clients.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
 
                                                     @csrf
                                                     @method('DELETE')
 
-                                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0;"><i class="fas fa-trash"></i></button>
+                                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
                                                 </form>
                                             </td>
                                         </tr>

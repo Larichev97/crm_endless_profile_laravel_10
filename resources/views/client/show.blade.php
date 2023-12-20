@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Просмотр клиента'])
 
-    <div class="container-fluid py-4 mt-4">
+    <div class="container-fluid py-4">
         @include('components.alert')
         <div class="card shadow-lg mx-4">
             <div class="card-body p-3">
@@ -52,7 +52,7 @@
         </div>
         <div class="container-fluid py-4">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-5">
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="row">
@@ -105,63 +105,63 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-7">
                     <div class="card card-profile">
-                        <img src="/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                        <div class="row justify-content-center">
-                            <div class="col-4 col-lg-4 order-lg-2">
-                                <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
-                                    <a href="javascript:;">
-                                        <img src="/img/team-2.jpg"
-                                            class="rounded-circle img-fluid border border-2 border-white">
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
-                            <div class="d-flex justify-content-between">
-                                <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Connect</a>
-                                <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-block d-lg-none"><i
-                                        class="ni ni-collection"></i></a>
-                                <a href="javascript:;"
-                                    class="btn btn-sm btn-dark float-right mb-0 d-none d-lg-block">Message</a>
-                                <a href="javascript:;" class="btn btn-sm btn-dark float-right mb-0 d-block d-lg-none"><i
-                                        class="ni ni-email-83"></i></a>
-                            </div>
+                        <div class="card-header text-center">
+                            <h5>Список связанных QR-профилей</h5>
                         </div>
                         <div class="card-body pt-0">
-                            <div class="row">
-                                <div class="col">
-                                    <div class="d-flex justify-content-center">
-                                        <div class="d-grid text-center">
-                                            <span class="text-lg font-weight-bolder">22</span>
-                                            <span class="text-sm opacity-8">Friends</span>
-                                        </div>
-                                        <div class="d-grid text-center mx-4">
-                                            <span class="text-lg font-weight-bolder">10</span>
-                                            <span class="text-sm opacity-8">Photos</span>
-                                        </div>
-                                        <div class="d-grid text-center">
-                                            <span class="text-lg font-weight-bolder">89</span>
-                                            <span class="text-sm opacity-8">Comments</span>
-                                        </div>
-                                    </div>
+                            @if(!empty($client->qrProfiles))
+                                <div class="table-responsive p-0">
+                                    <table class="table align-items-center mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">ID</th>
+                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
+                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
+                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">QR-код</th>
+                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        @foreach ($client->qrProfiles as $qrItem)
+                                            <tr>
+                                                <td class="align-middle text-center">{{ $qrItem->id }}</td>
+                                                <td class="align-middle text-center">
+                                                    <div class="d-flex flex-column justify-content-center">
+                                                        <h6 class="mb-0 text-sm">{{ $qrItem->fullName }}</h6>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    @if(!empty(trim($qrItem->qr_code_file_name)))
+                                                        <i class="fas fa-check" style="color: #2dce89"></i>
+                                                    @else
+                                                        <i class="fas fa-cross" style="color: #f5365c"></i>
+                                                    @endif
+                                                </td>
+                                                <td class="align-middle text-center">
+                                                    <form action="{{ route('qrs.destroy', $qrItem->id) }}" method="POST">
+                                                        <a class="btn btn-info btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('qrs.show', $client->id) }}"><i class="fas fa-eye"></i></a>
+                                                        <a class="btn btn-primary btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('qrs.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
+
+                                                        @csrf
+                                                        @method('DELETE')
+
+                                                        <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                        </tbody>
+                                    </table>
+
+                                    {{-- Custom pagination template: resources/views/components/pagination.blade.php --}}
+{{--                                    {!! $client->qrs->links('components.pagination') !!}--}}
                                 </div>
-                            </div>
-                            <div class="text-center mt-4">
-                                <h5>
-                                    Mark Davis<span class="font-weight-light">, 35</span>
-                                </h5>
-                                <div class="h6 font-weight-300">
-                                    <i class="ni location_pin mr-2"></i>Bucharest, Romania
-                                </div>
-                                <div class="h6 mt-4">
-                                    <i class="ni business_briefcase-24 mr-2"></i>Solution Manager - Creative Tim Officer
-                                </div>
-                                <div>
-                                    <i class="ni education_hat mr-2"></i>University of Computer Science
-                                </div>
-                            </div>
+                            @endif
                         </div>
                     </div>
                 </div>
