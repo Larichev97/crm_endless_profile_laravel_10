@@ -22,7 +22,7 @@
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Текущее фото клиента:</strong>
+                        <strong>Текущее фото клиента</strong>
                         <br/>
                         <div class="avatar avatar-xxl position-relative">
                             @if (!empty($clientPhotoPath))
@@ -40,12 +40,12 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Статус:</strong>
+                        <strong>Статус <span style="color: red">*</span></strong>
                         <br>
-                        @if(!empty($statuses_list_data))
+                        @if(!empty($statusesListData))
                             <select class="form-control" name="id_status" id="id_status">
-                                @foreach($statuses_list_data as $status_item)
-                                    <option value="{{ $status_item['id'] }}" {{ old('id_status', $client->id_status) == $status_item['id'] ? 'selected' : '' }}>{{ $status_item['name'] }}</option>
+                                @foreach($statusesListData as $statusItem)
+                                    <option value="{{ $statusItem['id'] }}" {{ old('id_status', $client->id_status) == $statusItem['id'] ? 'selected' : '' }}>{{ $statusItem['name'] }}</option>
                                 @endforeach
                             </select>
                         @endif
@@ -54,49 +54,49 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Имя:</strong>
+                        <strong>Имя <span style="color: red">*</span></strong>
                         <input type="text" name="firstname" class="form-control" placeholder="Имя" value="{{ old('firstname', $client->firstname) }}">
                         @error('firstname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Фамилия:</strong>
+                        <strong>Фамилия <span style="color: red">*</span></strong>
                         <input type="text" name="lastname" class="form-control" placeholder="Фамилия" value="{{ old('lastname', $client->lastname) }}">
                         @error('lastname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Отчество:</strong>
+                        <strong>Отчество <span style="color: red">*</span></strong>
                         <input type="text" name="surname" class="form-control" placeholder="Отчество" value="{{ old('surname', $client->surname) }}">
                         @error('surname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Email:</strong>
+                        <strong>Email <span style="color: red">*</span></strong>
                         <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email', $client->email) }}">
                         @error('email') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Моб. телефон:</strong>
+                        <strong>Моб. телефон <span style="color: red">*</span></strong>
                         <input type="text" name="phone_number" class="form-control" placeholder="380680000000" value="{{ old('phone_number', $client->phone_number) }}">
                         @error('phone_number') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Дата рождения:</strong>
+                        <strong>Дата рождения <span style="color: red">*</span></strong>
                         <input type="date" name="bdate" class="form-control" placeholder="Укажите дату рождения" value="{{ old('bdate', $client->bdate) }}">
                         @error('bdate') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Страна:</strong>
+                        <strong>Страна <span style="color: red">*</span></strong>
                         <br>
                         <select class="form-control" name="id_country" id="id_country">
                             <option value="1" {{ old('id_country', $client->id_country) == 1 ? 'selected' : '' }}>Украина</option>
@@ -107,7 +107,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Город:</strong>
+                        <strong>Город <span style="color: red">*</span></strong>
                         <br>
                         <select class="form-control" name="id_city" id="id_city">
                             <option value="1" {{ old('id_city', $client->id_city) == 1 ? 'selected' : '' }}>Днепр</option>
@@ -120,7 +120,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Комментарий менеджера:</strong>
+                        <strong>Комментарий менеджера</strong>
                         <textarea
                             class="form-control"
                             id="manager_comment"
@@ -135,7 +135,6 @@
                     <button type="submit" class="btn btn-success btn-lg w-100">Сохранить</button>
                 </div>
             </div>
-
         </form>
 
         @include('layouts.footers.auth.footer')

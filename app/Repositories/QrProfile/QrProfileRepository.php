@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repositories\Client;
+namespace App\Repositories\QrProfile;
 
-use App\Models\Client as Model;
+use App\Models\QrProfile as Model;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-final class ClientRepository extends CoreRepository
+final class QrProfileRepository extends CoreRepository
 {
     public function __construct()
     {
@@ -15,7 +15,7 @@ final class ClientRepository extends CoreRepository
     }
 
     /**
-     * App\Models\Client
+     * App\Models\QrProfile
      *
      * @return string
      */

@@ -49,7 +49,7 @@ final class Client extends Model
     ];
 
     /**
-     *  У одного клиент может быть много QR-профилей
+     *  У одного клиента может быть много QR-профилей
      *
      * @return HasMany
      */

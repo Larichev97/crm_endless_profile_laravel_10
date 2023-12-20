@@ -10,6 +10,7 @@ use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileUpdateRequest;
 use App\Models\QrProfile;
 use App\Repositories\Client\ClientRepository;
+use App\Repositories\QrProfile\QrProfileRepository;
 use App\Services\FileService;
 use App\Services\QrProfileService;
 use Exception;
@@ -21,28 +22,41 @@ use Illuminate\Http\RedirectResponse;
 
 final class QrProfileController extends Controller
 {
-    protected FileService $fileService;
-    protected ClientRepository $clientRepository;
-
-    public function __construct(ClientRepository $clientRepository)
+    /**
+     * @param FileService $fileService
+     * @param QrProfileService $qrProfileService
+     * @param ClientRepository $clientRepository
+     * @param QrProfileRepository $qrProfileRepository
+     */
+    public function __construct(
+        readonly FileService $fileService,
+        readonly QrProfileService $qrProfileService,
+        readonly ClientRepository $clientRepository,
+        readonly QrProfileRepository $qrProfileRepository
+    )
     {
-        $this->fileService = new FileService();
-        $this->clientRepository = $clientRepository;
     }
 
     /**
      * Display a listing of the resource.
+     *
+     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(): Application|Factory|View|\Illuminate\Foundation\Application
+    public function index(): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
-        $qrProfiles = QrProfile::query()->latest()->paginate(10);
+        try {
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10);
 
-        return view('qr_profile.index',compact('qrProfiles'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            return view('qr_profile.index',compact('qrProfiles'))->with('i', (request()->input('page', 1) - 1) * 5);
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
     }
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
     public function create(): Application|Factory|View|\Illuminate\Foundation\Application
     {
@@ -57,15 +71,14 @@ final class QrProfileController extends Controller
      * Store a newly created resource in storage.
      *
      * @param QrProfileStoreRequest $qrProfileStoreRequest
-     * @param QrProfileService $qrProfileService
      * @return RedirectResponse|JsonResponse
      */
-    public function store(QrProfileStoreRequest $qrProfileStoreRequest, QrProfileService $qrProfileService): RedirectResponse|JsonResponse
+    public function store(QrProfileStoreRequest $qrProfileStoreRequest): RedirectResponse|JsonResponse
     {
         try {
             $qrProfileStoreDTO = new QrProfileStoreDTO($qrProfileStoreRequest);
 
-            $createQrProfile = $qrProfileService->processStore($qrProfileStoreDTO, $this->fileService);
+            $createQrProfile = $this->qrProfileService->processStore($qrProfileStoreDTO, $this->fileService);
 
             if ($createQrProfile) {
                 return redirect()->route('qrs.index')->with('success', 'QR-профиль успешно создан.');
@@ -86,7 +99,11 @@ final class QrProfileController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = QrProfile::query()->findOrFail($id);
+            $qrProfile = $this->qrProfileRepository->getForEditModel($id);
+
+            if (empty($qrProfile)) {
+                abort(404);
+            }
 
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
@@ -109,7 +126,7 @@ final class QrProfileController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = QrProfile::query()->findOrFail($id);
+            $qrProfile = $this->qrProfileRepository->getForEditModel($id);
 
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
@@ -131,15 +148,14 @@ final class QrProfileController extends Controller
      *
      * @param QrProfileUpdateRequest $qrProfileUpdateRequest
      * @param $id
-     * @param QrProfileService $qrProfileService
      * @return RedirectResponse|JsonResponse
      */
-    public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id, QrProfileService $qrProfileService): RedirectResponse|JsonResponse
+    public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
             $qrProfileUpdateDTO = new QrProfileUpdateDTO($qrProfileUpdateRequest, (int) $id);
 
-            $updateQrProfile = $qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService);
+            $updateQrProfile = $this->qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService);
 
             if ($updateQrProfile) {
                 return redirect()->route('qrs.index')->with('success', sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
@@ -155,13 +171,12 @@ final class QrProfileController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @param QrProfileService $qrProfileService
      * @return RedirectResponse|JsonResponse
      */
-    public function destroy($id, QrProfileService $qrProfileService): RedirectResponse|JsonResponse
+    public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteQrProfile = $qrProfileService->processDestroy($id);
+            $deleteQrProfile = $this->qrProfileService->processDestroy($id);
 
             if ($deleteQrProfile) {
                 return redirect()->route('qrs.index')->with('success','QR-профиль успешно удалён.');

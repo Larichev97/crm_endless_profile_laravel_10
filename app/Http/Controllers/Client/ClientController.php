@@ -10,32 +10,43 @@ use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
 use App\Repositories\Client\ClientRepository;
 use App\Services\ClientService;
+use App\Services\FileService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\File;
 
 class ClientController extends Controller
 {
     /**
+     * @param FileService $fileService
+     * @param ClientService $clientService
      * @param ClientRepository $clientRepository
+     * @param string $publicDirPath
      */
-    public function __construct(readonly ClientRepository $clientRepository)
+    public function __construct(
+        readonly FileService $fileService,
+        readonly ClientService $clientService,
+        readonly ClientRepository $clientRepository,
+        readonly string $publicDirPath = 'images/clients'
+    )
     {
     }
 
     /**
      * Display a listing of the resource.
      */
-    public function index(): Application|Factory|View|\Illuminate\Foundation\Application
+    public function index(): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
-        $clients = $this->clientRepository->getAllWithPaginate(5);
+        try {
+            $clients = $this->clientRepository->getAllWithPaginate(10);
 
-        return view('client.index',compact('clients'))
-            ->with('i', (request()->input('page', 1) - 1) * 5);
+            return view('client.index',compact('clients'))->with('i', (request()->input('page', 1) - 1) * 5);
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
     }
 
     /**
@@ -52,21 +63,20 @@ class ClientController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ClientStoreRequest $clientStoreRequest
-     * @param ClientService $clientService
      * @return RedirectResponse|JsonResponse
      */
-    public function store(ClientStoreRequest $clientStoreRequest, ClientService $clientService): RedirectResponse|JsonResponse
+    public function store(ClientStoreRequest $clientStoreRequest): RedirectResponse|JsonResponse
     {
         try {
             $clientStoreDTO = new ClientStoreDTO($clientStoreRequest);
 
-            $createClient = $clientService->processStore($clientStoreDTO);
+            $createClient = $this->clientService->processStore($clientStoreDTO);
 
             if ($createClient) {
                 return redirect()->route('clients.index')->with('success','Клиент успешно создан.');
             }
 
-            return redirect()->route('clients.create')->with('error','Ошибка! Клиент не создан.');
+            return back()->with('error','Ошибка! Клиент не создан.')->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -81,17 +91,13 @@ class ClientController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getEditModel($id);
+            $client = $this->clientRepository->getForEditModel($id);
 
             if (empty($client)) {
                 abort(404);
             }
 
-            $clientPhotoPath = '';
-
-            if (!empty($client->photo_name) && File::exists(storage_path('app/public/images/clients/'.$client->photo_name))) {
-                $clientPhotoPath = 'storage/images/clients/'.$client->photo_name;
-            }
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath((string) $client->photo_name, $this->publicDirPath);
 
             return view('client.show',compact(['client', 'clientPhotoPath']));
         } catch (Exception $exception) {
@@ -108,17 +114,13 @@ class ClientController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getEditModel($id);
+            $client = $this->clientRepository->getForEditModel($id);
 
-            $clientPhotoPath = '';
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath((string) $client->photo_name, $this->publicDirPath);
 
-            if (!empty($client->photo_name) && File::exists(storage_path('app/public/images/clients/'.$client->photo_name))) {
-                $clientPhotoPath = 'storage/images/clients/'.$client->photo_name;
-            }
+            $statusesListData = ClientStatusEnum::getStatusesList();
 
-            $statuses_list_data = ClientStatusEnum::getStatusesList();
-
-            return view('client.edit',compact(['client', 'clientPhotoPath', 'statuses_list_data',]));
+            return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -129,21 +131,20 @@ class ClientController extends Controller
      *
      * @param ClientUpdateRequest $clientUpdateRequest
      * @param $id
-     * @param ClientService $clientService
      * @return RedirectResponse|JsonResponse
      */
-    public function update(ClientUpdateRequest $clientUpdateRequest, $id, ClientService $clientService): RedirectResponse|JsonResponse
+    public function update(ClientUpdateRequest $clientUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
             $clientUpdateDTO = new ClientUpdateDTO($clientUpdateRequest, (int) $id);
 
-            $updateClient = $clientService->processUpdate($clientUpdateDTO, $this->clientRepository);
+            $updateClient = $this->clientService->processUpdate($clientUpdateDTO, $this->clientRepository);
 
             if ($updateClient) {
                 return redirect()->route('clients.index')->with('success', sprintf('Данные клиента #%s успешно обновлены.', $id));
             }
 
-            return back()->with('error', sprintf('Ошибка! Данные клиента #%s не обновлены.', $id));
+            return back()->with('error', sprintf('Ошибка! Данные клиента #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -158,7 +159,7 @@ class ClientController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getEditModel($id);
+            $client = $this->clientRepository->getForEditModel($id);
 
             if (empty($client)) {
                 return back()->with('error', sprintf('Ошибка! Клиент #%s не удалён.', $id));

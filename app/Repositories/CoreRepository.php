@@ -47,7 +47,7 @@ abstract class CoreRepository
      * @param $id
      * @return mixed
      */
-    public function getEditModel($id): mixed
+    public function getForEditModel($id): mixed
     {
         return $this->startConditions()->find($id);
     }
