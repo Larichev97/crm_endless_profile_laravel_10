@@ -1,11 +1,9 @@
 <?php
 
 use App\Http\Controllers\ChangePassword;
-use App\Http\Controllers\Client\ClientController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PageController;
-use App\Http\Controllers\QrProfile\QrProfileController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\ResetPassword;
 use App\Http\Controllers\UserProfileController;
@@ -37,74 +35,18 @@ Route::get('/', function () {return redirect('/dashboard');})->middleware('auth'
 	Route::get('/change-password', [ChangePassword::class, 'show'])->middleware('guest')->name('change-password');
 	Route::post('/change-password', [ChangePassword::class, 'update'])->middleware('guest')->name('change.perform');
 	Route::get('/dashboard', [HomeController::class, 'index'])->name('home')->middleware('auth');
+
 Route::group(['middleware' => 'auth'], function () {
-	Route::get('/virtual-reality', [PageController::class, 'vr'])->name('virtual-reality');
-	Route::get('/rtl', [PageController::class, 'rtl'])->name('rtl');
 	Route::get('/profile', [UserProfileController::class, 'show'])->name('profile');
 	Route::post('/profile', [UserProfileController::class, 'update'])->name('profile.update');
 	Route::get('/profile-static', [PageController::class, 'profile'])->name('profile-static');
 	Route::get('/sign-in-static', [PageController::class, 'signin'])->name('sign-in-static');
 	Route::get('/sign-up-static', [PageController::class, 'signup'])->name('sign-up-static');
-	//Route::get('/{page}', [PageController::class, 'index'])->name('page');
 	Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
-    // Client entity ###################################################################################################
-    /*
-    Route::resource('clients', ClientController::class);
-    */
+    // Client entity:
+    require_once 'clients/clients.php';
 
-    Route::prefix('clients')->group(function () {
-        // Index: вывод списка ресурсов
-        Route::get('/', [ClientController::class, 'index'])->name('clients.index');
-
-        // Create: отображение формы создания ресурса
-        Route::get('/create', [ClientController::class, 'create'])->name('clients.create');
-
-        // Store: сохранение нового ресурса
-        Route::post('/', [ClientController::class, 'store'])->name('clients.store');
-
-        // Show: отображение конкретного ресурса
-        Route::get('/{id}', [ClientController::class, 'show'])->name('clients.show');
-
-        // Edit: отображение формы редактирования ресурса
-        Route::get('/{id}/edit', [ClientController::class, 'edit'])->name('clients.edit');
-
-        // Update: обновление конкретного ресурса
-        Route::put('/{id}', [ClientController::class, 'update'])->name('clients.update');
-        //Route::patch('/{id}', [ClientController::class, 'update']);
-
-        // Destroy: удаление конкретного ресурса
-        Route::delete('/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
-    });
-   // ##################################################################################################################
-
-    // QrProfile entity ################################################################################################
-    /*
-    Route::resource('qrs', QrProfileController::class);
-    */
-
-    Route::prefix('qrs')->group(function () {
-        // Index: вывод списка ресурсов
-        Route::get('/', [QrProfileController::class, 'index'])->name('qrs.index');
-
-        // Create: отображение формы создания ресурса
-        Route::get('/create', [QrProfileController::class, 'create'])->name('qrs.create');
-
-        // Store: сохранение нового ресурса
-        Route::post('/', [QrProfileController::class, 'store'])->name('qrs.store');
-
-        // Show: отображение конкретного ресурса
-        Route::get('/{id}', [QrProfileController::class, 'show'])->name('qrs.show');
-
-        // Edit: отображение формы редактирования ресурса
-        Route::get('/{id}/edit', [QrProfileController::class, 'edit'])->name('qrs.edit');
-
-        // Update: обновление конкретного ресурса
-        Route::put('/{id}', [QrProfileController::class, 'update'])->name('qrs.update');
-        //Route::patch('/{id}', [QrProfileController::class, 'update']);
-
-        // Destroy: удаление конкретного ресурса
-        Route::delete('/{id}', [QrProfileController::class, 'destroy'])->name('qrs.destroy');
-    });
-    // ##################################################################################################################
+    // QrProfile entity:
+    require_once 'qrs/qrs.php';
 });

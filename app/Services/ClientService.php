@@ -6,8 +6,6 @@ use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
 use App\Models\Client;
 use App\Repositories\Client\ClientRepository;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\File;
 
 class ClientService
 {
@@ -15,80 +13,76 @@ class ClientService
      *  Создание записи о клиенте
      *
      * @param ClientStoreDTO $clientStoreDTO
+     * @param FileService $fileService
      * @return bool
      */
-    public function processStore(ClientStoreDTO $clientStoreDTO): bool
+    public function processStore(ClientStoreDTO $clientStoreDTO, FileService $fileService): bool
     {
+        $clientsImagesDirPath = 'images/clients';
+
         $formDataArray = $clientStoreDTO->getFormFieldsArray();
 
-        // *** Upload client photo:
-        if (!empty($clientStoreDTO->image) && $clientStoreDTO->image instanceof UploadedFile) {
-            $photoName = time().'.'.$clientStoreDTO->image->extension();
+        $clientModel = Client::query()->create($formDataArray);
 
-            // Check directory "clients":
-            if (!File::exists(storage_path('app/public/images/clients'))) {
-                File::makeDirectory(storage_path('app/public/images/clients'), 0777, true);
-            }
+        if ($clientModel) {
+            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile($clientStoreDTO->image, $clientsImagesDirPath);
 
-            $clientStoreDTO->image->storeAs('public/images/clients', $photoName);
-
-            if (!empty($photoName) && File::exists(storage_path('app/public/images/clients/'.$photoName))) {
-                $formDataArray['photo_name'] = $photoName;
-            }
+            return (bool) $clientModel->update($formFilesNamesArray);
         }
-        // ***
 
-        return (bool) Client::create($formDataArray);
+        return false;
     }
 
     /**
      *  Обновление записи о клиенте
      *
      * @param ClientUpdateDTO $clientUpdateDTO
+     * @param FileService $fileService
      * @param ClientRepository $clientRepository
      * @return bool
      */
-    public function processUpdate(ClientUpdateDTO $clientUpdateDTO, ClientRepository $clientRepository): bool
+    public function processUpdate(ClientUpdateDTO $clientUpdateDTO, FileService $fileService, ClientRepository $clientRepository): bool
     {
-        //$clientModel = Client::query()->findOrFail($clientUpdateDTO->id_client);
-        $clientModel = $clientRepository->getEditModel($clientUpdateDTO->id_client);
+        $clientModel = $clientRepository->getForEditModel($clientUpdateDTO->id_client);
 
         if (empty($clientModel)) {
             return false;
         }
 
+        $clientsImagesDirPath = 'images/clients';
+
         $formDataArray = $clientUpdateDTO->getFormFieldsArray();
 
-        // *** Upload client photo:
-        if (!empty($clientUpdateRequest->image) && $clientUpdateDTO->image instanceof UploadedFile) {
-            $photoName = time().'.'.$clientUpdateRequest->image->extension();
-
-            // Check directory "clients":
-            if (!File::exists(storage_path('app/public/images/clients'))) {
-                File::makeDirectory(storage_path('app/public/images/clients'), 0777, true);
-            }
-
-            $uploadPhoto = $clientUpdateRequest->image->storeAs('public/images/clients', $photoName);
-
-            if ($uploadPhoto && !empty($photoName)) {
-                $formDataArray['photo_name'] = $photoName;
-            }
-        }
-        // ***
+        $formDataArray['photo_name'] = $fileService->processUploadFile($clientUpdateDTO->image, $clientsImagesDirPath);
 
         $updateClient = $clientModel->update($formDataArray);
 
         if ($updateClient) {
-            $oldPhotoName = $clientUpdateDTO->photo_name;
-
-            // Проверка наличия файла и его удаление, если он существует:
-            $oldPhotoPath = storage_path('app/public/images/clients/' . $oldPhotoName);
-
-            if (!empty($photoName) && File::exists($oldPhotoPath)) {
-                File::delete($oldPhotoPath); // Удаление файла
-            }
+            $fileService->processDeleteOldFile($clientUpdateDTO->photo_name, $clientsImagesDirPath);
         }
 
         return $updateClient;
+    }
+
+    /**
+     *  Скрытие записи о Клиенте ("deleted_at" в таблице)
+     *
+     * @param $id
+     * @param ClientRepository $clientRepository
+     * @return bool
+     */
+    public function processDestroy($id, ClientRepository $clientRepository): bool
+    {
+        $clientModel = $clientRepository->getForEditModel($id);
+
+        if (!empty($clientModel)) {
+            /** @var Client $clientModel */
+
+            // Other logic...
+
+            return (bool) $clientModel->delete();
+        }
+
+        return false;
     }
 }

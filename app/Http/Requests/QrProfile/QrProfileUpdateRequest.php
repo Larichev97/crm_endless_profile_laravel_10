@@ -44,6 +44,7 @@ final class QrProfileUpdateRequest extends FormRequest
             'photo_file' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:2048',
             'voice_message_file_name' => 'nullable|string|max:255',
             'voice_message_file' => 'nullable||mimes:mp3,wav,ogg,flac|max:10240',
+            'qr_code_file_name' => 'nullable|string|max:255',
             'id_user_add' => 'required|min:1|integer',
             'id_user_update' => 'required|min:1|integer',
         ];

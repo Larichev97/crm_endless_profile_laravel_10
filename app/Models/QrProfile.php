@@ -43,6 +43,7 @@ final class QrProfile extends Model
         'geo_longitude',
         'photo_file_name',
         'voice_message_file_name',
+        'qr_code_file_name',
         'id_user_add',
         'id_user_update',
     ];
@@ -57,10 +58,16 @@ final class QrProfile extends Model
         'id_client' => 'integer',
         'id_country' => 'integer',
         'id_city' => 'integer',
-        //'birth_date' => 'date:d-m-Y',
-        //'death_date' => 'date:d-m-Y',
+        'photo_file_name' => 'string',
+        'voice_message_file_name' => 'string',
+        'qr_code_file_name' => 'string',
     ];
 
+    /**
+     *  У одного QR-профиля может быть только один Клиент
+     *
+     * @return BelongsTo
+     */
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'id_client');

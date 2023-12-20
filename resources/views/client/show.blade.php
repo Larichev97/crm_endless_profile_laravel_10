@@ -4,13 +4,10 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Просмотр клиента'])
 
     <div class="container-fluid py-4 mt-4">
+        @include('components.alert')
         <div class="card shadow-lg mx-4">
             <div class="card-body p-3">
                 <div class="row gx-4">
-                    <div>
-                        @include('components.alert')
-                    </div>
-
                     <div class="col-auto">
                         <div class="avatar avatar-xl position-relative">
                             @if (!empty($clientPhotoPath))

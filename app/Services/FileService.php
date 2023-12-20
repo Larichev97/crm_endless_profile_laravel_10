@@ -4,9 +4,44 @@ namespace App\Services;
 
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\File;
+use SimpleSoftwareIO\QrCode\Facades\QrCode as QrCode;
 
 final class FileService
 {
+    /**
+     *  Метод генерирует QR-код с URL и сохраняет его в директорию при помощи внешней библиотеки "Simplesoftwareio"
+     *
+     * @param string $url
+     * @param string $publicDirPath
+     * @param string $qrCodeFileName
+     * @param string $qrCodeFileExtension
+     * @param int $qrCodeSize
+     * @return bool
+     */
+    public function processGenerateQrCodeFile(string $url, string $publicDirPath, string $qrCodeFileName, string $qrCodeFileExtension, int $qrCodeSize = 300): bool
+    {
+        if (!empty($url) && !empty($qrCodeFileName) && in_array($qrCodeFileExtension, ['png', 'svg', 'eps'])) {
+            $publicDirPath = $this->processPreparePath($publicDirPath);
+
+            $qrCodeFileNameWithExtension = $qrCodeFileName.'.'.$qrCodeFileExtension;
+            $qrCodeFilePathWithName = storage_path('app/public/'.$publicDirPath.'/'.$qrCodeFileNameWithExtension);
+
+            if (!File::exists(storage_path('app/public/'.$publicDirPath))) {
+                File::makeDirectory(storage_path('app/public/'.$publicDirPath), 0777, true);
+            }
+
+            $this->processDeleteOldFile($qrCodeFileNameWithExtension, $publicDirPath);
+
+            QrCode::size($qrCodeSize)->format($qrCodeFileExtension)->errorCorrection('M')->generate($url, $qrCodeFilePathWithName);
+
+            if (File::exists($qrCodeFilePathWithName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      *  Метод загружает файл и возвращает его название с расширением ('test.jpg') или пустую строку
      *

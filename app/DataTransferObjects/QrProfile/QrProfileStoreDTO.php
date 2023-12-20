@@ -29,6 +29,7 @@ final class QrProfileStoreDTO
     public readonly UploadedFile|null $photo_file;
     public readonly string $voice_message_file_name;
     public readonly UploadedFile|null $voice_message_file;
+    public readonly string $qr_code_file_name;
     public readonly int $id_user_add;
     public readonly int $id_user_update;
 
@@ -59,6 +60,7 @@ final class QrProfileStoreDTO
         $this->photo_file = $qrProfileStoreRequest->validated('photo_file');
         $this->voice_message_file_name = (string) $qrProfileStoreRequest->validated('voice_message_file_name');
         $this->voice_message_file = $qrProfileStoreRequest->validated('voice_message_file');
+        $this->qr_code_file_name = (string) $qrProfileStoreRequest->validated('qr_code_file_name');
         $this->id_user_add = (int) $qrProfileStoreRequest->validated('id_user_add');
         $this->id_user_update = (int) $qrProfileStoreRequest->validated('id_user_update');
     }
@@ -89,6 +91,7 @@ final class QrProfileStoreDTO
             'geo_longitude' => $this->geo_longitude,
             'photo_file_name' => $this->photo_file_name,
             'voice_message_file_name' => $this->voice_message_file_name,
+            'qr_code_file_name' => $this->qr_code_file_name,
             'id_user_add' => $this->id_user_add,
             'id_user_update' => $this->id_user_update,
         ];

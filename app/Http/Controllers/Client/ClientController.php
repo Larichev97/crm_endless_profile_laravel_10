@@ -70,7 +70,7 @@ class ClientController extends Controller
         try {
             $clientStoreDTO = new ClientStoreDTO($clientStoreRequest);
 
-            $createClient = $this->clientService->processStore($clientStoreDTO);
+            $createClient = $this->clientService->processStore($clientStoreDTO, $this->fileService);
 
             if ($createClient) {
                 return redirect()->route('clients.index')->with('success','Клиент успешно создан.');
@@ -138,7 +138,7 @@ class ClientController extends Controller
         try {
             $clientUpdateDTO = new ClientUpdateDTO($clientUpdateRequest, (int) $id);
 
-            $updateClient = $this->clientService->processUpdate($clientUpdateDTO, $this->clientRepository);
+            $updateClient = $this->clientService->processUpdate($clientUpdateDTO, $this->fileService, $this->clientRepository);
 
             if ($updateClient) {
                 return redirect()->route('clients.index')->with('success', sprintf('Данные клиента #%s успешно обновлены.', $id));
@@ -159,16 +159,10 @@ class ClientController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getForEditModel($id);
-
-            if (empty($client)) {
-                return back()->with('error', sprintf('Ошибка! Клиент #%s не удалён.', $id));
-            }
-
-            $deleteClient = $client->delete();
+            $deleteClient = $this->clientService->processDestroy($id, $this->clientRepository);
 
             if ($deleteClient) {
-                return redirect()->route('clients.index')->with('success','Клиент успешно удалён.');
+                return redirect()->route('clients.index')->with('success', sprintf('Клиент #%s успешно удалён.', $id));
             }
 
             return back()->with('error', sprintf('Ошибка! Клиент #%s не удалён.', $id));

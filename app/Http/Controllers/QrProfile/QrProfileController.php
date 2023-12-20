@@ -110,8 +110,9 @@ final class QrProfileController extends Controller
 
             $photoPath = $this->fileService->processGetPublicFilePath((string) $qrProfile->photo_name, $publicDirPath);
             $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
+            $qrCodePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->qr_code_file_name, $publicDirPath);
 
-            return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath']));
+            return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'qrCodePath']));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -155,7 +156,7 @@ final class QrProfileController extends Controller
         try {
             $qrProfileUpdateDTO = new QrProfileUpdateDTO($qrProfileUpdateRequest, (int) $id);
 
-            $updateQrProfile = $this->qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService);
+            $updateQrProfile = $this->qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService, $this->qrProfileRepository);
 
             if ($updateQrProfile) {
                 return redirect()->route('qrs.index')->with('success', sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
@@ -176,13 +177,32 @@ final class QrProfileController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteQrProfile = $this->qrProfileService->processDestroy($id);
+            $deleteQrProfile = $this->qrProfileService->processDestroy($id, $this->qrProfileRepository);
 
             if ($deleteQrProfile) {
-                return redirect()->route('qrs.index')->with('success','QR-профиль успешно удалён.');
+                return redirect()->route('qrs.index')->with('success', sprintf('QR-профиль #%s успешно удалён.', $id));
             }
 
             return back()->with('error', sprintf('Ошибка! QR-профиль #%s не удалён.', $id));
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
+    }
+
+    /**
+     * @param $id
+     * @return JsonResponse|RedirectResponse
+     */
+    public function generateQrCodeImage($id): JsonResponse|RedirectResponse
+    {
+        try {
+            $generateQrCode = $this->qrProfileService->processGenerateQrCode($id, $this->qrProfileRepository, $this->fileService);
+
+            if ($generateQrCode) {
+                return redirect()->route('qrs.show', $id)->with('success', sprintf('Изображение QR-кода для профиля #%s успешно создано.', $id));
+            }
+
+            return redirect()->route('qrs.show', $id)->with('error', sprintf('Ошибка! Изображение QR-кода для профиля #%s не создано.', $id));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
