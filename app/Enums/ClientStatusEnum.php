@@ -17,7 +17,7 @@ enum ClientStatusEnum: int
         return match($this) {
             ClientStatusEnum::NEW => 'Новый',
             ClientStatusEnum::ACTIVE => 'Активный',
-            ClientStatusEnum::INACTIVE => 'Приостановленный',
+            ClientStatusEnum::INACTIVE => 'Неактивный',
             ClientStatusEnum::PREMIUM => 'Премиум',
         };
     }

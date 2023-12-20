@@ -39,7 +39,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Отчество <span style="color: red">*</span></strong>
+                        <strong>Отчество</strong>
                         <input type="text" name="surname" class="form-control" placeholder="Отчество">
                     </div>
                 </div>

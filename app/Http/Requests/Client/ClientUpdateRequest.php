@@ -31,7 +31,7 @@ final class ClientUpdateRequest extends FormRequest
             'address' => 'nullable|max:255',
             'firstname' => 'required|max:100',
             'lastname' => 'required|max:100',
-            'surname' => 'required|max:100',
+            'surname' => 'nullable|max:100',
             'manager_comment' => 'nullable',
             'photo_name' => 'nullable|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',

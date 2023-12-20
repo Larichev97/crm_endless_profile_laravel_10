@@ -66,38 +66,44 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Email</label>
-                                        <input disabled="disabled" class="form-control" type="email" name="email" value="{{ old('email', $client->email) }}">
+                                        <label for="client_email" class="form-control-label">Email</label>
+                                        <input disabled="disabled" class="form-control" type="email" id="client_email" name="email" value="{{ old('email', $client->email) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Моб. телефон</label>
-                                        <input disabled="disabled" class="form-control" type="text" name="phone_number" value="{{ old('phone_number', $client->phone_number) }}">
+                                        <label for="client_phone_number" class="form-control-label">Моб. телефон</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_phone_number" name="phone_number" value="{{ old('phone_number', $client->phone_number) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Страна</label>
-                                        <input disabled="disabled" class="form-control" type="text" name="id_country" value="{{ old('id_country', $client->id_country) }}">
+                                        <label for="client_id_country" class="form-control-label">Страна</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_id_country" name="id_country" value="{{ old('id_country', $client->id_country) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Город</label>
-                                        <input disabled="disabled" class="form-control" type="text" name="id_city" value="{{ old('id_city', $client->id_city) }}">
+                                        <label for="client_id_city" class="form-control-label">Город</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_id_city" name="id_city" value="{{ old('id_city', $client->id_city) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Дата рождения</label>
-                                        <input disabled="disabled" class="form-control" type="text" name="bdate" value="{{ old('bdate', $client->bdate) }}">
+                                        <label for="client_bdate" class="form-control-label">Дата рождения</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_bdate" name="bdate" value="{{ old('bdate', $client->bdate) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="example-text-input" class="form-control-label">Комментарий менеджера</label>
-                                        <input disabled="disabled" class="form-control" type="text" name="manager_comment" value="{{ old('manager_comment', $client->manager_comment) }}">
+                                        <label for="client_address" class="form-control-label">Адрес</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_address" name="address" value="{{ old('address', $client->address) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label for="client_manager_comment" class="form-control-label">Комментарий менеджера</label>
+                                        <textarea disabled="disabled" rows="5" class="form-control" id="client_manager_comment" name="manager_comment">{{ old('manager_comment', $client->manager_comment) }}</textarea>
                                     </div>
                                 </div>
                             </div>
@@ -118,8 +124,8 @@
                                             <tr>
                                                 <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">ID</th>
                                                 <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
-                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
                                                 <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">QR-код</th>
+                                                <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
                                                 <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                             </tr>
                                         </thead>
@@ -133,14 +139,14 @@
                                                     </div>
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
-                                                    <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
-                                                </td>
-                                                <td class="align-middle text-center text-sm">
                                                     @if(!empty(trim($qrItem->qr_code_file_name)))
                                                         <i class="fas fa-check" style="color: #2dce89"></i>
                                                     @else
-                                                        <i class="fas fa-cross" style="color: #f5365c"></i>
+                                                        <i class="fas fa-ban" style="color: #f5365c"></i>
                                                     @endif
+                                                </td>
+                                                <td class="align-middle text-center text-sm">
+                                                    <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
                                                 </td>
                                                 <td class="align-middle text-center">
                                                     <form action="{{ route('qrs.destroy', $qrItem->id) }}" method="POST">

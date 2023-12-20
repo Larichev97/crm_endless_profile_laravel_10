@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Отчество <span style="color: red">*</span></strong>
+                        <strong>Отчество</strong>
                         <input type="text" name="surname" class="form-control" placeholder="Отчество" value="{{ old('surname', $client->surname) }}">
                         @error('surname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
