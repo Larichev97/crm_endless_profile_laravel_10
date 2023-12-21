@@ -100,8 +100,9 @@ abstract class CoreRepository
 
         $fields_array = $model->getFillable();
 
-        if ($useCache) {
-            $result = Cache::remember($this->getModelClass().'-getAllWithPaginate-page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
+        // File или Redis кэширование не поддерживает тегирование:
+        if ($useCache && Cache::supportsTags()) {
+            $result = Cache::tags($this->getModelClass().'-getAllWithPaginate')->remember('page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
                 function () use($model, $fields_array, $perPage, $page) {
                     return $model->query()->select($fields_array)->paginate($perPage, $fields_array, 'page', $page);
                 }
@@ -116,17 +117,18 @@ abstract class CoreRepository
     /**
      *  Метод формирует коллекции модели только с полями {$field_id} (для value="...") и {$field_name} (для содержимого внутри <option>"..."</option>)
      *
-     * @param string $field_id
-     * @param string $field_name
+     * @param string $fieldId
+     * @param string $fieldName
      * @param bool $useCache
      * @return Collection
      */
-    public function getForDropdownList(string $field_id, string $field_name, bool $useCache = true): Collection
+    public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
-        $columns = implode(', ', [$field_id, $field_name]);
+        $columns = implode(', ', [$fieldId, $fieldName]);
 
-        if ($useCache) {
-            $result = Cache::remember($this->getModelClass().'-getForDropdownList-fieldId-'.$field_id.'-fieldName-'.$field_name, $this->cacheLife,
+        // File или Redis кэширование не поддерживает тегирование:
+        if ($useCache && Cache::supportsTags()) {
+            $result = Cache::tags($this->getModelClass().'-getForDropdownList')->remember('fieldId-'.$fieldId.'-fieldName-'.$fieldName, $this->cacheLife,
                 function () use($columns) {
                     return $this->startConditions()->selectRaw($columns)->toBase()->get();
                 }

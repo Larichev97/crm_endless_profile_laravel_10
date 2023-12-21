@@ -36,13 +36,13 @@ final class QrProfileRepository extends CoreRepository
     }
 
     /**
-     * @param string $field_id
-     * @param string $field_name
+     * @param string $fieldId
+     * @param string $fieldName
      * @param bool $useCache
      * @return Collection
      */
-    public function getForDropdownList(string $field_id, string $field_name, bool $useCache = true): Collection
+    public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
-        return parent::getForDropdownList($field_id, $field_name, $useCache);
+        return parent::getForDropdownList($fieldId, $fieldName, $useCache);
     }
 }

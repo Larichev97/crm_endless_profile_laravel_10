@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Client;
+use App\Models\QrProfile;
+use App\Observers\Client\ClientClearCacheObserver;
+use App\Observers\QrProfile\QrProfileClearCacheObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -25,7 +29,10 @@ class EventServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // *** Очистка кэша при выполнении CRUD у моделей:
+        Client::observe(ClientClearCacheObserver::class);
+        QrProfile::observe(QrProfileClearCacheObserver::class);
+        // ***
     }
 
     /**
