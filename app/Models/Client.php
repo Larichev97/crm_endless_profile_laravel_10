@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ClientStatusEnum;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,7 +46,6 @@ final class Client extends Model
         'id_status' => 'integer',
         'id_country' => 'integer',
         'id_city' => 'integer',
-        'bdate' => 'date:d-m-Y',
     ];
 
     /**
@@ -79,5 +79,45 @@ final class Client extends Model
         $fullName = $this->lastname . ' ' . $this->firstname . ' ' . $this->surname;
 
         return trim($fullName);
+    }
+
+    /**
+     * Метод преобразовывает "Дату рождения" к формату "d-m-Y" при помощи Carbon
+     *
+     * @return string
+     */
+    public function getBirthDateFormattedAttribute(): string
+    {
+        $result = '--';
+
+        if (!empty($this->bdate)) {
+            $result = Carbon::parse($this->bdate)->format('d.m.Y');
+        }
+
+        return $result;
+    }
+
+    /**
+     * Метод преобразовывает "Дату регистрации" к формату "d-m-Y" при помощи Carbon
+     *
+     * @return string
+     */
+    public function getCreatedAtFormattedAttribute(): string
+    {
+        $result = '--';
+
+        if (!empty($this->created_at)) {
+            $result = Carbon::parse($this->created_at)->format('d.m.Y');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhotoName(): string
+    {
+        return (string) $this->photo_name;
     }
 }

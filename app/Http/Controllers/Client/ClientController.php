@@ -17,6 +17,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
@@ -37,13 +38,16 @@ class ClientController extends Controller
 
     /**
      * Display a listing of the resource.
+     *
+     * @param Request $request
+     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $clients = $this->clientRepository->getAllWithPaginate(10);
+            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
 
-            return view('client.index',compact('clients'))->with('i', (request()->input('page', 1) - 1) * 5);
+            return view('client.index',compact('clients'));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -51,12 +55,14 @@ class ClientController extends Controller
 
     /**
      * Show the form for creating a new resource.
+     *
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
     public function create(): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $id_status_new = ClientStatusEnum::NEW->value;
+        $idStatusNew = ClientStatusEnum::NEW->value;
 
-        return view('client.create', compact('id_status_new'));
+        return view('client.create', compact('idStatusNew'));
     }
 
     /**
@@ -91,13 +97,13 @@ class ClientController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getForEditModel($id);
+            $client = $this->clientRepository->getForEditModel((int) $id, true);
 
             if (empty($client)) {
                 abort(404);
             }
 
-            $clientPhotoPath = $this->fileService->processGetPublicFilePath((string) $client->photo_name, $this->publicDirPath);
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
 
             return view('client.show',compact(['client', 'clientPhotoPath']));
         } catch (Exception $exception) {
@@ -114,9 +120,9 @@ class ClientController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getForEditModel($id);
+            $client = $this->clientRepository->getForEditModel((int) $id, true);
 
-            $clientPhotoPath = $this->fileService->processGetPublicFilePath((string) $client->photo_name, $this->publicDirPath);
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
 
             $statusesListData = ClientStatusEnum::getStatusesList();
 

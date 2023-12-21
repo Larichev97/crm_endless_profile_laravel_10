@@ -25,21 +25,24 @@ final class ClientRepository extends CoreRepository
     }
 
     /**
-     * @param $perPage
+     * @param int|null $perPage
+     * @param int $page
+     * @param bool $useCache
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate($perPage = null): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage);
+        return parent::getAllWithPaginate($perPage, $page, $useCache);
     }
 
     /**
      * @param string $field_id
      * @param string $field_name
+     * @param bool $useCache
      * @return Collection
      */
-    public function getForDropdownList(string $field_id, string $field_name): Collection
+    public function getForDropdownList(string $field_id, string $field_name, bool $useCache = true): Collection
     {
-        return parent::getForDropdownList($field_id, $field_name);
+        return parent::getForDropdownList($field_id, $field_name, $useCache);
     }
 }

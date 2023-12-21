@@ -147,9 +147,25 @@ final class QrProfile extends Model
     /**
      * @return string
      */
-    public function getPhotoPath(): string
+    public function getPhotoName(): string
     {
-        return $this->photoPath;
+        return (string) $this->photo_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceMessageFileName(): string
+    {
+        return (string) $this->voice_message_file_name;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodeFileName(): string
+    {
+        return (string) $this->qr_code_file_name;
     }
 
     /**

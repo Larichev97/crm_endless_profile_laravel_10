@@ -19,6 +19,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 final class QrProfileController extends Controller
 {
@@ -40,14 +41,15 @@ final class QrProfileController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10);
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
 
-            return view('qr_profile.index',compact('qrProfiles'))->with('i', (request()->input('page', 1) - 1) * 5);
+            return view('qr_profile.index',compact('qrProfiles'));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -99,7 +101,7 @@ final class QrProfileController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel($id);
+            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
             if (empty($qrProfile)) {
                 abort(404);
@@ -108,9 +110,9 @@ final class QrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath((string) $qrProfile->photo_name, $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
-            $qrCodePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->qr_code_file_name, $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
+            $qrCodePath = $this->fileService->processGetPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath);
 
             return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'qrCodePath']));
         } catch (Exception $exception) {
@@ -127,13 +129,13 @@ final class QrProfileController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel($id);
+            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath((string) $qrProfile->photo_name, $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
 
             $statusesListData = QrStatusEnum::getStatusesList();
             $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name');

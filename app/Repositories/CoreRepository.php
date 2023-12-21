@@ -6,6 +6,7 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 /**
  *  Репозиторий работы с сущностью:
@@ -14,6 +15,11 @@ use Illuminate\Database\Eloquent\Model;
  */
 abstract class CoreRepository
 {
+    /**
+     * @var int Время жизни кэша по умолчанию: 24 часа (60*60*24)
+     */
+    protected int $cacheLife = 86400;
+
     /**
      * @var Model
      */
@@ -44,37 +50,65 @@ abstract class CoreRepository
     /**
      *  Метод получает одну запись по конкретному {$id} и возвращает модель с атрибутами
      *
-     * @param $id
+     * @param int $id Entity's Primary Key
+     * @param bool $useCache
      * @return mixed
      */
-    public function getForEditModel($id): mixed
+    public function getForEditModel(int $id, bool $useCache = true): mixed
     {
-        return $this->startConditions()->find($id);
+        if ($useCache) {
+            $result = Cache::remember($this->getModelClass().'-getForEditModel-'.$id, $this->cacheLife, function () use ($id) {
+                return $this->startConditions()->find($id);
+            });
+        } else {
+            $result = $this->startConditions()->find($id);
+        }
+
+        return $result;
     }
 
     /**
      *  Метод получает все записи у модели и возвращает коллекцию
      *
+     * @param bool $useCache
      * @return Collection
      */
-    public function getModelCollection(): Collection
+    public function getModelCollection(bool $useCache = true): Collection
     {
-        return $this->startConditions()->all();
+        if ($useCache) {
+            $result = Cache::remember($this->getModelClass().'-getModelCollection', $this->cacheLife, function () {
+                return $this->startConditions()->all();
+            });
+        } else {
+            $result = $this->startConditions()->all();
+        }
+
+        return $result;
     }
 
     /**
      *  Метод получает все записи модели с доступными полями из массива {$fillable} для вывода пагинатором
      *
-     * @param $perPage
+     * @param int|null $perPage
+     * @param int $page
+     * @param bool $useCache
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate($perPage = null): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true): LengthAwarePaginator
     {
         $model = $this->startConditions();
 
         $fields_array = $model->getFillable();
 
-        $result = $model->select($fields_array)->paginate($perPage);
+        if ($useCache) {
+            $result = Cache::remember($this->getModelClass().'-getAllWithPaginate-page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
+                function () use($model, $fields_array, $perPage, $page) {
+                    return $model->query()->select($fields_array)->paginate($perPage, $fields_array, 'page', $page);
+                }
+            );
+        } else {
+            $result = $model->query()->select($fields_array)->paginate($perPage, $fields_array, 'page', $page);
+        }
 
         return $result;
     }
@@ -84,13 +118,22 @@ abstract class CoreRepository
      *
      * @param string $field_id
      * @param string $field_name
+     * @param bool $useCache
      * @return Collection
      */
-    public function getForDropdownList(string $field_id, string $field_name): Collection
+    public function getForDropdownList(string $field_id, string $field_name, bool $useCache = true): Collection
     {
         $columns = implode(', ', [$field_id, $field_name]);
 
-        $result = $this->startConditions()->selectRaw($columns)->toBase()->get();
+        if ($useCache) {
+            $result = Cache::remember($this->getModelClass().'-getForDropdownList-fieldId-'.$field_id.'-fieldName-'.$field_name, $this->cacheLife,
+                function () use($columns) {
+                    return $this->startConditions()->selectRaw($columns)->toBase()->get();
+                }
+            );
+        } else {
+            $result = $this->startConditions()->selectRaw($columns)->toBase()->get();
+        }
 
         return $result;
     }

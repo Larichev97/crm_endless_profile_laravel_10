@@ -20,9 +20,9 @@ enum QrStatusEnum: int
             QrStatusEnum::NEW => 'Новый',
             QrStatusEnum::IN_PROCESS => 'Создаётся',
             QrStatusEnum::READY => 'Готова',
-            QrStatusEnum::RECEIVED => 'Получена клиентом',
+            QrStatusEnum::RECEIVED => 'Получена',
             QrStatusEnum::LOST => 'Потеряна',
-            QrStatusEnum::WRONG_URL => 'Неправильный URL',
+            QrStatusEnum::WRONG_URL => 'Старый URL',
         };
     }
 

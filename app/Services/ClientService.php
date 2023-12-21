@@ -43,7 +43,7 @@ class ClientService
      */
     public function processUpdate(ClientUpdateDTO $clientUpdateDTO, FileService $fileService, ClientRepository $clientRepository): bool
     {
-        $clientModel = $clientRepository->getForEditModel($clientUpdateDTO->id_client);
+        $clientModel = $clientRepository->getForEditModel((int) $clientUpdateDTO->id_client, true);
 
         if (empty($clientModel)) {
             return false;
@@ -73,7 +73,7 @@ class ClientService
      */
     public function processDestroy($id, ClientRepository $clientRepository): bool
     {
-        $clientModel = $clientRepository->getForEditModel($id);
+        $clientModel = $clientRepository->getForEditModel((int) $id, true);
 
         if (!empty($clientModel)) {
             /** @var Client $clientModel */

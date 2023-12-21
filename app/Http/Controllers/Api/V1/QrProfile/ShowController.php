@@ -10,7 +10,6 @@ use App\Services\FileService;
 use App\Services\QrProfileService;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Storage;
 
 class ShowController extends Controller
 {
@@ -36,7 +35,7 @@ class ShowController extends Controller
     public function show($id): QrProfileResource|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel($id);
+            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
             if (empty($qrProfile)) {
                 abort(404);
@@ -45,9 +44,9 @@ class ShowController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath((string) $qrProfile->photo_name, $publicDirPath));
-            $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath((string) $qrProfile->voice_message_file_name, $publicDirPath));
-            $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath((string) $qrProfile->qr_code_file_name, $publicDirPath));
+            $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
+            $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
+            $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
 
             return new QrProfileResource($qrProfile);
         } catch (Exception $exception) {

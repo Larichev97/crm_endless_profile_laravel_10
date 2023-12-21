@@ -91,10 +91,16 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="client_bdate" class="form-control-label">Дата рождения</label>
-                                        <input disabled="disabled" class="form-control" type="text" id="client_bdate" name="bdate" value="{{ old('bdate', $client->bdate) }}">
+                                        <input disabled="disabled" class="form-control" type="text" id="client_bdate" name="bdate" value="{{ old('bdate', $client->birthDateFormatted) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="client_created_at" class="form-control-label">Дата регистрации</label>
+                                        <input disabled="disabled" class="form-control" type="text" id="client_created_at" name="created_at" value="{{ old('created_at', $client->createdAtFormatted) }}">
+                                    </div>
+                                </div>
+                                <div class="col-md-12">
                                     <div class="form-group">
                                         <label for="client_address" class="form-control-label">Адрес</label>
                                         <input disabled="disabled" class="form-control" type="text" id="client_address" name="address" value="{{ old('address', $client->address) }}">

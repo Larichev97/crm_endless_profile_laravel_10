@@ -45,7 +45,7 @@ final class QrProfileService
      */
     public function processUpdate(QrProfileUpdateDTO $qrProfileUpdateDTO, FileService $fileService, QrProfileRepository $qrProfileRepository): bool
     {
-        $qrProfileModel = $qrProfileRepository->getForEditModel($qrProfileUpdateDTO->id_qr);
+        $qrProfileModel = $qrProfileRepository->getForEditModel((int) $qrProfileUpdateDTO->id_qr, true);
 
         if (empty($qrProfileModel)) {
             return false;
@@ -78,7 +78,7 @@ final class QrProfileService
      */
     public function processDestroy($id, QrProfileRepository $qrProfileRepository): bool
     {
-        $qrProfileModel = $qrProfileRepository->getForEditModel($id);
+        $qrProfileModel = $qrProfileRepository->getForEditModel((int) $id, true);
 
         if (!empty($qrProfileModel)) {
             /** @var QrProfile $qrProfileModel */
@@ -116,7 +116,7 @@ final class QrProfileService
             $generate = $fileService->processGenerateQrCodeFile($qrProfileUrl, $publicDirPath, $qrCodeFileName, $qrCodeFileExtension, $qrCodeSize);
 
             if ($generate) {
-                $qrProfileModel = $qrProfileRepository->getForEditModel($id);
+                $qrProfileModel = $qrProfileRepository->getForEditModel((int) $id, true);
 
                 if (!empty($qrProfileModel)) {
                     /** @var QrProfile $qrProfileModel */
