@@ -39,11 +39,11 @@ class QrProfileResource extends JsonResource
             'geo_latitude' => (string) $this->geo_latitude,
             'geo_longitude' => (string) $this->geo_longitude,
             'photo_file_name' => !empty($this->photo_file_name) ? (string) $this->photo_file_name : '',
-            'photo_file_path' => $this->getPhotoPath(),
+            'photo_file_path' => $this->photoPath,
             'voice_message_file_name' => !empty($this->voice_message_file_name) ? (string) $this->voice_message_file_name : '',
-            'voice_message_file_path' => $this->getVoiceMessagePath(),
+            'voice_message_file_path' => $this->voiceMessagePath,
             'qr_code_file_name' => !empty($this->qr_code_file_name) ? (string) $this->qr_code_file_name : '',
-            'qr_code_file_path' => $this->getQrCodePath(),
+            'qr_code_file_path' => $this->qrCodePath,
         ];
     }
 }

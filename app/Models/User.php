@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -58,5 +59,57 @@ class User extends Authenticatable
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = bcrypt($value);
+    }
+
+    /**
+     *  У одного пользователя может быть много созданных им Клиентов
+     *
+     * @return HasMany
+     */
+    public function clientsCreated(): HasMany
+    {
+        return $this->hasMany(Client::class, 'id_user_add');
+    }
+
+    /**
+     *  У одного пользователя может быть много обновлённых им Клиентов
+     *
+     * @return HasMany
+     */
+    public function clientsUpdated(): HasMany
+    {
+        return $this->hasMany(Client::class, 'id_user_update');
+    }
+
+    /**
+     *  У одного пользователя может быть много созданных им QR-профилей
+     *
+     * @return HasMany
+     */
+    public function qrProfilesCreated(): HasMany
+    {
+        return $this->hasMany(QrProfile::class, 'id_user_add');
+    }
+
+    /**
+     *  У одного пользователя может быть много обновлённых им QR-профилей
+     *
+     * @return HasMany
+     */
+    public function qrProfilesUpdated(): HasMany
+    {
+        return $this->hasMany(QrProfile::class, 'id_user_update');
+    }
+
+    /**
+     * Метод доступа для объединения имени, фамилии
+     *
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        $fullName = $this->lastname . ' ' . $this->firstname;
+
+        return trim($fullName);
     }
 }

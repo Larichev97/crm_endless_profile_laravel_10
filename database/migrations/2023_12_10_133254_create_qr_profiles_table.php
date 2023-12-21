@@ -37,8 +37,8 @@ return new class extends Migration
             $table->string('photo_file_name')->nullable();
             $table->string('voice_message_file_name')->nullable();
             $table->string('qr_code_file_name')->nullable();
-            $table->integer('id_user_add', false, true)->default(0);
-            $table->integer('id_user_update', false, true)->default(0);
+            $table->foreignId('id_user_add')->constrained('users', 'id');
+            $table->foreignId('id_user_update')->constrained('users', 'id');
 
             $table->timestamps();
             $table->softDeletes();

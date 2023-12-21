@@ -21,17 +21,17 @@ final class QrProfile extends Model
     /**
      * @var string Путь к изображению QR-профиля
      */
-    protected string $photoPath;
+    public string $photoPath;
 
     /**
      * @var string Путь к аудио файлу QR-профиля
      */
-    protected string $voiceMessagePath;
+    public string $voiceMessagePath;
 
     /**
      * @var string Путь к изображению QR-кода профиля
      */
-    protected string $qrCodePath;
+    public string $qrCodePath;
 
     // ***
 
@@ -88,6 +88,26 @@ final class QrProfile extends Model
     public function client(): BelongsTo
     {
         return $this->belongsTo(Client::class, 'id_client');
+    }
+
+    /**
+     *  У одного QR-профиля может быть только один Пользователь, который создал запись
+     *
+     * @return BelongsTo
+     */
+    public function userWhoCreated(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_user_add');
+    }
+
+    /**
+     *  У одного QR-профиля может быть только один Пользователь, который последний редактировал запись
+     *
+     * @return BelongsTo
+     */
+    public function userWhoUpdated(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_user_update');
     }
 
     /**
@@ -149,7 +169,7 @@ final class QrProfile extends Model
      */
     public function getPhotoName(): string
     {
-        return (string) $this->photo_name;
+        return (string) $this->photo_file_name;
     }
 
     /**

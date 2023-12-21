@@ -27,25 +27,17 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                        <div class="nav-wrapper position-relative end-0">
-                            <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                                        <i class="ni ni-app"></i>
-                                        <span class="ms-2">Приложение</span>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
-                                        <i class="ni ni-email-83"></i>
-                                        <span class="ms-2">Сообщения</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="col-lg-5 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+                        @if(!empty($client->userWhoCreated) && (int) $client->userWhoCreated->id > 0)
+                            <div class="row">
+                                <span class="text-left text-secondary">Создал: {{ $client->userWhoCreated->fullName }} ({{ $client->created_at->format('d.m.Y H:i:s') }})</span>
+                            </div>
+                        @endif
+                        @if(!empty($client->userWhoUpdated) && (int) $client->userWhoUpdated->id > 0)
+                            <div class="row">
+                                <span class="text-left text-secondary">Редактировал: {{ $client->userWhoUpdated->fullName }} ({{ $client->updated_at->format('d.m.Y H:i:s') }})</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -56,7 +48,7 @@
                     <div class="card">
                         <div class="card-header pb-0">
                             <div class="row">
-                                <div class="col-md-6"><span class="text-uppercase text-sm">Информация о клиенте</span></div>
+                                <div class="col-md-6"><h5>Информация о клиенте</h5></div>
                                 <div class="col-md-6 d-flex align-items-center">
                                     <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-primary btn-sm ms-auto">Редактировать</a>
                                 </div>

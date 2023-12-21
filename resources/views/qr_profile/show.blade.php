@@ -27,18 +27,17 @@
                             </p>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
-                        <div class="nav-wrapper position-relative end-0">
-                            <ul class="nav nav-pills nav-fill p-1" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center "
-                                        data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
-                                        <i class="ni ni-app"></i>
-                                        <span class="ms-2">Приложение</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="col-lg-5 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+                        @if(!empty($qrProfile->userWhoCreated) && (int) $qrProfile->userWhoCreated->id > 0)
+                            <div class="row">
+                                <span class="text-left text-secondary">Создал: {{ $qrProfile->userWhoCreated->fullName }} ({{ $qrProfile->created_at->format('d.m.Y H:i:s') }})</span>
+                            </div>
+                        @endif
+                        @if(!empty($qrProfile->userWhoUpdated) && (int) $qrProfile->userWhoUpdated->id > 0)
+                            <div class="row">
+                                <span class="text-left text-secondary">Редактировал: {{ $qrProfile->userWhoUpdated->fullName }} ({{ $qrProfile->updated_at->format('d.m.Y H:i:s') }})</span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

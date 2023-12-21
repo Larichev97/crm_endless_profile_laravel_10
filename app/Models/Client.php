@@ -6,6 +6,7 @@ use App\Enums\ClientStatusEnum;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -56,6 +57,26 @@ final class Client extends Model
     public function qrProfiles(): HasMany
     {
         return $this->hasMany(QrProfile::class, 'id_client');
+    }
+
+    /**
+     *  У одного Клиента может быть только один Пользователь, который создал запись
+     *
+     * @return BelongsTo
+     */
+    public function userWhoCreated(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_user_add');
+    }
+
+    /**
+     *  У одного Клиента может быть только один Пользователь, который последний редактировал запись
+     *
+     * @return BelongsTo
+     */
+    public function userWhoUpdated(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'id_user_update');
     }
 
     /**

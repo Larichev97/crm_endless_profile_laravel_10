@@ -28,8 +28,8 @@ return new class extends Migration
             $table->string('surname')->nullable();
             $table->string('photo_name')->nullable();
             $table->text('manager_comment')->nullable();
-            $table->integer('id_user_add', false, true)->default(0);
-            $table->integer('id_user_update', false, true)->default(0);
+            $table->foreignId('id_user_add')->constrained('users', 'id');
+            $table->foreignId('id_user_update')->constrained('users', 'id');
 
             $table->timestamps();
             $table->softDeletes();
