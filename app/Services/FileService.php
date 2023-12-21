@@ -116,6 +116,26 @@ final class FileService
     }
 
     /**
+     *  Метод формирует полный публичный путь к файлу (application base_url + file_path)
+     *
+     * @param string $fileName
+     * @param string $publicDirPath
+     * @return string
+     */
+    public function processGetFrontPublicFilePath(string $fileName, string $publicDirPath = ''): string
+    {
+        $url = '';
+
+        $publicDirPath = $this->processPreparePath($publicDirPath);
+
+        if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
+            $url = url('storage/'.$publicDirPath.'/'.$fileName);
+        }
+
+        return $url;
+    }
+
+    /**
      *  Метод удаляет из начала и окончания строки "/"
      *
      * @param string $dirPath

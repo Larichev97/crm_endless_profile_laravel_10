@@ -16,6 +16,25 @@ final class QrProfile extends Model
 
     protected $table = 'qr_profiles';
 
+    // *** Custom fields:
+
+    /**
+     * @var string Путь к изображению QR-профиля
+     */
+    protected string $photoPath;
+
+    /**
+     * @var string Путь к аудио файлу QR-профиля
+     */
+    protected string $voiceMessagePath;
+
+    /**
+     * @var string Путь к изображению QR-кода профиля
+     */
+    protected string $qrCodePath;
+
+    // ***
+
     /**
      * The attributes that are mass assignable.
      *
@@ -54,13 +73,11 @@ final class QrProfile extends Model
      * @var array
      */
     protected $casts = [
+        'id' => 'integer',
         'id_status' => 'integer',
         'id_client' => 'integer',
         'id_country' => 'integer',
         'id_city' => 'integer',
-        'photo_file_name' => 'string',
-        'voice_message_file_name' => 'string',
-        'qr_code_file_name' => 'string',
     ];
 
     /**
@@ -109,5 +126,68 @@ final class QrProfile extends Model
         }
 
         return $result;
+    }
+
+    /**
+     * Метод преобразовывает "Дату рождения" к формату "d-m-Y" при помощи Carbon
+     *
+     * @return string
+     */
+    public function getBirthDateFormattedAttribute(): string
+    {
+        $result = '--';
+
+        if (!empty($this->birth_date)) {
+            $result = Carbon::parse($this->birth_date)->format('d.m.Y');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPhotoPath(): string
+    {
+        return $this->photoPath;
+    }
+
+    /**
+     * @param string $photoPath
+     * @return void
+     */
+    public function setPhotoPath(string $photoPath): void
+    {
+        $this->photoPath = $photoPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVoiceMessagePath(): string
+    {
+        return $this->voiceMessagePath;
+    }
+
+    /**
+     * @param string $voiceMessagePath
+     * @return void
+     */
+    public function setVoiceMessagePath(string $voiceMessagePath): void
+    {
+        $this->voiceMessagePath = $voiceMessagePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQrCodePath(): string
+    {
+        return $this->qrCodePath;
+    }
+
+    public function setQrCodePath(string $qrCodePath): void
+    {
+        $this->qrCodePath = $qrCodePath;
     }
 }
