@@ -43,92 +43,90 @@
                         <strong>Статус <span style="color: red">*</span></strong>
                         <br>
                         @if(!empty($statusesListData))
-                            <select class="form-control" name="id_status" id="id_status">
+                            <select class="form-control @error('id_status') is-invalid @enderror" name="id_status" id="id_status">
                                 @foreach($statusesListData as $statusItem)
                                     <option value="{{ $statusItem['id'] }}" {{ old('id_status', $client->id_status) == $statusItem['id'] ? 'selected' : '' }}>{{ $statusItem['name'] }}</option>
                                 @endforeach
                             </select>
                         @endif
-                        @error('id_status') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Имя <span style="color: red">*</span></strong>
-                        <input type="text" name="firstname" class="form-control" placeholder="Имя" value="{{ old('firstname', $client->firstname) }}">
-                        @error('firstname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="text" name="firstname" class="form-control @error('firstname') is-invalid @enderror" placeholder="Имя" value="{{ old('firstname', $client->firstname) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Фамилия <span style="color: red">*</span></strong>
-                        <input type="text" name="lastname" class="form-control" placeholder="Фамилия" value="{{ old('lastname', $client->lastname) }}">
-                        @error('lastname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="text" name="lastname" class="form-control @error('lastname') is-invalid @enderror" placeholder="Укажите фамилию клиента..." value="{{ old('lastname', $client->lastname) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Отчество</strong>
-                        <input type="text" name="surname" class="form-control" placeholder="Отчество" value="{{ old('surname', $client->surname) }}">
-                        @error('surname') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="text" name="surname" class="form-control @error('surname') is-invalid @enderror" placeholder="Укажите отчество клиента..." value="{{ old('surname', $client->surname) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Email <span style="color: red">*</span></strong>
-                        <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email', $client->email) }}">
-                        @error('email') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Укажите email клиента..." value="{{ old('email', $client->email) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Моб. телефон <span style="color: red">*</span></strong>
-                        <input type="text" name="phone_number" class="form-control" placeholder="380680000000" value="{{ old('phone_number', $client->phone_number) }}">
-                        @error('phone_number') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="text" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" placeholder="+380680000000" value="{{ old('phone_number', $client->phone_number) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Дата рождения <span style="color: red">*</span></strong>
-                        <input type="date" name="bdate" class="form-control" placeholder="Укажите дату рождения" value="{{ old('bdate', $client->bdate) }}">
-                        @error('bdate') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
+                        <input type="date" name="bdate" class="form-control @error('bdate') is-invalid @enderror" placeholder="Укажите дату рождения клиента..." value="{{ old('bdate', $client->bdate) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Страна <span style="color: red">*</span></strong>
                         <br>
-                        <select class="form-control" name="id_country" id="id_country">
-                            <option value="1" {{ old('id_country', $client->id_country) == 1 ? 'selected' : '' }}>Украина</option>
-{{--                            <option value="2" {{ old('id_country', $client->id_country) == 2 ? 'selected' : '' }}>Польша</option>--}}
+                        <select class="form-control @error('id_country') is-invalid @enderror" name="id_country" id="id_country">
+                            <option value="0" {{ old('id_country', $client->id_country) == '0' ? 'selected' : '' }}>Выберите из списка...</option>
+                            {{-- Массив коллекций стран только с полями "id" и "name" --}}
+                            @if(!empty($countriesListData))
+                                @foreach($countriesListData as $countryItem)
+                                    <option value="{{ $countryItem->id }}" {{ old('id_country', $client->id_country) == $countryItem->id ? 'selected' : '' }}>
+                                        {{ $countryItem->name }}
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
-                        @error('id_country') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Город <span style="color: red">*</span></strong>
                         <br>
-                        <select class="form-control" name="id_city" id="id_city">
+                        <select class="form-control @error('id_city') is-invalid @enderror" name="id_city" id="id_city">
+                            <option value="0" {{ old('id_city', $client->id_city) == '0' ? 'selected' : '' }}>Выберите из списка...</option>
                             <option value="1" {{ old('id_city', $client->id_city) == 1 ? 'selected' : '' }}>Днепр</option>
                             <option value="2" {{ old('id_city', $client->id_city) == 2 ? 'selected' : '' }}>Киев</option>
                             <option value="3" {{ old('id_city', $client->id_city) == 3 ? 'selected' : '' }}>Харьков</option>
                             <option value="4" {{ old('id_city', $client->id_city) == 4 ? 'selected' : '' }}>Запорожье</option>
                         </select>
-                        @error('id_city') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Комментарий менеджера</strong>
+                        <strong>Укажите комментарий о клиенте...</strong>
                         <textarea
-                            class="form-control"
+                            class="form-control @error('manager_comment') is-invalid @enderror"
                             id="manager_comment"
                             name="manager_comment"
                             rows="3"
                             placeholder="Комментарий менеджера..."
                         >{{ old('manager_comment', $client->manager_comment) }}</textarea>
-                        @error('manager_comment') <p class='text-danger text-xs pt-1'> {{ $message }} </p> @enderror
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12 text-center">

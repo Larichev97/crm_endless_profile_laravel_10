@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
 use App\Repositories\Client\ClientRepository;
+use App\Repositories\Country\CountryRepository;
 use App\Services\ClientService;
 use App\Services\FileService;
 use Exception;
@@ -25,12 +26,14 @@ class ClientController extends Controller
      * @param FileService $fileService
      * @param ClientService $clientService
      * @param ClientRepository $clientRepository
+     * @param CountryRepository $countryRepository
      * @param string $publicDirPath
      */
     public function __construct(
         readonly FileService $fileService,
         readonly ClientService $clientService,
         readonly ClientRepository $clientRepository,
+        readonly CountryRepository $countryRepository,
         readonly string $publicDirPath = 'images/clients'
     )
     {
@@ -62,7 +65,9 @@ class ClientController extends Controller
     {
         $idStatusNew = ClientStatusEnum::NEW->value;
 
-        return view('client.create', compact('idStatusNew'));
+        $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+
+        return view('client.create', compact('idStatusNew', 'countriesListData'));
     }
 
     /**
@@ -125,8 +130,9 @@ class ClientController extends Controller
             $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
 
             $statusesListData = ClientStatusEnum::getStatusesList();
+            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
 
-            return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData',]));
+            return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData', 'countriesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

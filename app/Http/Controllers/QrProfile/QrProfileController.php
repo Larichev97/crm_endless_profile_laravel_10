@@ -10,6 +10,7 @@ use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileUpdateRequest;
 use App\Models\QrProfile;
 use App\Repositories\Client\ClientRepository;
+use App\Repositories\Country\CountryRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Services\FileService;
 use App\Services\QrProfileService;
@@ -27,12 +28,14 @@ final class QrProfileController extends Controller
      * @param FileService $fileService
      * @param QrProfileService $qrProfileService
      * @param ClientRepository $clientRepository
+     * @param CountryRepository $countryRepository
      * @param QrProfileRepository $qrProfileRepository
      */
     public function __construct(
         readonly FileService $fileService,
         readonly QrProfileService $qrProfileService,
         readonly ClientRepository $clientRepository,
+        readonly CountryRepository $countryRepository,
         readonly QrProfileRepository $qrProfileRepository
     )
     {
@@ -64,9 +67,10 @@ final class QrProfileController extends Controller
     {
         $idStatusNew = QrStatusEnum::NEW->value;
 
-        $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name');
+        $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
+        $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
 
-        return view('qr_profile.create', compact(['idStatusNew', 'clientsListData',]));
+        return view('qr_profile.create', compact(['idStatusNew', 'clientsListData', 'countriesListData',]));
     }
 
     /**
@@ -138,9 +142,10 @@ final class QrProfileController extends Controller
             $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
 
             $statusesListData = QrStatusEnum::getStatusesList();
-            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name');
+            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
+            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
 
-            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData',]));
+            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData', 'countriesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

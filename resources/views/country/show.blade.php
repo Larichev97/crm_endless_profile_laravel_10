@@ -23,7 +23,7 @@
                                 {{ $qrProfile->fullName }}
                             </h5>
                             <p class="mb-0 font-weight-bold text-sm">
-                                <span class="badge badge-sm bg-gradient-{{ $qrProfile->getStatusGradientColor(intval($qrProfile->id_status)) }}">{{ $qrProfile->statusName }}</span>
+                                <span class="badge badge-sm bg-gradient-success">{{ $qrProfile->statusName }}</span>
                             </p>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="id_country" class="form-control-label">Страна</label>
-                                        <input disabled="disabled" class="form-control" type="text" id="id_country" name="id_country" value="{{ $qrProfile->country->name }}">
+                                        <input disabled="disabled" class="form-control" type="text" id="id_country" name="id_country" value="{{ $qrProfile->id_country }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">

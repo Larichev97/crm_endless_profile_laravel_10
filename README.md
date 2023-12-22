@@ -11,9 +11,11 @@
 
 1. composer update
 
-2. php artisan migrate:fresh --seed
+2. php artisan key:generate
 
-3. php artisan storage:link
+3. php artisan migrate:fresh --seed
+
+4. php artisan storage:link
 
 
 ## About Laravel

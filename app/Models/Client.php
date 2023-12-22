@@ -60,6 +60,16 @@ final class Client extends Model
     }
 
     /**
+     *  У одного Клиента может быть только одина Страна
+     *
+     * @return BelongsTo
+     */
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'id_country');
+    }
+
+    /**
      *  У одного Клиента может быть только один Пользователь, который создал запись
      *
      * @return BelongsTo
@@ -82,12 +92,22 @@ final class Client extends Model
     /**
      *  Get client status name by ID via Enum
      *
+     * @return string
+     */
+    public function getStatusNameAttribute(): string
+    {
+        return ClientStatusEnum::from((int) $this->id_status)->getStatusName();
+    }
+
+    /**
+     *  Get client status gradient color by ID via Enum
+     *
      * @param int $id_status
      * @return string
      */
-    public function getStatusName(int $id_status): string
+    public function getStatusGradientColor(int $id_status): string
     {
-        return ClientStatusEnum::from($id_status)->getStatusName();
+        return ClientStatusEnum::from($id_status)->getStatusGradientColor();
     }
 
     /**

@@ -45,19 +45,14 @@
                                             <td class="align-middle text-center">{{ $client->email }}</td>
                                             <td class="align-middle text-center">{{ $client->phone_number }}</td>
                                             <td class="align-middle text-center">
-                                                @php
-                                                    $flagName = 'US';
-
-                                                    if ($client->id_country == 1) {
-                                                        $flagName = 'UA';
-                                                    } else if ($client->id_country == 2) {
-                                                        $flagName = 'PL';
-                                                    }
-                                                @endphp
-                                                <img src="/img/icons/flags/{{ $flagName }}.png" alt="Флаг страны" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                                @if($client->id_country && !empty(trim($client->country->flag_file_name)))
+                                                    <img src="{{ asset('storage/images/countries/'.$client->id_country.'/'.$client->country->flag_file_name) }}" alt="{{ $client->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                                @else
+                                                    --
+                                                @endif
                                             </td>
                                             <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $client->getStatusName(intval($client->id_status)) }}</span>
+                                                <span class="badge badge-sm bg-gradient-{{ $client->getStatusGradientColor(intval($client->id_status)) }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $client->statusName }}</span>
                                             </td>
                                             <td class="align-middle text-center">
                                                 <form action="{{ route('clients.destroy', $client->id) }}" method="POST">

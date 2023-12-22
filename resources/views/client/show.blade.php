@@ -23,7 +23,7 @@
                                 {{ $client->lastname }} {{ $client->firstname }} {{ $client->surname }}
                             </h5>
                             <p class="mb-0 font-weight-bold text-sm">
-                                <span class="badge badge-sm bg-gradient-success">{{ $client->getStatusName(intval($client->id_status)) }}</span>
+                                <span class="badge badge-sm bg-gradient-{{ $client->getStatusGradientColor(intval($client->id_status)) }}">{{ $client->statusName }}</span>
                             </p>
                         </div>
                     </div>
@@ -71,7 +71,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="client_id_country" class="form-control-label">Страна</label>
-                                        <input disabled="disabled" class="form-control" type="text" id="client_id_country" name="id_country" value="{{ old('id_country', $client->id_country) }}">
+                                        <input disabled="disabled" class="form-control" type="text" id="client_id_country" name="id_country" value="{{ $client->country->name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -144,7 +144,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="align-middle text-center text-sm">
-                                                    <span class="badge badge-sm bg-gradient-success" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
+                                                    <span class="badge badge-sm bg-gradient-{{ $qrItem->getStatusGradientColor(intval($qrItem->id_status)) }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
                                                 </td>
                                                 <td class="align-middle text-center">
                                                     <form action="{{ route('qrs.destroy', $qrItem->id) }}" method="POST">

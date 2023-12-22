@@ -91,6 +91,16 @@ final class QrProfile extends Model
     }
 
     /**
+     *  У одного QR-профиля может быть только одина Страна
+     *
+     * @return BelongsTo
+     */
+    public function country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'id_country');
+    }
+
+    /**
      *  У одного QR-профиля может быть только один Пользователь, который создал запись
      *
      * @return BelongsTo
@@ -118,6 +128,17 @@ final class QrProfile extends Model
     public function getStatusNameAttribute(): string
     {
         return QrStatusEnum::from((int) $this->id_status)->getStatusName();
+    }
+
+    /**
+     *  Get qr profile status gradient color by ID via Enum
+     *
+     * @param int $id_status
+     * @return string
+     */
+    public function getStatusGradientColor(int $id_status): string
+    {
+        return QrStatusEnum::from($id_status)->getStatusGradientColor();
     }
 
     /**

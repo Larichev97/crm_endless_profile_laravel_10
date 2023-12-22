@@ -47,20 +47,36 @@ final class FileService
      *
      * @param $file
      * @param string $publicDirPath
+     * @param string $oldFileName Старое название файла
+     * @param string $newFileName Название файла (если не указано - создаётся time()+.+extension())
      * @return string
      */
-    public function processUploadFile($file, string $publicDirPath = ''): string
+    public function processUploadFile($file, string $publicDirPath = '', string $oldFileName = '', string $newFileName = ''): string
     {
         $fileName = '';
+
+        if (!empty(trim($oldFileName))) {
+            $fileName = $oldFileName;
+        }
 
         if (!empty($file) && $file instanceof UploadedFile) {
             $publicDirPath = $this->processPreparePath($publicDirPath);
 
             $currentFileName = time().'.'.$file->extension();
 
+            if (!empty(trim($newFileName))) {
+                $currentFileName = $newFileName.'.'.$file->extension();
+            }
+
             if (!File::exists(storage_path('app/public/'.$publicDirPath))) {
                 File::makeDirectory(storage_path('app/public/'.$publicDirPath), 0777, true);
             }
+
+            // *** Удаление старого файла, если он был:
+            if (!empty(trim($oldFileName))) {
+                $this->processDeleteOldFile($oldFileName, $publicDirPath);
+            }
+            // ***
 
             $uploadPhoto = $file->storeAs('public/'.$publicDirPath, $currentFileName);
 

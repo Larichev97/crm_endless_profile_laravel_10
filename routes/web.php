@@ -49,4 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // QrProfile entity:
     require_once 'qrs/qrs.php';
+
+    // Country entity:
+    require_once 'countries/countries.php';
 });

@@ -27,6 +27,23 @@ enum QrStatusEnum: int
     }
 
     /**
+     *  Example in index.blade.php tables: <span class="badge bg-gradient-{QrStatusEnum::}">...</span>
+     *
+     * @return string
+     */
+    public function getStatusGradientColor(): string
+    {
+        return match($this) {
+            QrStatusEnum::NEW => 'info',
+            QrStatusEnum::IN_PROCESS => 'secondary',
+            QrStatusEnum::READY => 'success',
+            QrStatusEnum::RECEIVED => 'dark',
+            QrStatusEnum::LOST => 'danger',
+            QrStatusEnum::WRONG_URL => 'warning',
+        };
+    }
+
+    /**
      * @return array[]
      */
     public static function getStatusesList(): array

@@ -1,7 +1,7 @@
 @extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
 
 @section('content')
-    @include('layouts.navbars.auth.topnav', ['title' => 'QR-профили'])
+    @include('layouts.navbars.auth.topnav', ['title' => 'Страны'])
 
     <div class="container-fluid py-4">
         @include('components.alert')
@@ -12,10 +12,10 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список QR-профилей</h6>
+                                <h6 class="">Список стран</h6>
                             </div>
                             <div class="col-6 d-flex">
-                                <a class="btn btn-success" href="{{ route('qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>
+                                <a class="btn btn-success" href="{{ route('countries.create') }}" style="margin-left: auto">Добавить страну</a>
                             </div>
                         </div>
                     </div>
@@ -25,47 +25,45 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">#</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата смерти</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Принадлежит клиенту</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">QR-код</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Название</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ISO код</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Изображение флага</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Включена</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                @foreach ($qrProfiles as $qrProfile)
+                                @foreach ($countries as $countryItem)
                                     <tr>
-                                        <td class="align-middle text-center">{{ $qrProfile->id }}</td>
+                                        <td class="align-middle text-center">{{ $countryItem->id }}</td>
                                         <td class="align-middle text-center">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $qrProfile->fullName }}</h6>
+                                                <h6 class="mb-0 text-sm">{{ $countryItem->name }}</h6>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
                                         <td class="align-middle text-center">
-                                            @if($qrProfile->id_country && !empty(trim($qrProfile->country->flag_file_name)))
-                                                <img src="{{ asset('storage/images/countries/'.$qrProfile->id_country.'/'.$qrProfile->country->flag_file_name) }}" alt="{{ $qrProfile->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $countryItem->iso_code }}</h6>
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-center">
+                                            @if(!empty(trim($countryItem->flag_file_name)))
+                                                <img src="{{ asset('storage/images/countries/'.$countryItem->id.'/'.$countryItem->flag_file_name) }}" alt="{{ $countryItem->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
                                             @else
                                                 --
                                             @endif
                                         </td>
-                                        <td class="align-middle text-center">{{ $qrProfile->client->fullName }}</td>
                                         <td class="align-middle text-center text-sm">
-                                            @if(!empty(trim($qrProfile->qr_code_file_name)))
+                                            @if($countryItem->is_active)
                                                 <i class="fas fa-check" style="color: #2dce89"></i>
                                             @else
                                                 <i class="fas fa-ban" style="color: #f5365c"></i>
                                             @endif
                                         </td>
-                                        <td class="align-middle text-center text-sm">
-                                            <span class="badge badge-sm bg-gradient-{{ $qrProfile->getStatusGradientColor(intval($qrProfile->id_status)) }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrProfile->statusName }}</span>
-                                        </td>
                                         <td class="align-middle text-center">
-                                            <form action="{{ route('qrs.destroy', $qrProfile->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('qrs.show', $qrProfile->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('qrs.edit', $qrProfile->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
+                                            <form action="{{ route('countries.destroy', $countryItem->id) }}" method="POST">
+                                                <a class="btn btn-info btn-sm" href="{{ route('countries.show', $countryItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
+                                                <a class="btn btn-primary btn-sm" href="{{ route('countries.edit', $countryItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
 
                                                 @csrf
                                                 @method('DELETE')
@@ -79,7 +77,7 @@
                             </table>
 
                             {{-- Custom pagination template: resources/views/components/pagination.blade.php --}}
-                            {!! $qrProfiles->links('components.pagination') !!}
+                            {!! $countries->links('components.pagination') !!}
                         </div>
                     </div>
                 </div>

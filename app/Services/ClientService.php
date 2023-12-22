@@ -25,7 +25,7 @@ class ClientService
         $clientModel = Client::query()->create($formDataArray);
 
         if ($clientModel) {
-            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile($clientStoreDTO->image, $clientsImagesDirPath);
+            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile($clientStoreDTO->image, $clientsImagesDirPath, '', '');
 
             return (bool) $clientModel->update($formFilesNamesArray);
         }
@@ -53,13 +53,9 @@ class ClientService
 
         $formDataArray = $clientUpdateDTO->getFormFieldsArray();
 
-        $formDataArray['photo_name'] = $fileService->processUploadFile($clientUpdateDTO->image, $clientsImagesDirPath);
+        $formDataArray['photo_name'] = $fileService->processUploadFile($clientUpdateDTO->image, $clientsImagesDirPath, $clientUpdateDTO->photo_name);
 
         $updateClient = $clientModel->update($formDataArray);
-
-        if ($updateClient) {
-            $fileService->processDeleteOldFile($clientUpdateDTO->photo_name, $clientsImagesDirPath);
-        }
 
         return $updateClient;
     }

@@ -23,6 +23,21 @@ enum ClientStatusEnum: int
     }
 
     /**
+     *  Example in index.blade.php tables: <span class="badge bg-gradient-{ClientStatusEnum::}">...</span>
+     *
+     * @return string
+     */
+    public function getStatusGradientColor(): string
+    {
+        return match($this) {
+            ClientStatusEnum::NEW => 'info',
+            ClientStatusEnum::ACTIVE => 'success',
+            ClientStatusEnum::INACTIVE => 'danger',
+            ClientStatusEnum::PREMIUM => 'dark',
+        };
+    }
+
+    /**
      * @return array[]
      */
     public static function getStatusesList(): array

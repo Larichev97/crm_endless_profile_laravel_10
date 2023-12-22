@@ -24,7 +24,7 @@ class QrProfileFactory extends Factory
     {
         return [
             'id_client' => $this->faker->numberBetween(1, 50),
-            'id_status' => $this->faker->numberBetween(1, 5),
+            'id_status' => $this->faker->numberBetween(1, 6),
             'id_country' => 1,
             'id_city' => $this->faker->numberBetween(1, 4),
             'birth_date' => $this->faker->dateTimeBetween('-40 years', '-20 years'),
