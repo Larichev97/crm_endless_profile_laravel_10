@@ -15,7 +15,7 @@ final class CountryRepository extends CoreRepository
     }
 
     /**
-     * App\Models\QrProfile
+     * App\Models\County
      *
      * @return string
      */

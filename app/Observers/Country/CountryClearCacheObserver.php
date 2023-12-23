@@ -16,10 +16,10 @@ class CountryClearCacheObserver
     public function created(Country $countryModel): void
     {
         Cache::forget($countryModel::class.'-getModelCollection');
+        Cache::forget($countryModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($countryModel::class.'-getForDropdownList')->flush();
         }
     }
 
@@ -33,10 +33,10 @@ class CountryClearCacheObserver
     {
         Cache::forget($countryModel::class.'-getModelCollection');
         Cache::forget($countryModel::class.'-getForEditModel-'.$countryModel->getKey());
+        Cache::forget($countryModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($countryModel::class.'-getForDropdownList')->flush();
         }
     }
 
@@ -50,10 +50,10 @@ class CountryClearCacheObserver
     {
         Cache::forget($countryModel::class.'-getModelCollection');
         Cache::forget($countryModel::class.'-getForEditModel-'.$countryModel->getKey());
+        Cache::forget($countryModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($countryModel::class.'-getForDropdownList')->flush();
         }
     }
 }

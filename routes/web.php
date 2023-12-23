@@ -52,4 +52,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Country entity:
     require_once 'countries/countries.php';
+
+    // City entity:
+    require_once 'cities/cities.php';
 });

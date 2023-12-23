@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Cache;
 abstract class CoreRepository
 {
     /**
-     * @var int Время жизни кэша по умолчанию: 24 часа (60*60*24)
+     * @var int Время жизни кэша по умолчанию: 1 месяц
      */
-    protected int $cacheLife = 86400;
+    protected int $cacheLife = 30 * 24 * 60 * 60; // 30 дней * 24 часа * 60 минут * 60 секунд;
 
     /**
      * @var Model
@@ -58,10 +58,10 @@ abstract class CoreRepository
     {
         if ($useCache) {
             $result = Cache::remember($this->getModelClass().'-getForEditModel-'.$id, $this->cacheLife, function () use ($id) {
-                return $this->startConditions()->find($id);
+                return $this->startConditions()->query()->find($id);
             });
         } else {
-            $result = $this->startConditions()->find($id);
+            $result = $this->startConditions()->query()->find($id);
         }
 
         return $result;
@@ -126,15 +126,14 @@ abstract class CoreRepository
     {
         $columns = implode(', ', [$fieldId, $fieldName]);
 
-        // File или Redis кэширование не поддерживает тегирование:
-        if ($useCache && Cache::supportsTags()) {
-            $result = Cache::tags($this->getModelClass().'-getForDropdownList')->remember('fieldId-'.$fieldId.'-fieldName-'.$fieldName, $this->cacheLife,
+        if ($useCache) {
+            $result = Cache::remember($this->getModelClass().'-getForDropdownList', $this->cacheLife,
                 function () use($columns) {
-                    return $this->startConditions()->selectRaw($columns)->toBase()->get();
+                    return $this->startConditions()->query()->selectRaw($columns)->orderBy('id', 'asc')->toBase()->get();
                 }
             );
         } else {
-            $result = $this->startConditions()->selectRaw($columns)->toBase()->get();
+            $result = $this->startConditions()->query()->selectRaw($columns)->orderBy('id', 'asc')->toBase()->get();
         }
 
         return $result;

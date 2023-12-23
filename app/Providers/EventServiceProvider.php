@@ -2,10 +2,12 @@
 
 namespace App\Providers;
 
+use App\Models\City;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\QrProfile;
 use App\Observers\Client\ClientClearCacheObserver;
+use App\Observers\City\CityClearCacheObserver;
 use App\Observers\Country\CountryClearCacheObserver;
 use App\Observers\QrProfile\QrProfileClearCacheObserver;
 use Illuminate\Auth\Events\Registered;
@@ -35,6 +37,7 @@ class EventServiceProvider extends ServiceProvider
         Client::observe(ClientClearCacheObserver::class);
         QrProfile::observe(QrProfileClearCacheObserver::class);
         Country::observe(CountryClearCacheObserver::class);
+        City::observe(CityClearCacheObserver::class);
         // ***
     }
 

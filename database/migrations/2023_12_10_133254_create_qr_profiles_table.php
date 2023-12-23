@@ -18,8 +18,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_client')->constrained('clients');
             $table->integer('id_status', false, true);
-            $table->integer('id_country', false, true);
-            $table->integer('id_city', false, true);
+            $table->foreignId('id_country')->constrained('countries');
+            $table->foreignId('id_city')->constrained('cities');
             $table->date('birth_date')->nullable();
             $table->date('death_date')->nullable();
             $table->string('firstname')->nullable();

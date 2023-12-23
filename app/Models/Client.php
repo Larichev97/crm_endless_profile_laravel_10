@@ -60,13 +60,23 @@ final class Client extends Model
     }
 
     /**
-     *  У одного Клиента может быть только одина Страна
+     *  У одного Клиента может быть только одна Страна
      *
      * @return BelongsTo
      */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'id_country');
+    }
+
+    /**
+     *  У одного Клиента может быть только однин Город
+     *
+     * @return BelongsTo
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'id_city');
     }
 
     /**

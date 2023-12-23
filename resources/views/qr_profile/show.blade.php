@@ -77,7 +77,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="id_city" class="form-control-label">Город</label>
-                                        <input disabled="disabled" class="form-control" type="text" id="id_city" name="id_city" value="{{ $qrProfile->id_city }}">
+                                        <input disabled="disabled" class="form-control" type="text" id="id_city" name="id_city" value="{{ $qrProfile->city->name }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">

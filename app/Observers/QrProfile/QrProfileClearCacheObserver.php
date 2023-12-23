@@ -16,10 +16,10 @@ class QrProfileClearCacheObserver
     public function created(QrProfile $qrProfileModel): void
     {
         Cache::forget($qrProfileModel::class.'-getModelCollection');
+        Cache::forget($qrProfileModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($qrProfileModel::class.'-getForDropdownList')->flush();
         }
     }
 
@@ -33,10 +33,10 @@ class QrProfileClearCacheObserver
     {
         Cache::forget($qrProfileModel::class.'-getModelCollection');
         Cache::forget($qrProfileModel::class.'-getForEditModel-'.$qrProfileModel->getKey());
+        Cache::forget($qrProfileModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($qrProfileModel::class.'-getForDropdownList')->flush();
         }
     }
 
@@ -50,10 +50,10 @@ class QrProfileClearCacheObserver
     {
         Cache::forget($qrProfileModel::class.'-getModelCollection');
         Cache::forget($qrProfileModel::class.'-getForEditModel-'.$qrProfileModel->getKey());
+        Cache::forget($qrProfileModel::class.'-getForDropdownList');
 
         if (Cache::supportsTags()) {
             Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-            Cache::tags($qrProfileModel::class.'-getForDropdownList')->flush();
         }
     }
 }

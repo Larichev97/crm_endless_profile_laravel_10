@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileUpdateRequest;
 use App\Models\QrProfile;
+use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
@@ -29,6 +30,7 @@ final class QrProfileController extends Controller
      * @param QrProfileService $qrProfileService
      * @param ClientRepository $clientRepository
      * @param CountryRepository $countryRepository
+     * @param CityRepository $cityRepository
      * @param QrProfileRepository $qrProfileRepository
      */
     public function __construct(
@@ -36,6 +38,7 @@ final class QrProfileController extends Controller
         readonly QrProfileService $qrProfileService,
         readonly ClientRepository $clientRepository,
         readonly CountryRepository $countryRepository,
+        readonly CityRepository $cityRepository,
         readonly QrProfileRepository $qrProfileRepository
     )
     {
@@ -69,8 +72,9 @@ final class QrProfileController extends Controller
 
         $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
         $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+        $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-        return view('qr_profile.create', compact(['idStatusNew', 'clientsListData', 'countriesListData',]));
+        return view('qr_profile.create', compact(['idStatusNew', 'clientsListData', 'countriesListData', 'citiesListData',]));
     }
 
     /**
@@ -144,8 +148,9 @@ final class QrProfileController extends Controller
             $statusesListData = QrStatusEnum::getStatusesList();
             $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
             $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData', 'countriesListData',]));
+            return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

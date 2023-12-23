@@ -8,6 +8,7 @@ use App\Enums\ClientStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
+use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Services\ClientService;
@@ -34,6 +35,7 @@ class ClientController extends Controller
         readonly ClientService $clientService,
         readonly ClientRepository $clientRepository,
         readonly CountryRepository $countryRepository,
+        readonly CityRepository $cityRepository,
         readonly string $publicDirPath = 'images/clients'
     )
     {
@@ -66,8 +68,9 @@ class ClientController extends Controller
         $idStatusNew = ClientStatusEnum::NEW->value;
 
         $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+        $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-        return view('client.create', compact('idStatusNew', 'countriesListData'));
+        return view('client.create', compact('idStatusNew', 'countriesListData', 'citiesListData',));
     }
 
     /**
@@ -131,8 +134,9 @@ class ClientController extends Controller
 
             $statusesListData = ClientStatusEnum::getStatusesList();
             $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-            return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData', 'countriesListData',]));
+            return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

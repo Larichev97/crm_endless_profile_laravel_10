@@ -29,6 +29,7 @@
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Email</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Моб. номер</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Город</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Статус</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
                                     </tr>
@@ -51,6 +52,7 @@
                                                     --
                                                 @endif
                                             </td>
+                                            <td class="align-middle text-center">{{ $client->city->name }}</td>
                                             <td class="align-middle text-center text-sm">
                                                 <span class="badge badge-sm bg-gradient-{{ $client->getStatusGradientColor(intval($client->id_status)) }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $client->statusName }}</span>
                                             </td>

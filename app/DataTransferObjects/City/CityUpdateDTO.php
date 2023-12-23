@@ -1,0 +1,35 @@
+<?php
+
+namespace App\DataTransferObjects\City;
+
+use App\Http\Requests\City\CityUpdateRequest;
+
+final class CityUpdateDTO
+{
+    public readonly int $id_country;
+    public readonly string $name;
+    public readonly int $is_active;
+
+    /**
+     * @param CityUpdateRequest $cityUpdateRequest
+     * @param int $id_city
+     */
+    public function __construct(CityUpdateRequest $cityUpdateRequest, public readonly int $id_city)
+    {
+        $this->id_country = (int) $cityUpdateRequest->validated('id_country');
+        $this->name = (string) $cityUpdateRequest->validated('name');
+        $this->is_active = (!empty($cityUpdateRequest->validated('is_active'))) ? 1 : 0;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFormFieldsArray(): array
+    {
+        return [
+            'id_country' => $this->id_country,
+            'name' => $this->name,
+            'is_active' => $this->is_active,
+        ];
+    }
+}

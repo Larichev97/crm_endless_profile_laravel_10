@@ -121,10 +121,15 @@
                         <strong>Город <span style="color: red">*</span></strong>
                         <br>
                         <select class="form-control @error('id_city') is-invalid @enderror" name="id_city" id="id_city">
-                            <option value="1" {{ old('id_city', $qrProfile->id_city) == 1 ? 'selected' : '' }}>Днепр</option>
-                            <option value="2" {{ old('id_city', $qrProfile->id_city) == 2 ? 'selected' : '' }}>Киев</option>
-                            <option value="3" {{ old('id_city', $qrProfile->id_city) == 3 ? 'selected' : '' }}>Харьков</option>
-                            <option value="4" {{ old('id_city', $qrProfile->id_city) == 4 ? 'selected' : '' }}>Запорожье</option>
+                            <option value="0" {{ old('id_city', $qrProfile->id_city) == '0' ? 'selected' : '' }}>Выберите из списка...</option>
+                            {{-- Массив коллекций городов только с полями "id" и "name" --}}
+                            @if(!empty($citiesListData))
+                                @foreach($citiesListData as $cityItem)
+                                    <option value="{{ $cityItem->id }}" {{ old('id_city', $qrProfile->id_city) == $cityItem->id ? 'selected' : '' }}>
+                                        {{ $cityItem->name }} ({{ $cityItem->country_name }})
+                                    </option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
                 </div>

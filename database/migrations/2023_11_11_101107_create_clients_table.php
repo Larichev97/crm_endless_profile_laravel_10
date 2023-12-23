@@ -17,8 +17,8 @@ return new class extends Migration
 
             $table->id();
             $table->integer('id_status', false, true);
-            $table->integer('id_country', false, true);
-            $table->integer('id_city', false, true);
+            $table->foreignId('id_country')->constrained('countries');
+            $table->foreignId('id_city')->constrained('cities');
             $table->string('phone_number')->unique();
             $table->string('email')->unique();
             $table->date('bdate')->nullable();

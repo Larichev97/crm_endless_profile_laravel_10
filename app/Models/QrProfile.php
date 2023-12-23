@@ -91,13 +91,23 @@ final class QrProfile extends Model
     }
 
     /**
-     *  У одного QR-профиля может быть только одина Страна
+     *  У одного QR-профиля может быть только одна Страна
      *
      * @return BelongsTo
      */
     public function country(): BelongsTo
     {
         return $this->belongsTo(Country::class, 'id_country');
+    }
+
+    /**
+     *  У одного QR-профиля может быть только однин Город
+     *
+     * @return BelongsTo
+     */
+    public function city(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'id_city');
     }
 
     /**

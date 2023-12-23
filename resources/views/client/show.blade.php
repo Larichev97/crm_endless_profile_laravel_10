@@ -77,7 +77,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="client_id_city" class="form-control-label">Город</label>
-                                        <input disabled="disabled" class="form-control" type="text" id="client_id_city" name="id_city" value="{{ old('id_city', $client->id_city) }}">
+                                        <input disabled="disabled" class="form-control" type="text" id="client_id_city" name="id_city" value="{{ old('id_city', $client->city->name) }}">
                                     </div>
                                 </div>
                                 <div class="col-md-6">
