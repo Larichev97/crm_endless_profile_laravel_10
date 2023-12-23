@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Requests\client;
+namespace App\Http\Requests\Client;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 final class ClientStoreRequest extends FormRequest
@@ -17,7 +18,7 @@ final class ClientStoreRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array|string>
      */
     public function rules(): array
     {

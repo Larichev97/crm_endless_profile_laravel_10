@@ -1,0 +1,170 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Endless Profile API documentation",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/v1/": {},
+        "/api/v1/qrs/{id}": {
+            "get": {
+                "tags": [
+                    "Qr Profile"
+                ],
+                "summary": "Получение данных о конкретном QR-профиле",
+                "operationId": "2e48ee75cf271f6fbbe43a5217c81c62",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID QR-профиля",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "country": {
+                                                    "type": "string",
+                                                    "example": "Украина"
+                                                },
+                                                "city": {
+                                                    "type": "string",
+                                                    "example": "Днепр"
+                                                },
+                                                "birth_date": {
+                                                    "type": "string",
+                                                    "example": "25.05.1985"
+                                                },
+                                                "death_date": {
+                                                    "type": "string",
+                                                    "example": "16.11.2020"
+                                                },
+                                                "full_name": {
+                                                    "type": "string",
+                                                    "example": "Тестовая Мария Тестовна"
+                                                },
+                                                "firstname": {
+                                                    "type": "string",
+                                                    "example": "Мария"
+                                                },
+                                                "lastname": {
+                                                    "type": "string",
+                                                    "example": "Тестовая"
+                                                },
+                                                "surname": {
+                                                    "type": "string",
+                                                    "example": "Тестовна"
+                                                },
+                                                "cause_death": {
+                                                    "type": "string",
+                                                    "example": "Сердечный приступ"
+                                                },
+                                                "profession": {
+                                                    "type": "string",
+                                                    "example": "Секретарь"
+                                                },
+                                                "hobbies": {
+                                                    "type": "string",
+                                                    "example": "Рисование, велосипед, кино"
+                                                },
+                                                "biography": {
+                                                    "type": "string",
+                                                    "example": "Мария — творческая натура, обожающая рисовать утренние пейзажи и городские силуэты. В свободное время любит покататься на велосипеде, исследуя улочки города. Часто посещает кинотеатры и наслаждается просмотром разнообразных фильмов. В течение нескольких лет работала в качестве секретаря в уютном офисе, где находила радость в организации рабочего процесса и поддержке коллег."
+                                                },
+                                                "last_wish": {
+                                                    "type": "string",
+                                                    "example": "Мария желала, чтобы ее последнее мгновение было окружено уютом, мелодиями любимой музыки и в объятиях близких людей."
+                                                },
+                                                "favourite_music_artist": {
+                                                    "type": "string",
+                                                    "example": "The Beatles"
+                                                },
+                                                "link": {
+                                                    "type": "string",
+                                                    "example": "http://test.com"
+                                                },
+                                                "geo_latitude": {
+                                                    "type": "string",
+                                                    "example": "-37.397325"
+                                                },
+                                                "geo_longitude": {
+                                                    "type": "string",
+                                                    "example": "92.499078"
+                                                },
+                                                "photo_file_name": {
+                                                    "type": "string",
+                                                    "example": "1703167599.jpg"
+                                                },
+                                                "photo_file_path": {
+                                                    "type": "string",
+                                                    "example": "http://crm-qr-laravel.loc/storage/qr/1/1703167599.jpg"
+                                                },
+                                                "voice_message_file_name": {
+                                                    "type": "string",
+                                                    "example": "test_voice.mp3"
+                                                },
+                                                "voice_message_file_path": {
+                                                    "type": "string",
+                                                    "example": "http://crm-qr-laravel.loc/storage/qr/1/test_voice.mp3"
+                                                },
+                                                "qr_code_file_name": {
+                                                    "type": "string",
+                                                    "example": "qr_code.png"
+                                                },
+                                                "qr_code_file_path": {
+                                                    "type": "string",
+                                                    "example": "http://crm-qr-laravel.loc/storage/qr/1/qr_code.png"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "404": {
+                        "description": "Not Found 404",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Qr Profile not found."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

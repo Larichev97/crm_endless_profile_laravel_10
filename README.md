@@ -17,6 +17,8 @@
 
 4. php artisan storage:link
 
+5. php artisan l5-swagger:generate (если нужно обновить документацию API)
+
 
 ## About Laravel
 
