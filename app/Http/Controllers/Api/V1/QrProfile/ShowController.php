@@ -64,9 +64,9 @@ use OpenApi\Annotations as OA;
  *          response=404,
  *          description="Not Found 404",
  *          @OA\JsonContent(
-*               @OA\Property(property="error", type="bool", example=true),
-*               @OA\Property(property="message", type="string", example="Qr Profile not found."),
-*               @OA\Property(property="id", type="integer", example="1"),
+ *              @OA\Property(property="error", type="bool", example=true),
+ *              @OA\Property(property="message", type="string", example="Qr Profile not found."),
+ *              @OA\Property(property="id", type="integer", example="1"),
  *          ),
  *      ),
  * )
