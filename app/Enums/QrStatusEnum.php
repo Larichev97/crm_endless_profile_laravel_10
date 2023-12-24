@@ -19,9 +19,9 @@ enum QrStatusEnum: int
         return match($this) {
             QrStatusEnum::NEW => 'Новый',
             QrStatusEnum::IN_PROCESS => 'Создаётся',
-            QrStatusEnum::READY => 'Готова',
-            QrStatusEnum::RECEIVED => 'Получена',
-            QrStatusEnum::LOST => 'Потеряна',
+            QrStatusEnum::READY => 'Готов',
+            QrStatusEnum::RECEIVED => 'Получен',
+            QrStatusEnum::LOST => 'Потерян',
             QrStatusEnum::WRONG_URL => 'Старый URL',
         };
     }

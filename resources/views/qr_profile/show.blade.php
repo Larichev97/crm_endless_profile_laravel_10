@@ -23,7 +23,7 @@
                                 {{ $qrProfile->fullName }}
                             </h5>
                             <p class="mb-0 font-weight-bold text-sm">
-                                <span class="badge badge-sm bg-gradient-{{ $qrProfile->getStatusGradientColor(intval($qrProfile->id_status)) }}">{{ $qrProfile->statusName }}</span>
+                                <span class="badge badge-sm bg-gradient-{{ $qrProfile->getStatusGradientColor(intval($qrProfile->id_status)) }}" data-bs-toggle="tooltip" data-bs-placement="right" title="Статус">{{ $qrProfile->statusName }}</span>
                             </p>
                         </div>
                     </div>

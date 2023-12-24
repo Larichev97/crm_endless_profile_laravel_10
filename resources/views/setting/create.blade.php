@@ -17,7 +17,7 @@
             <div class="row">
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Название настройки <span style="color: red">*</span></strong>
+                        <strong data-bs-toggle="tooltip" data-bs-placement="right" title="Название должно быть с большими латинскими буквами. Допустимый символ разделения: '_'">Название настройки <span style="color: red">*</span></strong>
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Укажите название настройки..." value="{{ old('name') }}">
                     </div>
                 </div>

@@ -6,6 +6,7 @@ use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
 use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
+use App\Repositories\Setting\SettingRepository;
 
 final class QrProfileService
 {
@@ -92,23 +93,28 @@ final class QrProfileService
      *
      * @param $id
      * @param QrProfileRepository $qrProfileRepository
+     * @param SettingRepository $settingRepository
      * @param FileService $fileService
      * @return bool
      */
-    public function processGenerateQrCode($id, QrProfileRepository $qrProfileRepository, FileService $fileService): bool
+    public function processGenerateQrCode($id, QrProfileRepository $qrProfileRepository, SettingRepository $settingRepository, FileService $fileService): bool
     {
         if (!empty($id) && is_numeric($id)) {
             $id = (int) $id;
 
-            $qrProfileUrl = route('qrs.show', $id);
+            $qrProfileUrl = $settingRepository->getSettingValueByName('QR_PROFILE_BASE_URL', true);
+            $qrCodeSize = $settingRepository->getSettingValueByName('QR_CODE_IMAGE_SIZE', true);
 
             $publicDirPath = 'qr/'.$id;
 
             $qrCodeFileName = 'qr_code';
             $qrCodeFileExtension = 'png';
-            $qrCodeSize = 400;
 
-            $generate = $fileService->processGenerateQrCodeFile($qrProfileUrl, $publicDirPath, $qrCodeFileName, $qrCodeFileExtension, $qrCodeSize);
+            if (!is_numeric($qrCodeSize) || (int) $qrCodeSize == 0) {
+                $qrCodeSize = 400;
+            }
+
+            $generate = $fileService->processGenerateQrCodeFile($qrProfileUrl, $publicDirPath, $qrCodeFileName, $qrCodeFileExtension, (int) $qrCodeSize);
 
             if ($generate) {
                 $qrProfileModel = $qrProfileRepository->getForEditModel((int) $id, true);

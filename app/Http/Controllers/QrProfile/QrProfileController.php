@@ -13,6 +13,7 @@ use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
+use App\Repositories\Setting\SettingRepository;
 use App\Services\FileService;
 use App\Services\QrProfileService;
 use Exception;
@@ -32,6 +33,7 @@ final class QrProfileController extends Controller
      * @param CountryRepository $countryRepository
      * @param CityRepository $cityRepository
      * @param QrProfileRepository $qrProfileRepository
+     * @param SettingRepository $settingRepository
      */
     public function __construct(
         readonly FileService $fileService,
@@ -39,7 +41,8 @@ final class QrProfileController extends Controller
         readonly ClientRepository $clientRepository,
         readonly CountryRepository $countryRepository,
         readonly CityRepository $cityRepository,
-        readonly QrProfileRepository $qrProfileRepository
+        readonly QrProfileRepository $qrProfileRepository,
+        readonly SettingRepository $settingRepository,
     )
     {
     }
@@ -208,7 +211,7 @@ final class QrProfileController extends Controller
     public function generateQrCodeImage($id): JsonResponse|RedirectResponse
     {
         try {
-            $generateQrCode = $this->qrProfileService->processGenerateQrCode($id, $this->qrProfileRepository, $this->fileService);
+            $generateQrCode = $this->qrProfileService->processGenerateQrCode($id, $this->qrProfileRepository, $this->settingRepository, $this->fileService);
 
             if ($generateQrCode) {
                 return redirect()->route('qrs.show', $id)->with('success', sprintf('Изображение QR-кода для профиля #%s успешно создано.', $id));
