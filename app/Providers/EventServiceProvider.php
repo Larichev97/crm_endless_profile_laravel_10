@@ -6,10 +6,12 @@ use App\Models\City;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\QrProfile;
+use App\Models\Setting;
 use App\Observers\Client\ClientClearCacheObserver;
 use App\Observers\City\CityClearCacheObserver;
 use App\Observers\Country\CountryClearCacheObserver;
 use App\Observers\QrProfile\QrProfileClearCacheObserver;
+use App\Observers\Setting\SettingClearCacheObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -38,6 +40,7 @@ class EventServiceProvider extends ServiceProvider
         QrProfile::observe(QrProfileClearCacheObserver::class);
         Country::observe(CountryClearCacheObserver::class);
         City::observe(CityClearCacheObserver::class);
+        Setting::observe(SettingClearCacheObserver::class);
         // ***
     }
 

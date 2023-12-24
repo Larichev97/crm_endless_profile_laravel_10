@@ -24,7 +24,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Название <span style="color: red">*</span></strong>
-                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Укажите навзание страны..." value="{{ old('name') }}">
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" placeholder="Укажите название страны..." value="{{ old('name') }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">

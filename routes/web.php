@@ -55,4 +55,7 @@ Route::group(['middleware' => 'auth'], function () {
 
     // City entity:
     require_once 'cities/cities.php';
+
+    // Setting entity:
+    require_once 'settings/settings.php';
 });

@@ -38,7 +38,7 @@ final class QrProfileUpdateRequest extends FormRequest
             'biography' => 'nullable|string',
             'last_wish' => 'nullable|string|max:255',
             'favourite_music_artist' => 'nullable|string|max:255',
-            'link' => 'nullable|string|max:255',
+            'link' => 'nullable|string|max:255|url:http,https',
             'geo_latitude' => 'nullable|string|max:255',
             'geo_longitude' => 'nullable|string|max:255',
             'photo_file_name' => 'nullable|string|max:255',

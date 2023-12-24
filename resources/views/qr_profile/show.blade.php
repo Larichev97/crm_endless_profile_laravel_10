@@ -132,7 +132,7 @@
                                         <label for="voice_message_file_name" class="form-control-label">Текущее голосовое сообщение</label>
                                         <br/>
                                         @if (!empty($voiceMessagePath))
-                                            <a href="{{ asset($voiceMessagePath) }}" id="voice_message_file_name" target="_blank">{{ $voiceMessagePath }}</a>
+                                            <a href="{{ asset($voiceMessagePath) }}" id="voice_message_file_name" target="_blank">{{ $qrProfile->voice_message_file_name }}</a>
                                         @else
                                             <span id="voice_message_file_name">Не загружено.</span>
                                         @endif
