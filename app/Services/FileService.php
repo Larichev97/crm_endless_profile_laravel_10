@@ -49,9 +49,10 @@ final class FileService
      * @param string $publicDirPath
      * @param string $oldFileName Старое название файла
      * @param string $newFileName Название файла (если не указано - создаётся time()+.+extension())
+     * @param bool $useOriginalFileName
      * @return string
      */
-    public function processUploadFile($file, string $publicDirPath = '', string $oldFileName = '', string $newFileName = ''): string
+    public function processUploadFile($file, string $publicDirPath = '', string $oldFileName = '', string $newFileName = '', bool $useOriginalFileName = false): string
     {
         $fileName = '';
 
@@ -66,6 +67,10 @@ final class FileService
 
             if (!empty(trim($newFileName))) {
                 $currentFileName = $newFileName.'.'.$file->extension();
+            }
+
+            if ($useOriginalFileName) {
+                $currentFileName = $file->getClientOriginalName();
             }
 
             if (!File::exists(storage_path('app/public/'.$publicDirPath))) {

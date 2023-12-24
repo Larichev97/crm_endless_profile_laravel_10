@@ -15,7 +15,7 @@
             </div>
 
             <div class="row">
-                <input type="hidden" name="photo_name" class="form-control" value="{{ $qrProfile->photo_name }}">
+                <input type="hidden" name="photo_file_name" class="form-control" value="{{ $qrProfile->photo_file_name }}">
                 <input type="hidden" name="voice_message_file_name" class="form-control" value="{{ $qrProfile->voice_message_file_name }}">
                 <input type="hidden" name="id_user_add" class="form-control" value="{{ $qrProfile->id_user_add }}">
                 <input type="hidden" name="id_user_update" class="form-control" value="{{ auth()->user()->id }}">
@@ -43,7 +43,7 @@
                         <br/>
                         <div class="avatar avatar-xxl position-relative">
                             @if (!empty($photoPath))
-                                <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_name }}" class="w-100 border-radius-lg shadow-sm">
+                                <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm">
                             @else
                                 <img src="/img/user_avatar.png" alt="qr profile photo" class="w-100 border-radius-lg shadow-sm">
                             @endif
@@ -193,7 +193,7 @@
                         <br/>
                         <div>
                             @if (!empty($voiceMessagePath))
-                                <a href="{{ asset($voiceMessagePath) }}" class="w-100 border-radius-lg shadow-sm">{{ $qrProfile->voice_message_file_name }}</a>
+                                <a href="{{ asset($voiceMessagePath) }}" target="_blank">{{ $qrProfile->voice_message_file_name }}</a>
                             @else
                                 Не загружено.
                             @endif

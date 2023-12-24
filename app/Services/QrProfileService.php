@@ -27,7 +27,7 @@ final class QrProfileService
             $qrDirPath = 'qr/'.$qrProfileModel->getKey();
 
             $formFilesNamesArray['photo_file_name'] = $fileService->processUploadFile($qrProfileStoreDTO->photo_file, $qrDirPath, '', '');
-            $formFilesNamesArray['voice_message_file_name'] = $fileService->processUploadFile($qrProfileStoreDTO->voice_message_file, $qrDirPath, '', '');
+            $formFilesNamesArray['voice_message_file_name'] = $fileService->processUploadFile($qrProfileStoreDTO->voice_message_file, $qrDirPath, '', '', true);
 
             return (bool) $qrProfileModel->update($formFilesNamesArray);
         }
@@ -56,8 +56,8 @@ final class QrProfileService
         /** @var QrProfile $qrProfileModel */
         $qrDirPath = 'qr/'.$qrProfileModel->getKey();
 
-        $formDataArray['photo_file_name'] = $fileService->processUploadFile($qrProfileUpdateDTO->photo_file, $qrDirPath, $qrProfileUpdateDTO->photo_file_name);
-        $formDataArray['voice_message_file_name'] = $fileService->processUploadFile($qrProfileUpdateDTO->voice_message_file, $qrDirPath, $qrProfileUpdateDTO->voice_message_file_name);
+        $formDataArray['photo_file_name'] = $fileService->processUploadFile($qrProfileUpdateDTO->photo_file, $qrDirPath, $qrProfileUpdateDTO->photo_file_name, '', true);
+        $formDataArray['voice_message_file_name'] = $fileService->processUploadFile($qrProfileUpdateDTO->voice_message_file, $qrDirPath, $qrProfileUpdateDTO->voice_message_file_name, '', true);
 
         $updateQrProfile = $qrProfileModel->update($formDataArray);
 

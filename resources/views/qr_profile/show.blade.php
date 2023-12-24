@@ -11,7 +11,7 @@
                     <div class="col-auto">
                         <div class="avatar avatar-xl position-relative">
                             @if (!empty($photoPath))
-                                <img src="{{ asset($photoPath) }}" alt="photo_name" class="w-100 border-radius-lg shadow-sm">
+                                <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm">
                             @else
                                 <img src="/img/user_avatar.png" alt="photo_name" class="w-100 border-radius-lg shadow-sm">
                             @endif
