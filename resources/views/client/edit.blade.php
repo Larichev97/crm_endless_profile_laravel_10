@@ -123,13 +123,13 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Укажите комментарий о клиенте...</strong>
+                        <strong>Комментарий менеджера</strong>
                         <textarea
                             class="form-control @error('manager_comment') is-invalid @enderror"
                             id="manager_comment"
                             name="manager_comment"
                             rows="3"
-                            placeholder="Комментарий менеджера..."
+                            placeholder="Укажите комментарий о клиенте..."
                         >{{ old('manager_comment', $client->manager_comment) }}</textarea>
                     </div>
                 </div>
