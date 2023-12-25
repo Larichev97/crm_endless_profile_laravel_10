@@ -2,9 +2,10 @@
 
 namespace App\DataTransferObjects\City;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\City\CityUpdateRequest;
 
-final class CityUpdateDTO
+final class CityUpdateDTO implements FormFieldsDtoInterface
 {
     public readonly int $id_country;
     public readonly string $name;

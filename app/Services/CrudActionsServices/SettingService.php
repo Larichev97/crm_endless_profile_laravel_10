@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\Setting\SettingStoreDTO;
 use App\DataTransferObjects\Setting\SettingUpdateDTO;

@@ -2,10 +2,11 @@
 
 namespace App\DataTransferObjects\Country;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Country\CountryUpdateRequest;
 use Illuminate\Http\UploadedFile;
 
-final class CountryUpdateDTO
+final class CountryUpdateDTO implements FormFieldsDtoInterface
 {
     public readonly string $name;
     public readonly string $iso_code;

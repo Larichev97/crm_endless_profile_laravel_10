@@ -21,8 +21,8 @@ class QrProfileResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'id_country' => $this->id_country,
-            'id_city' => $this->id_city,
+            'country' => $this->country->name,
+            'city' => $this->city->name,
             'birth_date' => (string) $this->birthDateFormatted,
             'death_date' => (string) $this->deathDateFormatted,
             'full_name' => (string) $this->fullName,

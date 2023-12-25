@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\City\CityStoreDTO;
 use App\DataTransferObjects\City\CityUpdateDTO;

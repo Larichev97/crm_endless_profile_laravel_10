@@ -2,10 +2,11 @@
 
 namespace App\DataTransferObjects\Client;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Client\ClientUpdateRequest;
 use Illuminate\Http\UploadedFile;
 
-final class ClientUpdateDTO
+final class ClientUpdateDTO implements FormFieldsDtoInterface
 {
     public readonly int $id_status;
     public readonly int $id_country;

@@ -9,7 +9,7 @@ use App\Http\Requests\Country\CountryStoreRequest;
 use App\Http\Requests\Country\CountryUpdateRequest;
 use App\Models\Country;
 use App\Repositories\Country\CountryRepository;
-use App\Services\CountryService;
+use App\Services\CrudActionsServices\CountryService;
 use App\Services\FileService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -122,6 +122,10 @@ class CountryController extends Controller
     {
         try {
             $country = $this->countryRepository->getForEditModel((int) $id, true);
+
+            if (empty($country)) {
+                abort(404);
+            }
 
             /** @var Country $country */
             $countryPublicDirPath = $this->publicDirPath.'/'.$country->getKey();

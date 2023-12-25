@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\QrProfileResource;
 use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
+use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
-use App\Services\QrProfileService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
@@ -16,7 +16,7 @@ use OpenApi\Annotations as OA;
  * @OA\Get(
  *     path="/api/v1/qrs/{id}",
  *     summary="Получение данных о конкретном QR-профиле",
- *     tags={"Qr Profile"},
+ *     tags={"QR Profile"},
  *     @OA\Parameter(
  *         description="ID QR-профиля",
  *         in="path",
@@ -65,7 +65,7 @@ use OpenApi\Annotations as OA;
  *          description="Not Found 404",
  *          @OA\JsonContent(
  *              @OA\Property(property="error", type="bool", example=true),
- *              @OA\Property(property="message", type="string", example="Qr Profile not found."),
+ *              @OA\Property(property="message", type="string", example="QR Profile not found."),
  *              @OA\Property(property="id", type="integer", example="1"),
  *          ),
  *      ),
@@ -99,7 +99,7 @@ class ShowController extends Controller
             $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
             if (empty($qrProfile)) {
-                return response()->json(['error' => true, 'message' => 'Qr Profile not found.', 'id' => (int) $id], 404);
+                return response()->json(['error' => true, 'message' => 'QR Profile not found.', 'id' => (int) $id], 404);
             }
 
             /** @var QrProfile $qrProfile */

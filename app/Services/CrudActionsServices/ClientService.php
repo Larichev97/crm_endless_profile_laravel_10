@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
 use App\Models\Client;
 use App\Repositories\Client\ClientRepository;
+use App\Services\FileService;
 
 class ClientService
 {

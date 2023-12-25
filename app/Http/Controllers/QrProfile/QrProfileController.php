@@ -14,8 +14,8 @@ use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
+use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
-use App\Services\QrProfileService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -141,6 +141,10 @@ final class QrProfileController extends Controller
     {
         try {
             $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+
+            if (empty($qrProfile)) {
+                abort(404);
+            }
 
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();

@@ -11,7 +11,7 @@ use App\Http\Requests\Client\ClientUpdateRequest;
 use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
-use App\Services\ClientService;
+use App\Services\CrudActionsServices\ClientService;
 use App\Services\FileService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -28,6 +28,7 @@ class ClientController extends Controller
      * @param ClientService $clientService
      * @param ClientRepository $clientRepository
      * @param CountryRepository $countryRepository
+     * @param CityRepository $cityRepository
      * @param string $publicDirPath
      */
     public function __construct(
@@ -129,6 +130,10 @@ class ClientController extends Controller
     {
         try {
             $client = $this->clientRepository->getForEditModel((int) $id, true);
+
+            if (empty($client)) {
+                abort(404);
+            }
 
             $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
 

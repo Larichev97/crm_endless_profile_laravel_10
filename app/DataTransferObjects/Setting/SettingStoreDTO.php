@@ -2,9 +2,10 @@
 
 namespace App\DataTransferObjects\Setting;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Setting\SettingStoreRequest;
 
-final class SettingStoreDTO
+final class SettingStoreDTO implements FormFieldsDtoInterface
 {
     public readonly string $name;
     public readonly string $value;

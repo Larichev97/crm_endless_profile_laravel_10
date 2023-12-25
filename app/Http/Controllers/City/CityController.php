@@ -9,7 +9,7 @@ use App\Http\Requests\City\CityStoreRequest;
 use App\Http\Requests\City\CityUpdateRequest;
 use App\Repositories\City\CityRepository;
 use App\Repositories\Country\CountryRepository;
-use App\Services\CityService;
+use App\Services\CrudActionsServices\CityService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -116,6 +116,10 @@ class CityController extends Controller
     {
         try {
             $city = $this->cityRepository->getForEditModel((int) $id, true);
+
+            if (empty($city)) {
+                abort(404);
+            }
 
             $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
 

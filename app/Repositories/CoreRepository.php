@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Cache;
  *   1) Может выдавать наборы данных;
  *   2) Не может создавать/изменять сущности;
  */
-abstract class CoreRepository
+abstract class CoreRepository implements CoreRepositoryInterface
 {
     /**
      * @var int Время жизни кэша по умолчанию: 1 месяц

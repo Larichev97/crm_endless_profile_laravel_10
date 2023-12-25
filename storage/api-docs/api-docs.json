@@ -9,7 +9,7 @@
         "/api/v1/qrs/{id}": {
             "get": {
                 "tags": [
-                    "Qr Profile"
+                    "QR Profile"
                 ],
                 "summary": "Получение данных о конкретном QR-профиле",
                 "operationId": "2e48ee75cf271f6fbbe43a5217c81c62",
@@ -151,7 +151,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Qr Profile not found."
+                                            "example": "QR Profile not found."
                                         },
                                         "id": {
                                             "type": "integer",

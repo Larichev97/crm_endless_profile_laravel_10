@@ -2,10 +2,11 @@
 
 namespace App\DataTransferObjects\QrProfile;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use Illuminate\Http\UploadedFile;
 
-final class QrProfileStoreDTO
+final class QrProfileStoreDTO implements FormFieldsDtoInterface
 {
     public readonly int $id_status;
     public readonly int $id_client;

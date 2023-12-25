@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
 use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
+use App\Services\FileService;
 
 final class QrProfileService
 {
