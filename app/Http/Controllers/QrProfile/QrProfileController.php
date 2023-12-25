@@ -16,6 +16,7 @@ use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
 use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
+use App\Services\FilterTableService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -53,10 +54,12 @@ final class QrProfileController extends Controller
      * @param Request $request
      * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
+            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
+
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
 
             return view('qr_profile.index',compact('qrProfiles'));
         } catch (Exception $exception) {

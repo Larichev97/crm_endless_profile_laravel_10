@@ -35,6 +35,39 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                <tr>
+                                    <form id="filter_form" action="{{ route('qrs.index') }}" method="GET">
+                                        <th class="text-center font-weight-bolder">
+                                            <input type="text" name="filter_id" id="filter_id" class="form-control">
+                                        </th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
+
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <input type="text" name="filter_death_date" id="filter_death_date" class="form-control">
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <input type="text" name="filter_id_country" id="filter_id_country" class="form-control">
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <input type="text" name="filter_id_client" id="filter_id_client" class="form-control">
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <select class="form-control" name="filter_with_qr_code" id="filter_with_qr_code">
+                                                <option value="0">Выберите из списка...</option>
+                                                <option value="1">Да</option>
+                                                <option value="2">Нет</option>
+                                            </select>
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <input type="text" name="filter_id_status" id="filter_id_status" class="form-control">
+                                        </th>
+
+                                        <th class="text-center text-secondary font-weight-bolder">
+                                            <button type="submit" class="btn btn-info" style="margin-bottom: 0;">Фильтр</button>
+                                        </th>
+                                    </form>
+                                </tr>
                                 @foreach ($qrProfiles as $qrProfile)
                                     <tr>
                                         <td class="align-middle text-center">{{ $qrProfile->id }}</td>
@@ -90,6 +123,34 @@
 
 @push('js')
     <script>
+        document.addEventListener('DOMContentLoaded', handleFilterFormSubmit);
 
+        /**
+         *  Метод проверяет наличие заполенных полей фильтров и добавляет их к URL для редиректа
+         */
+        function handleFilterFormSubmit() {
+            const filterForm = document.getElementById('filter_form');
+
+            if (!filterForm) return;
+
+            filterForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(this);
+                const filteredData = {};
+
+                // Пропускаем пустые поля формы Фильтра:
+                formData.forEach(function(value, key) {
+                    if (value !== '' && value !== '0') {
+                        filteredData[key] = value;
+                    }
+                });
+
+                const queryParameters = new URLSearchParams(filteredData).toString();
+                const action = this.getAttribute('action');
+
+                window.location.href = `${action}?${queryParameters}`;
+            });
+        }
     </script>
 @endpush

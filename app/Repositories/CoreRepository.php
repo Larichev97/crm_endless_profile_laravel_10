@@ -21,6 +21,20 @@ abstract class CoreRepository implements CoreRepositoryInterface
     protected int $cacheLife = 30 * 24 * 60 * 60; // 30 дней * 24 часа * 60 минут * 60 секунд;
 
     /**
+     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
+     *
+     * @var array
+     */
+    protected array $searchDateFieldsArray = [];
+
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     * @var array
+     */
+    protected array $searchLikeFieldsArray = [];
+
+    /**
      * @var Model
      */
     protected Model $model;
@@ -92,23 +106,43 @@ abstract class CoreRepository implements CoreRepositoryInterface
      * @param int|null $perPage
      * @param int $page
      * @param bool $useCache
+     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
     {
         $model = $this->startConditions();
 
         $fields_array = $model->getFillable();
 
+        $query = $model->query();
+        $query->select($fields_array);
+
+        // *** Filters:
+        if (!empty($filterFieldsData)) {
+            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
+                if (!empty($filterFieldValue)) {
+                    if (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
+                        $query->whereDate((string) $filterFieldName, '=', (string) $filterFieldValue);
+                    } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
+                        $query->where((string) $filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
+                    } else {
+                        $query->where((string) $filterFieldName, '=', $filterFieldValue);
+                    }
+                }
+            }
+        }
+        // ***
+
         // File или Redis кэширование не поддерживает тегирование:
         if ($useCache && Cache::supportsTags()) {
             $result = Cache::tags($this->getModelClass().'-getAllWithPaginate')->remember('page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
-                function () use($model, $fields_array, $perPage, $page) {
-                    return $model->query()->select($fields_array)->paginate($perPage, $fields_array, 'page', $page);
+                function () use($query, $fields_array, $perPage, $page) {
+                    return $query->paginate($perPage, $fields_array, 'page', $page);
                 }
             );
         } else {
-            $result = $model->query()->select($fields_array)->paginate($perPage, $fields_array, 'page', $page);
+            $result = $query->paginate($perPage, $fields_array, 'page', $page);
         }
 
         return $result;

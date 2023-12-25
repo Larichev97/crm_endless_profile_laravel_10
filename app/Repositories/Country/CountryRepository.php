@@ -28,11 +28,12 @@ final class CountryRepository extends CoreRepository
      * @param int|null $perPage
      * @param int $page
      * @param bool $useCache
+     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $useCache);
+        return parent::getAllWithPaginate($perPage, $page, $useCache, $filterFieldsData);
     }
 
     /**

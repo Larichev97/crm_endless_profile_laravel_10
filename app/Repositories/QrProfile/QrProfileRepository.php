@@ -9,6 +9,20 @@ use Illuminate\Support\Collection;
 
 final class QrProfileRepository extends CoreRepository
 {
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
+     *
+     * @var array|string[]
+     */
+    protected array $searchDateFieldsArray = ['birth_date', 'death_date',];
+
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     * @var array|string[]
+     */
+    protected array $searchLikeFieldsArray = ['name', 'firstname', 'lastname', 'surname',];
+
     public function __construct()
     {
         parent::__construct();
@@ -28,11 +42,12 @@ final class QrProfileRepository extends CoreRepository
      * @param int|null $perPage
      * @param int $page
      * @param bool $useCache
+     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $useCache);
+        return parent::getAllWithPaginate($perPage, $page, $useCache, $filterFieldsData);
     }
 
     /**
