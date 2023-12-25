@@ -7,6 +7,8 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
+## Для проекта необходима версия PHP 8.2
+
 ## Start "CRM Endless Profile" in PHP container:
 
 1. composer update
