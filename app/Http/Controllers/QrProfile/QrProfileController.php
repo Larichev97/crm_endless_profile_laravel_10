@@ -52,16 +52,18 @@ final class QrProfileController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @param FilterTableService $filterTableService
      * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
+            $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
 
             $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
 
-            return view('qr_profile.index',compact('qrProfiles'));
+            return view('qr_profile.index',compact(['qrProfiles', 'filterFieldsObject',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

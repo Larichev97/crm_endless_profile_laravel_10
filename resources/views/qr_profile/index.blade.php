@@ -16,6 +16,7 @@
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>
+                                <a class="btn btn-danger" href="{{ route('qrs.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -38,29 +39,43 @@
                                 <tr>
                                     <form id="filter_form" action="{{ route('qrs.index') }}" method="GET">
                                         <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_id" id="filter_id" class="form-control">
+                                            <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
                                         </th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
 
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_death_date" id="filter_death_date" class="form-control">
+                                            <input type="date" name="filter_death_date" id="filter_death_date" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->date_death)){{ $filterFieldsObject->date_death }}@endif">
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_id_country" id="filter_id_country" class="form-control">
-                                        </th>
-                                        <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_id_client" id="filter_id_client" class="form-control">
-                                        </th>
-                                        <th class="text-center font-weight-bolder">
-                                            <select class="form-control" name="filter_with_qr_code" id="filter_with_qr_code">
-                                                <option value="0">Выберите из списка...</option>
-                                                <option value="1">Да</option>
-                                                <option value="2">Нет</option>
+                                            <select class="form-control" name="filter_id_country" id="filter_id_country">
+                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_country)) selected="selected" @endif>Выберите из списка...</option>
+                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && $filterFieldsObject->id_country == 1) selected="selected" @endif>Украина</option>
+                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && $filterFieldsObject->id_country == 2) selected="selected" @endif>Польша</option>
                                             </select>
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_id_status" id="filter_id_status" class="form-control">
+                                            {{-- ВЫВОДИТЬ ВЫПАДАЮЩИЙ СПИСОК ИЗ БЭКА !!! --}}
+                                            <input type="text" name="filter_id_client" id="filter_id_client" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_client)){{ $filterFieldsObject->id_client }}@endif">
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            <select class="form-control" name="filter_with_qr_code" id="filter_with_qr_code">
+                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->with_qr_code)) selected="selected" @endif>Выберите из списка...</option>
+                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && $filterFieldsObject->with_qr_code == 1) selected="selected" @endif>Да</option>
+                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && $filterFieldsObject->with_qr_code == 2) selected="selected" @endif>Нет</option>
+                                            </select>
+                                        </th>
+                                        <th class="text-center font-weight-bolder">
+                                            {{-- ВЫВОДИТЬ ВЫПАДАЮЩИЙ СПИСОК ИЗ БЭКА (ENUMS) !!! --}}
+                                            <select class="form-control" name="filter_id_status" id="filter_id_status">
+                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
+                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 1) selected="selected" @endif>Новый</option>
+                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 2) selected="selected" @endif>Создаётся</option>
+                                                <option value="3" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 3) selected="selected" @endif>Готов</option>
+                                                <option value="4" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 4) selected="selected" @endif>Получен</option>
+                                                <option value="5" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 5) selected="selected" @endif>Потерян</option>
+                                                <option value="6" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 6) selected="selected" @endif>Старый URL</option>
+                                            </select>
                                         </th>
 
                                         <th class="text-center text-secondary font-weight-bolder">
