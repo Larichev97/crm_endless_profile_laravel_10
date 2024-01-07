@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -115,24 +116,12 @@ abstract class CoreRepository implements CoreRepositoryInterface
 
         $fields_array = $model->getFillable();
 
+        /** @var Builder $query */
         $query = $model->query();
+
         $query->select($fields_array);
 
-        // *** Filters:
-        if (!empty($filterFieldsData)) {
-            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
-                if (!empty($filterFieldValue)) {
-                    if (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
-                        $query->whereDate((string) $filterFieldName, '=', (string) $filterFieldValue);
-                    } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
-                        $query->where((string) $filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
-                    } else {
-                        $query->where((string) $filterFieldName, '=', $filterFieldValue);
-                    }
-                }
-            }
-        }
-        // ***
+        $this->setCustomQueryFilters($query, $filterFieldsData);
 
         // File или Redis кэширование не поддерживает тегирование:
         if ($useCache && Cache::supportsTags()) {
@@ -171,5 +160,31 @@ abstract class CoreRepository implements CoreRepositoryInterface
         }
 
         return $result;
+    }
+
+    /**
+     *  Метод добавляет к запросу дополнительные условия из массива {$filterFieldsData}
+     *
+     * @param Builder $query
+     * @param array $filterFieldsData
+     * @return Builder
+     */
+    protected function setCustomQueryFilters(Builder $query, array $filterFieldsData): Builder
+    {
+        if (!empty($filterFieldsData)) {
+            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
+                if (!empty($filterFieldValue)) {
+                    if (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
+                        $query->whereDate((string) $filterFieldName, '=', (string) $filterFieldValue);
+                    } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
+                        $query->where((string) $filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
+                    } else {
+                        $query->where((string) $filterFieldName, '=', $filterFieldValue);
+                    }
+                }
+            }
+        }
+
+        return $query;
     }
 }

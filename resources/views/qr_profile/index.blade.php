@@ -45,39 +45,51 @@
 
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            <input type="date" name="filter_death_date" id="filter_death_date" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->date_death)){{ $filterFieldsObject->date_death }}@endif">
+                                            <input type="date" name="filter_death_date" id="filter_death_date" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->death_date)){{ $filterFieldsObject->death_date }}@endif">
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             <select class="form-control" name="filter_id_country" id="filter_id_country">
                                                 <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_country)) selected="selected" @endif>Выберите из списка...</option>
-                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && $filterFieldsObject->id_country == 1) selected="selected" @endif>Украина</option>
-                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && $filterFieldsObject->id_country == 2) selected="selected" @endif>Польша</option>
+                                                {{-- Массив коллекций стран только с полями "id" и "name" --}}
+                                                @if(!empty($countriesListData))
+                                                    @foreach($countriesListData as $countryItem)
+                                                        <option value="{{ $countryItem->id }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && (int) $filterFieldsObject->id_country == (int) $countryItem->id) selected="selected" @endif>
+                                                            {{ $countryItem->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
                                             </select>
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            {{-- ВЫВОДИТЬ ВЫПАДАЮЩИЙ СПИСОК ИЗ БЭКА !!! --}}
-                                            <input type="text" name="filter_id_client" id="filter_id_client" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_client)){{ $filterFieldsObject->id_client }}@endif">
+                                            <select class="form-control" name="filter_id_client" id="filter_id_client">
+                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_client)) selected="selected" @endif>Выберите клиента из списка...</option>
+                                                {{-- Массив коллекций клиентов только с полями "id" и "name" --}}
+                                                @if(!empty($clientsListData))
+                                                    @foreach($clientsListData as $clientItem)
+                                                        <option value="{{ $clientItem->id }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_client) && (int) $filterFieldsObject->id_client == (int) $clientItem->id) selected="selected" @endif>
+                                                            {{ $clientItem->name }}
+                                                        </option>
+                                                    @endforeach
+                                                @endif
+                                            </select>
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             <select class="form-control" name="filter_with_qr_code" id="filter_with_qr_code">
                                                 <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->with_qr_code)) selected="selected" @endif>Выберите из списка...</option>
-                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && $filterFieldsObject->with_qr_code == 1) selected="selected" @endif>Да</option>
-                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && $filterFieldsObject->with_qr_code == 2) selected="selected" @endif>Нет</option>
+                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 1) selected="selected" @endif>Да</option>
+                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 2) selected="selected" @endif>Нет</option>
                                             </select>
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            {{-- ВЫВОДИТЬ ВЫПАДАЮЩИЙ СПИСОК ИЗ БЭКА (ENUMS) !!! --}}
-                                            <select class="form-control" name="filter_id_status" id="filter_id_status">
-                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
-                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 1) selected="selected" @endif>Новый</option>
-                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 2) selected="selected" @endif>Создаётся</option>
-                                                <option value="3" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 3) selected="selected" @endif>Готов</option>
-                                                <option value="4" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 4) selected="selected" @endif>Получен</option>
-                                                <option value="5" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 5) selected="selected" @endif>Потерян</option>
-                                                <option value="6" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && $filterFieldsObject->id_status == 6) selected="selected" @endif>Старый URL</option>
-                                            </select>
+                                            @if(!empty($statusesListData))
+                                                <select class="form-control" name="filter_id_status" id="filter_id_status">
+                                                    <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
+                                                    @foreach($statusesListData as $statusItem)
+                                                        <option value="{{ $statusItem['id'] }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && (int) $filterFieldsObject->id_status == (int) $statusItem['id']) selected="selected" @endif>{{ $statusItem['name'] }}</option>
+                                                    @endforeach
+                                                </select>
+                                            @endif
                                         </th>
-
                                         <th class="text-center text-secondary font-weight-bolder">
                                             <button type="submit" class="btn btn-info" style="margin-bottom: 0;">Фильтр</button>
                                         </th>

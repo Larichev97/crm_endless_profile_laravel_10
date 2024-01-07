@@ -16,7 +16,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Главная</span>
                 </a>
@@ -25,7 +25,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'clients.index' ? 'active' : '' }}" href="{{ route('clients.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Клиенты</span>
                 </a>
@@ -34,7 +34,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'qrs.index' ? 'active' : '' }}" href="{{ route('qrs.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">QR-профили</span>
                 </a>
@@ -43,7 +43,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'countries.index' ? 'active' : '' }}" href="{{ route('countries.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Страны</span>
                 </a>
@@ -52,7 +52,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'cities.index' ? 'active' : '' }}" href="{{ route('cities.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Города</span>
                 </a>
@@ -61,7 +61,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'settings.index' ? 'active' : '' }}" href="{{ route('settings.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Настройки</span>
                 </a>
@@ -70,7 +70,7 @@
                 <a class="nav-link {{ Route::currentRouteName() == 'l5-swagger.default.api' ? 'active' : '' }}" href="{{ route('l5-swagger.default.api') }}" target="_blank">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
-                        <i class="ni ni-bullet-list-67 text-primary text-sm opacity-10"></i>
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
                     </div>
                     <span class="nav-link-text ms-1">Swagger API</span>
                 </a>

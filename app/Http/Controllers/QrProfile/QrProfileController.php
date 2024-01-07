@@ -63,7 +63,11 @@ final class QrProfileController extends Controller
 
             $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
 
-            return view('qr_profile.index',compact(['qrProfiles', 'filterFieldsObject',]));
+            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
+            $statusesListData = QrStatusEnum::getStatusesList();
+            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+
+            return view('qr_profile.index',compact(['qrProfiles', 'filterFieldsObject', 'clientsListData', 'statusesListData', 'countriesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

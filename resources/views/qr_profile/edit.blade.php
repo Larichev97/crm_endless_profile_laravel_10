@@ -8,7 +8,7 @@
             @csrf
             @method('PUT')
 
-            <a style="width: fit-content;" class="btn btn-primary" href="{{ route('qrs.index') }}"> Назад</a>
+            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('qrs.index') }}">Назад</a>
 
             <div>
                 @include('components.alert')

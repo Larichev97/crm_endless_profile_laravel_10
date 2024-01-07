@@ -2,11 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Repositories\Client\ClientRepository;
+use App\Repositories\QrProfile\QrProfileRepository;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
+use Illuminate\View\Factory;
 
 class HomeController extends Controller
 {
-        /**
+    public function __construct(
+        readonly ClientRepository $clientRepository,
+        readonly QrProfileRepository $qrProfileRepository
+    )
+    {
+    }
+
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -19,10 +30,12 @@ class HomeController extends Controller
     /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\View\View
      */
-    public function index()
+    public function index():Application|View|Factory
     {
-        return view('pages.dashboard');
+        $clientsTotalCount = count($this->clientRepository->getModelCollection(true));
+        $qrProfilesTotalCount = count($this->qrProfileRepository->getModelCollection(true));
+
+        return view('pages.dashboard', compact(['clientsTotalCount', 'qrProfilesTotalCount']));
     }
 }
