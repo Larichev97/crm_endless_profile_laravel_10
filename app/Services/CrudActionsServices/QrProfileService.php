@@ -115,6 +115,8 @@ final class QrProfileService
                 $qrCodeSize = 400;
             }
 
+            $qrProfileUrl .= $id;
+
             $generate = $fileService->processGenerateQrCodeFile($qrProfileUrl, $publicDirPath, $qrCodeFileName, $qrCodeFileExtension, (int) $qrCodeSize);
 
             if ($generate) {

@@ -21,6 +21,15 @@
 
 5. php artisan l5-swagger:generate (если нужно обновить документацию API)
 
+## Очистка кэша
+
+1. php artisan cache:clear
+2. php artisan config:clear
+3. php artisan route:clear
+
+## Генерация класса оптимизации
+
+- php artisan optimize
 
 ## About Laravel
 
