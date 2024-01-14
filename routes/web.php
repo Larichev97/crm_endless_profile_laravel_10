@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ChangePassword;
+use App\Http\Controllers\FrontQrProfileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\PageController;
@@ -59,3 +60,6 @@ Route::group(['middleware' => 'auth'], function () {
     // Setting entity:
     require_once 'settings/settings.php';
 });
+
+// Front QrProfile (test QR-CODE):
+Route::get('qr-profile/{id}', [FrontQrProfileController::class, 'show'])->name('front-qrs.show');
