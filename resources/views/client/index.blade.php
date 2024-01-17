@@ -47,7 +47,7 @@
                                             <td class="align-middle text-center">{{ $client->phone_number }}</td>
                                             <td class="align-middle text-center">
                                                 @if($client->id_country && !empty(trim($client->country->flag_file_name)))
-                                                    <img src="{{ asset('storage/images/countries/'.$client->id_country.'/'.$client->country->flag_file_name) }}" alt="{{ $client->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                                    <img src="{{ asset('/images/countries/'.$client->id_country.'/'.$client->country->flag_file_name) }}" alt="{{ $client->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
                                                 @else
                                                     --
                                                 @endif

@@ -106,7 +106,7 @@
                                         <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
                                         <td class="align-middle text-center">
                                             @if($qrProfile->id_country && !empty(trim($qrProfile->country->flag_file_name)))
-                                                <img src="{{ asset('storage/images/countries/'.$qrProfile->id_country.'/'.$qrProfile->country->flag_file_name) }}" alt="{{ $qrProfile->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                                <img src="{{ asset('/images/countries/'.$qrProfile->id_country.'/'.$qrProfile->country->flag_file_name) }}" alt="{{ $qrProfile->country->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
                                             @else
                                                 --
                                             @endif

@@ -48,7 +48,7 @@
                                         </td>
                                         <td class="align-middle text-center">
                                             @if(!empty(trim($countryItem->flag_file_name)))
-                                                <img src="{{ asset('storage/images/countries/'.$countryItem->id.'/'.$countryItem->flag_file_name) }}" alt="{{ $countryItem->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
+                                                <img src="{{ asset('/images/countries/'.$countryItem->id.'/'.$countryItem->flag_file_name) }}" alt="{{ $countryItem->iso_code }}" width="32px" height="20px" style="box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);">
                                             @else
                                                 --
                                             @endif
