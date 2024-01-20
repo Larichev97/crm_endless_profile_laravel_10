@@ -13,15 +13,21 @@ class ResetPassword extends Controller
 
     public function show()
     {
+        abort(404); // Временно отключаю возможность восстановить пароль
+
         return view('auth.reset-password');
     }
 
     public function routeNotificationForMail() {
+        abort(404); // Временно отключаю возможность восстановить пароль
+
         return request()->email;
     }
 
     public function send(Request $request)
     {
+        abort(404); // Временно отключаю возможность восстановить пароль
+
         $email = $request->validate([
             'email' => ['required']
         ]);

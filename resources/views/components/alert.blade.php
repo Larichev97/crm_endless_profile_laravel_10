@@ -1,4 +1,4 @@
-<div class="px-4 pt-4">
+<div class="px-4 pt-5">
     @if ($message = session()->has('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <p class="text-white mb-0">{{ session()->get('success') }}</p>

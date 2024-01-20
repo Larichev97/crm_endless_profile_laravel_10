@@ -2,7 +2,7 @@
 
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Dashboard'])
-    <div class="container-fluid py-4 mt-4">
+    <div class="container-fluid py-4 mt-5">
         <div class="row">
             <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                 <a href="{{ route('clients.index') }}">

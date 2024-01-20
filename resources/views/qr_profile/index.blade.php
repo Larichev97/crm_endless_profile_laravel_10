@@ -6,6 +6,8 @@
     <div class="container-fluid py-4">
         @include('components.alert')
 
+        @php $isObjectFilterFiles = (isset($filterFieldsObject) && is_object($filterFieldsObject)); @endphp
+
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4">
@@ -26,7 +28,9 @@
                                 <thead>
                                     <tr>
                                         <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">#</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">ФИО</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Имя</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Фамилия</th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Отчество</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Дата смерти</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Принадлежит клиенту</th>
@@ -39,21 +43,27 @@
                                 <tr>
                                     <form id="filter_form" action="{{ route('qrs.index') }}" method="GET">
                                         <th class="text-center font-weight-bolder">
-                                            <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
+                                            <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
                                         </th>
                                         <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
-
+                                            <input type="text" name="filter_firstname" id="filter_firstname" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->filter_firstname)){{ $filterFieldsObject->filter_firstname }}@endif">
+                                        </th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
+                                            <input type="text" name="filter_lastname" id="filter_lastname" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->filter_lastname)){{ $filterFieldsObject->filter_lastname }}@endif">
+                                        </th>
+                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
+                                            <input type="text" name="filter_surname" id="filter_surname" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->filter_surname)){{ $filterFieldsObject->filter_surname }}@endif">
                                         </th>
                                         <th class="text-center font-weight-bolder">
-                                            <input type="date" name="filter_death_date" id="filter_death_date" class="form-control" value="@if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->death_date)){{ $filterFieldsObject->death_date }}@endif">
+                                            <input type="date" name="filter_death_date" id="filter_death_date" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->death_date)){{ $filterFieldsObject->death_date }}@endif">
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             <select class="form-control" name="filter_id_country" id="filter_id_country">
-                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_country)) selected="selected" @endif>Выберите из списка...</option>
+                                                <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->id_country)) selected="selected" @endif>Выберите из списка...</option>
                                                 {{-- Массив коллекций стран только с полями "id" и "name" --}}
                                                 @if(!empty($countriesListData))
                                                     @foreach($countriesListData as $countryItem)
-                                                        <option value="{{ $countryItem->id }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_country) && (int) $filterFieldsObject->id_country == (int) $countryItem->id) selected="selected" @endif>
+                                                        <option value="{{ $countryItem->id }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->id_country) && (int) $filterFieldsObject->id_country == (int) $countryItem->id) selected="selected" @endif>
                                                             {{ $countryItem->name }}
                                                         </option>
                                                     @endforeach
@@ -62,11 +72,11 @@
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             <select class="form-control" name="filter_id_client" id="filter_id_client">
-                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_client)) selected="selected" @endif>Выберите клиента из списка...</option>
+                                                <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->id_client)) selected="selected" @endif>Выберите клиента из списка...</option>
                                                 {{-- Массив коллекций клиентов только с полями "id" и "name" --}}
                                                 @if(!empty($clientsListData))
                                                     @foreach($clientsListData as $clientItem)
-                                                        <option value="{{ $clientItem->id }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_client) && (int) $filterFieldsObject->id_client == (int) $clientItem->id) selected="selected" @endif>
+                                                        <option value="{{ $clientItem->id }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->id_client) && (int) $filterFieldsObject->id_client == (int) $clientItem->id) selected="selected" @endif>
                                                             {{ $clientItem->name }}
                                                         </option>
                                                     @endforeach
@@ -75,17 +85,17 @@
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             <select class="form-control" name="filter_with_qr_code" id="filter_with_qr_code">
-                                                <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->with_qr_code)) selected="selected" @endif>Выберите из списка...</option>
-                                                <option value="1" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 1) selected="selected" @endif>Да</option>
-                                                <option value="2" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 2) selected="selected" @endif>Нет</option>
+                                                <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->with_qr_code)) selected="selected" @endif>Выберите из списка...</option>
+                                                <option value="1" @if($isObjectFilterFiles && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 1) selected="selected" @endif>Да</option>
+                                                <option value="2" @if($isObjectFilterFiles && !empty($filterFieldsObject->with_qr_code) && (int) $filterFieldsObject->with_qr_code == 2) selected="selected" @endif>Нет</option>
                                             </select>
                                         </th>
                                         <th class="text-center font-weight-bolder">
                                             @if(!empty($statusesListData))
                                                 <select class="form-control" name="filter_id_status" id="filter_id_status">
-                                                    <option value="0" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
+                                                    <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
                                                     @foreach($statusesListData as $statusItem)
-                                                        <option value="{{ $statusItem['id'] }}" @if(isset($filterFieldsObject) && is_object($filterFieldsObject) && !empty($filterFieldsObject->id_status) && (int) $filterFieldsObject->id_status == (int) $statusItem['id']) selected="selected" @endif>{{ $statusItem['name'] }}</option>
+                                                        <option value="{{ $statusItem['id'] }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->id_status) && (int) $filterFieldsObject->id_status == (int) $statusItem['id']) selected="selected" @endif>{{ $statusItem['name'] }}</option>
                                                     @endforeach
                                                 </select>
                                             @endif
@@ -98,11 +108,9 @@
                                 @foreach ($qrProfiles as $qrProfile)
                                     <tr>
                                         <td class="align-middle text-center">{{ $qrProfile->id }}</td>
-                                        <td class="align-middle text-center">
-                                            <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $qrProfile->fullName }}</h6>
-                                            </div>
-                                        </td>
+                                        <td class="align-middle text-center">{{ $qrProfile->firstname }}</td>
+                                        <td class="align-middle text-center">{{ $qrProfile->lastname }}</td>
+                                        <td class="align-middle text-center">{{ $qrProfile->surname }}</td>
                                         <td class="align-middle text-center">{{ $qrProfile->deathDateFormatted }}</td>
                                         <td class="align-middle text-center">
                                             @if($qrProfile->id_country && !empty(trim($qrProfile->country->flag_file_name)))
@@ -149,35 +157,5 @@
 @endsection
 
 @push('js')
-    <script>
-        document.addEventListener('DOMContentLoaded', handleFilterFormSubmit);
-
-        /**
-         *  Метод проверяет наличие заполенных полей фильтров и добавляет их к URL для редиректа
-         */
-        function handleFilterFormSubmit() {
-            const filterForm = document.getElementById('filter_form');
-
-            if (!filterForm) return;
-
-            filterForm.addEventListener('submit', function(event) {
-                event.preventDefault();
-
-                const formData = new FormData(this);
-                const filteredData = {};
-
-                // Пропускаем пустые поля формы Фильтра:
-                formData.forEach(function(value, key) {
-                    if (value !== '' && value !== '0') {
-                        filteredData[key] = value;
-                    }
-                });
-
-                const queryParameters = new URLSearchParams(filteredData).toString();
-                const action = this.getAttribute('action');
-
-                window.location.href = `${action}?${queryParameters}`;
-            });
-        }
-    </script>
+    @include('components.filter-script')
 @endpush

@@ -13,6 +13,7 @@ use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Services\CrudActionsServices\ClientService;
 use App\Services\FileService;
+use App\Services\FilterTableService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -46,14 +47,22 @@ class ClientController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @param FilterTableService $filterTableService
      * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
+            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
+            $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
 
-            return view('client.index',compact('clients'));
+            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
+
+            $statusesListData = ClientStatusEnum::getStatusesList();
+            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+
+            return view('client.index',compact(['clients', 'filterFieldsObject', 'statusesListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

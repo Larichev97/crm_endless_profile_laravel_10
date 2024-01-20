@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.guest.navbar', ['title' => 'Просмотр QR-профиля #'.$qrProfile->id])
 
-    <div class="container-fluid py-4" style="margin-top: 90px!important;">
+    <div class="container-fluid py-4" style="margin-top: 130px!important;">
         <div class="card shadow-lg mx-4">
             <div class="card-body p-3">
                 <div class="row gx-4">

@@ -9925,6 +9925,14 @@ textarea.form-control-lg {
   min-height: 100px !important;
 }
 
+.min-height-120 {
+    min-height: 120px !important;
+}
+
+.min-height-130 {
+    min-height: 130px !important;
+}
+
 .min-height-150 {
   min-height: 150px !important;
 }

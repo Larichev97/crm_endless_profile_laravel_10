@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
@@ -10,16 +13,20 @@ use Illuminate\Support\Facades\Password;
 class LoginController extends Controller
 {
     /**
-     * Display login page.
+     *  Display login page.
      *
-     * @return Renderable
+     * @return Application|View|Factory|\Illuminate\Contracts\Foundation\Application
      */
-    public function show()
+    public function show(): Application|View|Factory|\Illuminate\Contracts\Foundation\Application
     {
         return view('auth.login');
     }
 
-    public function login(Request $request)
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function login(Request $request): \Illuminate\Http\RedirectResponse
     {
         $credentials = $request->validate([
             'email' => ['required', 'email'],

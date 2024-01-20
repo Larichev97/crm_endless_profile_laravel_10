@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление настройки'])
 
-    <div class="container-fluid py-4 mt-4">
+    <div class="container-fluid py-4 mt-5">
         <form class="card p-4" action="{{ route('settings.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')

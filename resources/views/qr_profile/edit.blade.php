@@ -3,7 +3,7 @@
 @section('content')
     @include('layouts.navbars.auth.topnav', ['title' => 'Редактирование клиента'])
 
-    <div class="container-fluid py-4 mt-4">
+    <div class="container-fluid py-4 mt-5">
         <form class="card p-4" action="{{ route('qrs.update', $qrProfile->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
