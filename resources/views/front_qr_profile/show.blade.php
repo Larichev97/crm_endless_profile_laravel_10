@@ -88,12 +88,12 @@
                             </div>
                         </div>
                     @endif
-                    @if(!empty($qrProfile->voice_message_file_name))
+                    @if(!empty($qrProfile->voice_message_file_name) && !empty($voiceMessagePath))
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <h6 class="fw-bold">Голосовое сообщение</h6>
                                 <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
-                                    <p class="text-dark text-field">{{ $qrProfile->voice_message_file_name }}</p>
+                                    <a class="text-dark text-field" href="{{ asset($voiceMessagePath) }}" id="voice_message_file_name" target="_blank">{{ $qrProfile->voice_message_file_name }}</a>
                                 </div>
                             </div>
                         </div>
