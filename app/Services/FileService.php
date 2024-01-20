@@ -130,7 +130,6 @@ final class FileService
         $publicDirPath = $this->processPreparePath($publicDirPath);
 
         if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
-//            $filePath = 'storage/'.$publicDirPath.'/'.$fileName;
             $filePath = $publicDirPath.'/'.$fileName;
         }
 
@@ -151,8 +150,6 @@ final class FileService
         $publicDirPath = $this->processPreparePath($publicDirPath);
 
         if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
-//            $url = url('storage/'.$publicDirPath.'/'.$fileName);
-//            $url = asset('storage/'.$publicDirPath.'/'.$fileName);
             $url = asset($publicDirPath.'/'.$fileName);
         }
 
