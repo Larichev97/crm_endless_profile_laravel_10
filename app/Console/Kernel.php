@@ -2,11 +2,16 @@
 
 namespace App\Console;
 
+use App\Console\Commands\ProcessQrCodes;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    protected $commands = [
+        ProcessQrCodes::class, // Генерация QR кодов по `id` из таблицы `qr_profiles`
+    ];
+
     /**
      * Define the application's command schedule.
      */
