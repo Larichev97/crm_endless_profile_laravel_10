@@ -108,7 +108,7 @@ final class QrProfileService
 
             $publicDirPath = 'qr/'.$id;
 
-            $qrCodeFileName = 'qr_code';
+            $qrCodeFileName = 'qr_'.$id;
             $qrCodeFileExtension = 'png';
 
             if (!is_numeric($qrCodeSize) || (int) $qrCodeSize == 0) {

@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\QrProfile;
+use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -33,7 +34,7 @@ class DatabaseSeeder extends Seeder
         DB::table('settings')->insert([
             [
                 'name' => 'QR_PROFILE_BASE_URL',
-                'value' => 'http://crm-qr-laravel.loc/qrs/',
+                'value' => env('APP_URL').'/qrs/',
                 'created_at' => date('Y-m-d H:i:s'),
             ],
             [
@@ -116,8 +117,45 @@ class DatabaseSeeder extends Seeder
 
 
         if (in_array(env('APP_ENV'), ['loc', 'local', 'dev', 'develop'])) {
-            Client::factory(20)->create();
-            QrProfile::factory(35)->create();
+            DB::table('clients')->insert([
+                [
+                    'id_status' => 1,
+                    'id_country' => 1,
+                    'id_city' => 1,
+                    'phone_number' => '+380687777777',
+                    'email' => 'denis.larichev97@gmail.com',
+                    'bdate' => '1997-01-05',
+                    'address' => 'Гидропарковая 13',
+                    'firstname' => 'Денис',
+                    'lastname' => 'Ларичев',
+                    'surname' => 'Васильевич',
+                    'photo_name' => '',
+                    'manager_comment' => '',
+                    'id_user_add' => 1,
+                    'id_user_update' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ],
+                [
+                    'id_status' => 2,
+                    'id_country' => 1,
+                    'id_city' => 2,
+                    'phone_number' => '+380688888888',
+                    'email' => 'test@gmail.com',
+                    'bdate' => '1993-07-13',
+                    'address' => 'Тестовая 18',
+                    'firstname' => 'Дмитрий',
+                    'lastname' => 'Тестовый',
+                    'surname' => 'Тестович',
+                    'photo_name' => '',
+                    'manager_comment' => '',
+                    'id_user_add' => 1,
+                    'id_user_update' => 1,
+                    'created_at' => date('Y-m-d H:i:s'),
+                ],
+            ]);
+
+            Client::factory(10)->create();
+            QrProfile::factory(15)->create();
         }
     }
 }

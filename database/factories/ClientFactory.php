@@ -32,10 +32,11 @@ class ClientFactory extends Factory
             'address' => $this->faker->unique()->address,
             'firstname' => $this->faker->firstName,
             'lastname' => $this->faker->unique()->lastName,
-            'surname' => '',
+            'surname' => $this->faker->unique()->lastName,
+            'photo_name' => '',
             'manager_comment' => $this->faker->unique()->realText,
             'id_user_add' => 1,
-            'id_user_update' => 0,
+            'id_user_update' => 1,
         ];
     }
 }

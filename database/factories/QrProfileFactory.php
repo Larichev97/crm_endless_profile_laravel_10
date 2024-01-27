@@ -23,7 +23,7 @@ class QrProfileFactory extends Factory
     public function definition(): array
     {
         return [
-            'id_client' => $this->faker->numberBetween(1, 50),
+            'id_client' => $this->faker->numberBetween(1, 3),
             'id_status' => $this->faker->numberBetween(1, 6),
             'id_country' => 1,
             'id_city' => $this->faker->numberBetween(1, 4),
@@ -31,7 +31,7 @@ class QrProfileFactory extends Factory
             'death_date' => $this->faker->dateTimeBetween('-15 years', 'now'),
             'firstname' => $this->faker->firstName,
             'lastname' => $this->faker->unique()->lastName,
-            'surname' => '',
+            'surname' => $this->faker->unique()->lastName,
             'cause_death' => $this->faker->unique()->realTextBetween(10, 30),
             'profession' => $this->faker->unique()->realTextBetween(10, 30),
             'hobbies' => $this->faker->unique()->realTextBetween(10, 30),
@@ -42,7 +42,7 @@ class QrProfileFactory extends Factory
             'geo_latitude' => $this->faker->unique()->latitude,
             'geo_longitude' => $this->faker->unique()->longitude,
             'id_user_add' => 1,
-            'id_user_update' => 0,
+            'id_user_update' => 1,
         ];
     }
 }
