@@ -24,13 +24,13 @@ final class FileService
             $publicDirPath = $this->processPreparePath($publicDirPath);
 
             $qrCodeFileNameWithExtension = $qrCodeFileName.'.'.$qrCodeFileExtension;
-            $qrCodeFilePathWithName = storage_path('app/public/'.$publicDirPath.'/'.$qrCodeFileNameWithExtension);
+            $qrCodeFilePathWithName = storage_path(path: 'app/public/'.$publicDirPath.'/'.$qrCodeFileNameWithExtension);
 
-            if (!File::exists(storage_path('app/public/'.$publicDirPath))) {
-                File::makeDirectory(storage_path('app/public/'.$publicDirPath), 0777, true);
+            if (!File::exists(storage_path(path: 'app/public/'.$publicDirPath))) {
+                File::makeDirectory(storage_path(path: 'app/public/'.$publicDirPath), mode: 0777, recursive: true);
             }
 
-            $this->processDeleteOldFile($qrCodeFileNameWithExtension, $publicDirPath);
+            $this->processDeleteOldFile(oldFileName: $qrCodeFileNameWithExtension, publicDirPath: $publicDirPath);
 
             QrCode::size($qrCodeSize)->format($qrCodeFileExtension)->errorCorrection('M')->generate($url, $qrCodeFilePathWithName);
 
@@ -61,7 +61,7 @@ final class FileService
         }
 
         if (!empty($file) && $file instanceof UploadedFile) {
-            $publicDirPath = $this->processPreparePath($publicDirPath);
+            $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
             $currentFileName = time().'.'.$file->extension();
 
@@ -73,17 +73,16 @@ final class FileService
                 $currentFileName = $file->getClientOriginalName();
             }
 
-            if (!File::exists(storage_path('app/public/'.$publicDirPath))) {
-                File::makeDirectory(storage_path('app/public/'.$publicDirPath), 0777, true);
+            if (!File::exists(storage_path(path: 'app/public/'.$publicDirPath))) {
+                File::makeDirectory(storage_path(path: 'app/public/'.$publicDirPath), mode: 0777, recursive: true);
             }
 
-            // *** Удаление старого файла, если он был:
+            // Удаление старого файла, если он был:
             if (!empty(trim($oldFileName))) {
-                $this->processDeleteOldFile($oldFileName, $publicDirPath);
+                $this->processDeleteOldFile(oldFileName: $oldFileName, publicDirPath: $publicDirPath);
             }
-            // ***
 
-            $uploadPhoto = $file->storeAs('public/'.$publicDirPath, $currentFileName);
+            $uploadPhoto = $file->storeAs(path: 'public/'.$publicDirPath, name: $currentFileName);
 
             if ($uploadPhoto && !empty($currentFileName)) {
                 $fileName = $currentFileName;
@@ -103,13 +102,13 @@ final class FileService
     public function processDeleteOldFile(string $oldFileName, string $publicDirPath = ''): bool
     {
         if (!empty($oldFileName)) {
-            $publicDirPath = $this->processPreparePath($publicDirPath);
+            $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
             // Проверка наличия файла и его удаление, если он существует:
             $oldPhotoPath = storage_path('app/public/'.$publicDirPath.'/'.$oldFileName);
 
             if (File::exists($oldPhotoPath)) {
-                return (bool) File::delete($oldPhotoPath);
+                return (bool) File::delete(paths: $oldPhotoPath);
             }
         }
 
@@ -127,7 +126,7 @@ final class FileService
     {
         $filePath = '';
 
-        $publicDirPath = $this->processPreparePath($publicDirPath);
+        $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
         if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
             $filePath = $publicDirPath.'/'.$fileName;
@@ -147,9 +146,9 @@ final class FileService
     {
         $url = '';
 
-        $publicDirPath = $this->processPreparePath($publicDirPath);
+        $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
-        if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
+        if (!empty($fileName) && File::exists(storage_path(path: 'app/public/'.$publicDirPath.'/'.$fileName))) {
             $url = asset($publicDirPath.'/'.$fileName);
         }
 
@@ -164,12 +163,12 @@ final class FileService
      */
     public function processPreparePath(string $dirPath): string
     {
-        if (str_starts_with($dirPath, '/')) {
-            $dirPath = substr($dirPath, 1);
+        if (str_starts_with(haystack: $dirPath, needle: '/')) {
+            $dirPath = substr(string: $dirPath, offset: 1);
         }
 
-        if (str_ends_with($dirPath, '/')) {
-            $dirPath = substr($dirPath, 0, -1);
+        if (str_ends_with(haystack: $dirPath, needle: '/')) {
+            $dirPath = substr(string: $dirPath, offset: 0, length: -1);
         }
 
         return $dirPath;

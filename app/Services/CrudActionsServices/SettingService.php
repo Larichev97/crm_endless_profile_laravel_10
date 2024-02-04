@@ -19,7 +19,7 @@ final class SettingService
     {
         $formDataArray = $settingStoreDTO->getFormFieldsArray();
 
-        $settingModel = Setting::query()->create($formDataArray);
+        $settingModel = Setting::query()->create(attributes: $formDataArray);
 
         return (bool) $settingModel;
     }
@@ -33,7 +33,7 @@ final class SettingService
      */
     public function processUpdate(SettingUpdateDTO $settingUpdateDTO, SettingRepository $settingRepository): bool
     {
-        $settingModel = $settingRepository->getForEditModel((int) $settingUpdateDTO->id_setting, true);
+        $settingModel = $settingRepository->getForEditModel(id: (int) $settingUpdateDTO->id_setting, useCache: true);
 
         if (empty($settingModel)) {
             return false;
@@ -43,9 +43,9 @@ final class SettingService
 
         /** @var Setting $settingModel */
 
-        $updateSetting = $settingModel->update($formDataArray);
+        $updateSetting = $settingModel->update(attributes: $formDataArray);
 
-        return $updateSetting;
+        return (bool) $updateSetting;
     }
 
     /**
@@ -57,7 +57,7 @@ final class SettingService
      */
     public function processDestroy($id, SettingRepository $settingRepository): bool
     {
-        $settingModel = $settingRepository->getForEditModel((int) $id, true);
+        $settingModel = $settingRepository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($settingModel)) {
             /** @var Setting $settingModel */

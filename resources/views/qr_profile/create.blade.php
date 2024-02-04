@@ -17,7 +17,7 @@
             <div class="row">
                 <input type="hidden" name="id_status" class="form-control" value="{{ old('id_user_add', $idStatusNew) }}">
                 <input type="hidden" name="id_user_add" class="form-control" value="{{ old('id_user_add', auth()->user()->id) }}">
-                <input type="hidden" name="id_user_update" class="form-control" value="{{ old('id_user_update', 0) }}">
+                <input type="hidden" name="id_user_update" class="form-control" value="{{ old('id_user_update', auth()->user()->id) }}">
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">

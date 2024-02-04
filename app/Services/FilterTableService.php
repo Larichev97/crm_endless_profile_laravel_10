@@ -14,8 +14,8 @@ class FilterTableService
 
         if (!empty($allFieldsData)) {
             foreach ($allFieldsData as $fieldName => $fieldValue) {
-                if (str_starts_with($fieldName, 'filter_') && !empty($fieldValue)) {
-                    $defaultFieldName = str_replace('filter_', '', $fieldName);
+                if (str_starts_with(haystack: $fieldName, needle: 'filter_') && !empty($fieldValue)) {
+                    $defaultFieldName = str_replace(search: 'filter_', replace: '', subject: $fieldName);
                     $filterFieldsArray[$defaultFieldName] = $fieldValue;
                 }
             }

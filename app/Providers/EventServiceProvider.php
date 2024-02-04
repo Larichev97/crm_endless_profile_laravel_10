@@ -6,11 +6,13 @@ use App\Models\City;
 use App\Models\Client;
 use App\Models\Country;
 use App\Models\QrProfile;
+use App\Models\QrProfileImage;
 use App\Models\Setting;
 use App\Observers\Client\ClientClearCacheObserver;
 use App\Observers\City\CityClearCacheObserver;
 use App\Observers\Country\CountryClearCacheObserver;
 use App\Observers\QrProfile\QrProfileClearCacheObserver;
+use App\Observers\QrProfile\QrProfileImageGalleryClearCacheObserver;
 use App\Observers\Setting\SettingClearCacheObserver;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
@@ -38,6 +40,7 @@ class EventServiceProvider extends ServiceProvider
         // *** Очистка кэша при выполнении CRUD у моделей:
         Client::observe(ClientClearCacheObserver::class);
         QrProfile::observe(QrProfileClearCacheObserver::class);
+        QrProfileImage::observe(QrProfileImageGalleryClearCacheObserver::class);
         Country::observe(CountryClearCacheObserver::class);
         City::observe(CityClearCacheObserver::class);
         Setting::observe(SettingClearCacheObserver::class);

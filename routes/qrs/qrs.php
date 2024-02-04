@@ -31,4 +31,17 @@ Route::prefix('qrs')->group(function () {
 
     // Generate Qr Code
     Route::get('/generate-qr-code/{id}', [QrProfileController::class, 'generateQrCodeImage'])->name('qrs.generate-qr-code-image');
+
+    // Gallery ##############################################################################################################################
+
+    // Create photos for Gallery:
+    Route::get('/gallery/{id}/create', [QrProfileController::class, 'createGalleryImages'])->name('qrs.create-gallery-images');
+
+    // Store photos for Gallery:
+    Route::post('/gallery', [QrProfileController::class, 'storeGalleryImages'])->name('qrs.store-gallery-images');
+
+    // Destroy photo in gallery:
+    Route::delete('/gallery/{id}', [QrProfileController::class, 'destroyGalleryImage'])->name('qrs.destroy-gallery-image');
+
+    // ######################################################################################################################################
 });

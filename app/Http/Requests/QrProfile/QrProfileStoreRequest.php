@@ -48,6 +48,19 @@ final class QrProfileStoreRequest extends FormRequest
             'qr_code_file_name' => 'nullable|string|max:255',
             'id_user_add' => 'required|min:1|integer',
             'id_user_update' => 'required|min:0|integer',
+            'gallery_photos.*' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:4048',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public function messages(): array
+    {
+        return [
+            'gallery_photos.*.image' => 'Каждый файл в поле :attribute должен быть изображением',
+            'gallery_photos.*.mimes' => 'Каждый файл в поле :attribute должен быть одним из следующих форматов: jpg, jpeg, png, heic, heif',
+            'gallery_photos.*.max' => 'Каждый файл в поле :attribute не должен превышать размер 4 МБ',
         ];
     }
 }

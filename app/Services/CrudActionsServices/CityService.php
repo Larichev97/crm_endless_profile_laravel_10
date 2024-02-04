@@ -19,7 +19,7 @@ final class CityService
     {
         $formDataArray = $cityStoreDTO->getFormFieldsArray();
 
-        $cityModel = City::query()->create($formDataArray);
+        $cityModel = City::query()->create(attributes: $formDataArray);
 
         return (bool) $cityModel;
     }
@@ -33,7 +33,7 @@ final class CityService
      */
     public function processUpdate(CityUpdateDTO $cityUpdateDTO, CityRepository $cityRepository): bool
     {
-        $cityModel = $cityRepository->getForEditModel((int) $cityUpdateDTO->id_city, true);
+        $cityModel = $cityRepository->getForEditModel(id: (int) $cityUpdateDTO->id_city, useCache: true);
 
         if (empty($cityModel)) {
             return false;
@@ -43,7 +43,7 @@ final class CityService
 
         /** @var City $cityModel */
 
-        $updateCity = $cityModel->update($formDataArray);
+        $updateCity = $cityModel->update(attributes: $formDataArray);
 
         return $updateCity;
     }
@@ -57,7 +57,7 @@ final class CityService
      */
     public function processDestroy($id, CityRepository $cityRepository): bool
     {
-        $cityModel = $cityRepository->getForEditModel((int) $id, true);
+        $cityModel = $cityRepository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($cityModel)) {
             /** @var City $cityModel */

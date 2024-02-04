@@ -21,15 +21,15 @@ final class CountryService
     {
         $formDataArray = $countryStoreDTO->getFormFieldsArray();
 
-        $countryModel = Country::query()->create($formDataArray);
+        $countryModel = Country::query()->create(attributes: $formDataArray);
 
         if ($countryModel) {
             /** @var Country $countryModel */
             $countriesDirPath = 'images/countries/'.$countryModel->getKey();
 
-            $formFilesNamesArray['flag_file_name'] = $fileService->processUploadFile($countryStoreDTO->flag_file, $countriesDirPath);
+            $formFilesNamesArray['flag_file_name'] = $fileService->processUploadFile(file: $countryStoreDTO->flag_file, publicDirPath: $countriesDirPath);
 
-            return (bool) $countryModel->update($formFilesNamesArray);
+            return (bool) $countryModel->update(attributes: $formFilesNamesArray);
         }
 
         return false;
@@ -45,7 +45,7 @@ final class CountryService
      */
     public function processUpdate(CountryUpdateDTO $countryUpdateDTO, FileService $fileService, CountryRepository $countryRepository): bool
     {
-        $countryModel = $countryRepository->getForEditModel((int) $countryUpdateDTO->id_country, true);
+        $countryModel = $countryRepository->getForEditModel(id: (int) $countryUpdateDTO->id_country, useCache: true);
 
         if (empty($countryModel)) {
             return false;
@@ -56,11 +56,11 @@ final class CountryService
         /** @var Country $countryModel */
         $countriesDirPath = 'images/countries/'.$countryModel->getKey();
 
-        $formDataArray['flag_file_name'] = $fileService->processUploadFile($countryUpdateDTO->flag_file, $countriesDirPath, $countryUpdateDTO->flag_file_name, '');
+        $formDataArray['flag_file_name'] = $fileService->processUploadFile(file: $countryUpdateDTO->flag_file, publicDirPath: $countriesDirPath, oldFileName: $countryUpdateDTO->flag_file_name, newFileName: '');
 
-        $updateCountry = $countryModel->update($formDataArray);
+        $updateCountry = $countryModel->update(attributes: $formDataArray);
 
-        return $updateCountry;
+        return (bool) $updateCountry;
     }
 
     /**
@@ -72,7 +72,7 @@ final class CountryService
      */
     public function processDestroy($id, CountryRepository $countryRepository): bool
     {
-        $countryModel = $countryRepository->getForEditModel((int) $id, true);
+        $countryModel = $countryRepository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($countryModel)) {
             /** @var Country $countryModel */

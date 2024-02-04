@@ -169,7 +169,65 @@
                     </div>
                 </div>
             </div>
-            @include('layouts.footers.auth.footer')
         </div>
+        <div class="container-fluid py-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header pb-0">
+                            <div class="row">
+                                <div class="col-md-4"><span class="text-uppercase text-sm">Галерея QR-профиля</span></div>
+                                <div class="col-md-8 d-flex align-items-center">
+                                    <a href="{{ route('qrs.create-gallery-images', $qrProfile->id) }}" class="btn btn-success btn-sm ms-auto"><i class="fas fa-camera" style="margin-right: 10px;"></i>Добавить фотографии в галерею</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @php
+                                    $qrProfileGallery = $qrProfile->qrProfileImages;
+                                    $galleryImagesCount = 0;
+                                @endphp
+
+                                @if(!empty($qrProfileGallery))
+                                    @foreach($qrProfileGallery as $qrProfileGalleryImage)
+                                        @php
+                                            $fullImagePath = $qrProfileGalleryImage->fullImagePath;
+                                            $galleryImagesCount++;
+                                        @endphp
+
+                                        @if(!empty($fullImagePath))
+                                            <div class="col-12" @if($galleryImagesCount > 1) style="margin-top: 60px;" @endif>
+                                                <form action="{{ route('qrs.destroy-gallery-image', $qrProfileGalleryImage->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+
+                                                    <div class="row">
+                                                        <div class="col-4 pull-left d-flex align-items-center">
+                                                            <span class="form-control-label text-bold">Фото № {{ $galleryImagesCount }}</span>
+                                                        </div>
+                                                        <div class="col-8 pull-right d-flex align-items-center">
+                                                            <button type="submit" class="btn btn-danger btn-sm ms-auto" style="margin-bottom: 0; padding-left: 10px; padding-right: 10px;"><i class="fas fa-trash" style="margin-right: 5px;"></i> Удалить фото</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                                <div class="col-12 mt-4">
+                                                    <img src="{{ asset($fullImagePath) }}" alt="{{ $qrProfileGalleryImage->image_name }}" class="w-100 border-radius-lg shadow-sm" height="400">
+                                                </div>
+                                            </div>
+                                        @endif
+
+                                        @php unset($fullImagePath) @endphp
+                                    @endforeach
+                                @else
+                                    <span>В галереи нет фотографий.</span>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @include('layouts.footers.auth.footer')
     </div>
 @endsection

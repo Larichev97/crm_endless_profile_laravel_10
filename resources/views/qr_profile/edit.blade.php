@@ -8,7 +8,14 @@
             @csrf
             @method('PUT')
 
-            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('qrs.index') }}">Назад</a>
+            <div class="row">
+                <div class="col-6">
+                    <a style="width: fit-content;" class="btn btn-dark" href="{{ route('qrs.index') }}">Назад</a>
+                </div>
+                <div class="col-6 d-flex align-items-center">
+                    <a href="{{ route('qrs.create-gallery-images', $qrProfile->id) }}" class="btn btn-success ms-auto" target="_blank"><i class="fas fa-camera" style="margin-right: 10px;"></i>Добавить фотографии в галерею</a>
+                </div>
+            </div>
 
             <div>
                 @include('components.alert')

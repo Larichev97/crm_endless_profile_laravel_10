@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\QrProfile;
 
+use App\DataTransferObjects\QrProfile\QrProfileImageGalleryStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
 use App\Enums\QrStatusEnum;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\QrProfile\QrProfileImageGalleryStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileUpdateRequest;
 use App\Models\QrProfile;
 use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
+use App\Repositories\QrProfile\QrProfileImageRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
 use App\Services\CrudActionsServices\QrProfileService;
@@ -58,14 +61,14 @@ final class QrProfileController extends Controller
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
-            $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
+            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
+            $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
 
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), useCache: true, filterFieldsData: $filterFieldsArray);
 
-            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
+            $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);
             $statusesListData = QrStatusEnum::getStatusesList();
-            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
             return view('qr_profile.index',compact(['qrProfiles', 'filterFieldsObject', 'clientsListData', 'statusesListData', 'countriesListData',]));
         } catch (Exception $exception) {
@@ -82,9 +85,9 @@ final class QrProfileController extends Controller
     {
         $idStatusNew = QrStatusEnum::NEW->value;
 
-        $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
-        $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
-        $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+        $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id',fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);
+        $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+        $citiesListData = $this->cityRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
         return view('qr_profile.create', compact(['idStatusNew', 'clientsListData', 'countriesListData', 'citiesListData',]));
     }
@@ -100,13 +103,13 @@ final class QrProfileController extends Controller
         try {
             $qrProfileStoreDTO = new QrProfileStoreDTO($qrProfileStoreRequest);
 
-            $createQrProfile = $this->qrProfileService->processStore($qrProfileStoreDTO, $this->fileService);
+            $createQrProfile = $this->qrProfileService->processStore(qrProfileStoreDTO: $qrProfileStoreDTO, fileService: $this->fileService);
 
             if ($createQrProfile) {
-                return redirect()->route('qrs.index')->with('success', 'QR-профиль успешно создан.');
+                return redirect()->route('qrs.index')->with(key: 'success', value: 'QR-профиль успешно создан.');
             }
 
-            return back()->with('error', 'Ошибка! QR-профиль не создан.')->withInput();
+            return back()->with(key: 'error', value: 'Ошибка! QR-профиль не создан.')->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -121,7 +124,7 @@ final class QrProfileController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+            $qrProfile = $this->qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($qrProfile)) {
                 abort(404);
@@ -130,9 +133,9 @@ final class QrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
-            $qrCodePath = $this->fileService->processGetPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getPhotoName(), publicDirPath: $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getVoiceMessageFileName(), publicDirPath: $publicDirPath);
+            $qrCodePath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getQrCodeFileName(), publicDirPath: $publicDirPath);
 
             return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'qrCodePath']));
         } catch (Exception $exception) {
@@ -149,7 +152,7 @@ final class QrProfileController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+            $qrProfile = $this->qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($qrProfile)) {
                 abort(404);
@@ -158,13 +161,13 @@ final class QrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getPhotoName(), publicDirPath: $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getVoiceMessageFileName(), publicDirPath: $publicDirPath);
 
             $statusesListData = QrStatusEnum::getStatusesList();
-            $clientsListData = $this->clientRepository->getForDropdownList('id','CONCAT(lastname, " ", firstname, " ", surname) AS name', true);
-            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
-            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+            $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id',fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+            $citiesListData = $this->cityRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
             return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
@@ -182,15 +185,15 @@ final class QrProfileController extends Controller
     public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $qrProfileUpdateDTO = new QrProfileUpdateDTO($qrProfileUpdateRequest, (int) $id);
+            $qrProfileUpdateDTO = new QrProfileUpdateDTO(qrProfileUpdateRequest: $qrProfileUpdateRequest, id_qr: (int) $id);
 
-            $updateQrProfile = $this->qrProfileService->processUpdate($qrProfileUpdateDTO, $this->fileService, $this->qrProfileRepository);
+            $updateQrProfile = $this->qrProfileService->processUpdate(qrProfileUpdateDTO: $qrProfileUpdateDTO, fileService: $this->fileService, qrProfileRepository: $this->qrProfileRepository);
 
             if ($updateQrProfile) {
-                return redirect()->route('qrs.index')->with('success', sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
+                return redirect()->route('qrs.index')->with(key: 'success', value: sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
             }
 
-            return back()->with('error','Ошибка! Данные QR-профиля не обновлены.')->withInput();
+            return back()->with(key: 'error', value: 'Ошибка! Данные QR-профиля не обновлены.')->withInput();
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -205,13 +208,13 @@ final class QrProfileController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteQrProfile = $this->qrProfileService->processDestroy($id, $this->qrProfileRepository);
+            $deleteQrProfile = $this->qrProfileService->processDestroy(id: $id, qrProfileRepository: $this->qrProfileRepository);
 
             if ($deleteQrProfile) {
-                return redirect()->route('qrs.index')->with('success', sprintf('QR-профиль #%s успешно удалён.', $id));
+                return redirect()->route('qrs.index')->with(key: 'success', value: sprintf('QR-профиль #%s успешно удалён.', $id));
             }
 
-            return back()->with('error', sprintf('Ошибка! QR-профиль #%s не удалён.', $id));
+            return back()->with(key: 'error', value: sprintf('Ошибка! QR-профиль #%s не удалён.', $id));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
@@ -224,13 +227,70 @@ final class QrProfileController extends Controller
     public function generateQrCodeImage($id): JsonResponse|RedirectResponse
     {
         try {
-            $generateQrCode = $this->qrProfileService->processGenerateQrCode($id, $this->qrProfileRepository, $this->settingRepository, $this->fileService);
+            $generateQrCode = $this->qrProfileService->processGenerateQrCode(id: $id, qrProfileRepository: $this->qrProfileRepository, settingRepository: $this->settingRepository, fileService: $this->fileService);
 
             if ($generateQrCode) {
-                return redirect()->route('qrs.show', $id)->with('success', sprintf('Изображение QR-кода для профиля #%s успешно создано.', $id));
+                return redirect()->route('qrs.show', $id)->with(key: 'success', value: sprintf('Изображение QR-кода для профиля #%s успешно создано.', $id));
             }
 
-            return redirect()->route('qrs.show', $id)->with('error', sprintf('Ошибка! Изображение QR-кода для профиля #%s не создано.', $id));
+            return redirect()->route('qrs.show', $id)->with(key: 'error', value: sprintf('Ошибка! Изображение QR-кода для профиля #%s не создано.', $id));
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
+    }
+
+    /**
+     *  Добавление фотографий для галереи QR-профиля
+     *
+     * @param $idQrProfile
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
+     */
+    public function createGalleryImages($idQrProfile): Application|Factory|View|\Illuminate\Foundation\Application
+    {
+        return view('qr_profile_images_gallery.create', compact(['idQrProfile',]));
+    }
+
+    /**
+     *  Создание фотографий для галереи QR-профиля
+     *
+     * @param QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest
+     * @param QrProfileImageRepository $qrProfileImageRepository
+     * @return RedirectResponse|JsonResponse
+     */
+    public function storeGalleryImages(QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
+    {
+        try {
+            $qrProfileImageGalleryStoreDTO = new QrProfileImageGalleryStoreDTO($qrProfileImageGalleryStoreRequest);
+
+            $createQrProfileImagesGallery = $this->qrProfileService->processStoreQrProfileGalleryPhotos(qrProfileImageGalleryStoreDTO: $qrProfileImageGalleryStoreDTO, qrProfileImageRepository: $qrProfileImageRepository,fileService: $this->fileService);
+
+            if ($createQrProfileImagesGallery) {
+                return redirect()->route('qrs.index')->with(key: 'success', value: 'Фотографии успешно добавлены в галерею QR-профиля.');
+            }
+
+            return back()->with(key: 'error', value: 'Ошибка! Фотографии не добавлены в галерею QR-профиля.')->withInput();
+        } catch (Exception $exception) {
+            return response()->json(['error' => $exception->getMessage()], 401);
+        }
+    }
+
+    /**
+     *  Удаление фотографии из галереи Qr-профиля
+     *
+     * @param $id
+     * @param QrProfileImageRepository $qrProfileImageRepository
+     * @return RedirectResponse|JsonResponse
+     */
+    public function destroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
+    {
+        try {
+            $deleteQrProfileGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository, fileService: $this->fileService);
+
+            if ($deleteQrProfileGalleryImage) {
+                return redirect()->route('qrs.show', $id)->with(key: 'success', value: 'Изображение удалено из галереи QR-профиля.');
+            }
+
+            return back()->with(key: 'error', value: 'Ошибка! Изображение не удалено из галереи QR-профиля');
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

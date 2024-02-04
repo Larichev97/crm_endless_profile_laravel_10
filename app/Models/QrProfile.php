@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 final class QrProfile extends Model
@@ -128,6 +129,16 @@ final class QrProfile extends Model
     public function userWhoUpdated(): BelongsTo
     {
         return $this->belongsTo(User::class, 'id_user_update');
+    }
+
+    /**
+     *  У одного QR-профиля может быть много Изображений
+     *
+     * @return HasMany
+     */
+    public function qrProfileImages(): HasMany
+    {
+        return $this->hasMany(QrProfileImage::class, 'id_qr_profile')->orderBy(column: 'position', direction: 'ASC');
     }
 
     /**

@@ -23,12 +23,12 @@ class ClientService
 
         $formDataArray = $clientStoreDTO->getFormFieldsArray();
 
-        $clientModel = Client::query()->create($formDataArray);
+        $clientModel = Client::query()->create(attributes: $formDataArray);
 
         if ($clientModel) {
-            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile($clientStoreDTO->image, $clientsImagesDirPath, '', '');
+            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile(file: $clientStoreDTO->image, publicDirPath: $clientsImagesDirPath, oldFileName: '', newFileName: '');
 
-            return (bool) $clientModel->update($formFilesNamesArray);
+            return (bool) $clientModel->update(attributes: $formFilesNamesArray);
         }
 
         return false;
@@ -44,21 +44,23 @@ class ClientService
      */
     public function processUpdate(ClientUpdateDTO $clientUpdateDTO, FileService $fileService, ClientRepository $clientRepository): bool
     {
-        $clientModel = $clientRepository->getForEditModel((int) $clientUpdateDTO->id_client, true);
+        $clientModel = $clientRepository->getForEditModel(id: (int) $clientUpdateDTO->id_client, useCache: true);
 
         if (empty($clientModel)) {
             return false;
         }
 
+        /** @var Client $clientModel */
+
         $clientsImagesDirPath = 'images/clients';
 
         $formDataArray = $clientUpdateDTO->getFormFieldsArray();
 
-        $formDataArray['photo_name'] = $fileService->processUploadFile($clientUpdateDTO->image, $clientsImagesDirPath, $clientUpdateDTO->photo_name);
+        $formDataArray['photo_name'] = $fileService->processUploadFile(file: $clientUpdateDTO->image, publicDirPath: $clientsImagesDirPath, oldFileName: $clientUpdateDTO->photo_name);
 
-        $updateClient = $clientModel->update($formDataArray);
+        $updateClient = $clientModel->update(attributes: $formDataArray);
 
-        return $updateClient;
+        return (bool) $updateClient;
     }
 
     /**
@@ -70,7 +72,7 @@ class ClientService
      */
     public function processDestroy($id, ClientRepository $clientRepository): bool
     {
-        $clientModel = $clientRepository->getForEditModel((int) $id, true);
+        $clientModel = $clientRepository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($clientModel)) {
             /** @var Client $clientModel */
