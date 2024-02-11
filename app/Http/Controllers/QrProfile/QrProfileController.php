@@ -284,10 +284,10 @@ final class QrProfileController extends Controller
     public function destroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
     {
         try {
-            $deleteQrProfileGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository, fileService: $this->fileService);
+            $idQrProfileDeletedGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository, fileService: $this->fileService);
 
-            if ($deleteQrProfileGalleryImage) {
-                return redirect()->route('qrs.show', $id)->with(key: 'success', value: 'Изображение удалено из галереи QR-профиля.');
+            if ($idQrProfileDeletedGalleryImage > 0) {
+                return redirect()->route('qrs.show', $idQrProfileDeletedGalleryImage)->with(key: 'success', value: 'Изображение удалено из галереи QR-профиля.');
             }
 
             return back()->with(key: 'error', value: 'Ошибка! Изображение не удалено из галереи QR-профиля');

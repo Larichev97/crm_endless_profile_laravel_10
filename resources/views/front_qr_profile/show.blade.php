@@ -118,6 +118,17 @@
                             </div>
                         </div>
                     @endif
+
+                    @if(isset($sliderGalleryImagesData) && is_array($sliderGalleryImagesData))
+                        <div class="col-md-12">
+                            <div class="mb-3">
+                                <h6 class="fw-bold">Галерея</h6>
+                                <div class="mb-4" style="border-radius: 1rem!important;">
+                                    @include('components.slider', ['galleryData' => $sliderGalleryImagesData, 'idGallery' => 'qrProfileGallery'])
+                                </div>
+                            </div>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

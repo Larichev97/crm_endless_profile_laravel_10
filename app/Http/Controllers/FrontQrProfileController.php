@@ -3,11 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\QrProfile;
-use App\Repositories\City\CityRepository;
-use App\Repositories\Client\ClientRepository;
-use App\Repositories\Country\CountryRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
-use App\Repositories\Setting\SettingRepository;
+use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
@@ -19,10 +16,12 @@ final class FrontQrProfileController extends Controller
 {
     /**
      * @param FileService $fileService
+     * @param QrProfileService $qrProfileService
      * @param QrProfileRepository $qrProfileRepository
      */
     public function __construct(
         readonly FileService $fileService,
+        readonly QrProfileService $qrProfileService,
         readonly QrProfileRepository $qrProfileRepository,
     )
     {
@@ -49,7 +48,9 @@ final class FrontQrProfileController extends Controller
             $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
             $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
 
-            return view('front_qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath',]));
+            $sliderGalleryImagesData = $this->qrProfileService->processGetSliderGalleryImagesData($qrProfile);
+
+            return view('front_qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'sliderGalleryImagesData']));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

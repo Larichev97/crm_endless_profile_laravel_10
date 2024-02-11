@@ -186,12 +186,14 @@ final class QrProfileService
     /**
      *  Удаление записи об изображении из галереи QR-профиля
      *
+     *  При успехе возвращается ID QR-профиля
+     *
      * @param $id
      * @param QrProfileImageRepository $qrProfileImageRepository
      * @param FileService $fileService
-     * @return bool
+     * @return int
      */
-    public function processDestroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository, FileService $fileService): bool
+    public function processDestroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository, FileService $fileService): int
     {
         $qrProfileImageModel = $qrProfileImageRepository->getForEditModel(id: (int) $id, useCache: true);
 
@@ -207,11 +209,37 @@ final class QrProfileService
                 // some logic after delete (update image positions...)
 
                 $fileService->processDeleteOldFile($imageName, 'qr/'.$idQrProfile);
-            }
 
-            return $deleteImage;
+                return $idQrProfile;
+            }
         }
 
-        return false;
+        return 0;
+    }
+
+    /**
+     *  Заполнение массива данными о фотографиях их галереи конкретного QR-профиля для слайдера
+     *
+     * @param QrProfile $qrProfile
+     * @return array
+     */
+    public function processGetSliderGalleryImagesData(QrProfile $qrProfile): array
+    {
+        $sliderGalleryImagesData = [];
+
+        $qrProfileGalleryImages = $qrProfile->qrProfileImages()->get();
+
+        if (!empty($qrProfileGalleryImages)) {
+            foreach ($qrProfileGalleryImages as $qrProfileGalleryImage) {
+                if (!empty($qrProfileGalleryImage->image_name) && $qrProfileGalleryImage->is_active) {
+                    $sliderGalleryImagesData[] = [
+                        'imagePath' => $qrProfileGalleryImage->fullImagePath,
+                        'imageAlt' => $qrProfileGalleryImage->image_name,
+                    ];
+                }
+            }
+        }
+
+        return $sliderGalleryImagesData;
     }
 }
