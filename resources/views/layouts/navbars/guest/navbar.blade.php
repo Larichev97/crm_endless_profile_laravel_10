@@ -1,4 +1,3 @@
-{{--<div class="container position-sticky z-index-sticky top-0">--}}
 <div class="container position-sticky z-index-sticky top-0">
     <div class="row">
         <div class="col-12">
@@ -22,7 +21,7 @@
                         <ul class="navbar-nav mx-auto">
                             <li class="nav-item">
                                 <span class="nav-link d-flex align-items-center me-2 active" aria-current="page">
-                                    Технологии в проекте:
+                                    Технології в проєкті:
                                 </span>
                             </li>
                             <li class="nav-item">
