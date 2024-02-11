@@ -197,7 +197,7 @@
                                         @endphp
 
                                         @if(!empty($fullImagePath))
-                                            <div class="col-12" @if($galleryImagesCount > 1) style="margin-top: 60px;" @endif>
+                                            <div class="col-6" style="padding-left: 30px; padding-right: 30px; @if($galleryImagesCount > 2) margin-top: 80px; @else margin-top: 30px; @endif ">
                                                 <form action="{{ route('qrs.destroy-gallery-image', $qrProfileGalleryImage->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
@@ -212,7 +212,7 @@
                                                     </div>
                                                 </form>
                                                 <div class="col-12 mt-4">
-                                                    <img src="{{ asset($fullImagePath) }}" alt="{{ $qrProfileGalleryImage->image_name }}" class="w-100 border-radius-lg shadow-sm" height="400">
+                                                    <img src="{{ asset($fullImagePath) }}" alt="{{ $qrProfileGalleryImage->image_name }}" class="w-100 border-radius-lg shadow-sm" height="250">
                                                 </div>
                                             </div>
                                         @endif

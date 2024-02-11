@@ -265,7 +265,7 @@ final class QrProfileController extends Controller
             $createQrProfileImagesGallery = $this->qrProfileService->processStoreQrProfileGalleryPhotos(qrProfileImageGalleryStoreDTO: $qrProfileImageGalleryStoreDTO, qrProfileImageRepository: $qrProfileImageRepository,fileService: $this->fileService);
 
             if ($createQrProfileImagesGallery) {
-                return redirect()->route('qrs.index')->with(key: 'success', value: 'Фотографии успешно добавлены в галерею QR-профиля.');
+                return redirect()->route('qrs.show', ['id' => $qrProfileImageGalleryStoreDTO->id_qr_profile])->with(key: 'success', value: 'Фотографии успешно добавлены в галерею QR-профиля.');
             }
 
             return back()->with(key: 'error', value: 'Ошибка! Фотографии не добавлены в галерею QR-профиля.')->withInput();

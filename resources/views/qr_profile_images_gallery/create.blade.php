@@ -16,6 +16,7 @@
 
             <div class="row">
                 <input type="hidden" name="id_qr_profile" class="form-control" value="{{ $idQrProfile }}">
+                <input type="hidden" name="is_active" class="form-control" value="1">
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">

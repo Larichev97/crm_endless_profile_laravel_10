@@ -153,27 +153,28 @@ final class QrProfileService
         if ($idQrProfile > 0 && !empty($galleryPhotos)) {
             $publicDirPath = 'qr/'.$idQrProfile;
 
-            foreach ($galleryPhotos as $galleryPhoto) {
-                $galleryPhotoName = trim($fileService->processUploadFile(file: $galleryPhoto, publicDirPath: $publicDirPath, oldFileName: '', newFileName: 'gallery_photo_'.time(), useOriginalFileName: false));
+            foreach ($galleryPhotos as $key => $galleryPhoto) {
+                $galleryPhotoName = trim($fileService->processUploadFile(file: $galleryPhoto, publicDirPath: $publicDirPath, oldFileName: '', newFileName: 'gallery_photo_'.time().$key, useOriginalFileName: false));
 
                 if (!empty($galleryPhotoName)) {
-                    // toDo FIX POSITION BEFORE SAVE IMAGE:
                     $lastPositionNumber = (int) $qrProfileImageRepository->getLastPositionNumber($idQrProfile);
-                    $nextPositionNumber = $lastPositionNumber++;
+
+                    $lastPositionNumber++;
 
                     $qrProfileImageDataArray = [
                         'id_qr_profile' => $idQrProfile,
                         'image_name' => $galleryPhotoName,
-                        'position' => $nextPositionNumber,
-                        'is_active' => 1,
+                        'position' => $lastPositionNumber,
+                        'is_active' => $qrProfileImageGalleryStoreDTO->is_active,
                     ];
 
                     QrProfileImage::query()->create(attributes: $qrProfileImageDataArray);
 
-                    unset($galleryPhotoName);
                     unset($lastPositionNumber);
                     unset($nextPositionNumber);
                 }
+
+                unset($galleryPhotoName);
             }
 
             return true;
