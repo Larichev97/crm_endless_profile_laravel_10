@@ -1,20 +1,27 @@
 <?php
 
-namespace App\Repositories\Client;
+namespace App\Repositories\User;
 
-use App\Models\Client as Model;
+use App\Models\User as Model;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-final class ClientRepository extends CoreRepository
+final class UserRepository extends CoreRepository
 {
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
+     *
+     * @var array|string[]
+     */
+    protected array $searchDateFieldsArray = ['created_at', 'updated_at',];
+
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
      *
      * @var array|string[]
      */
-    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'surname', 'email',];
+    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'email', 'about', 'address', 'username'];
 
     public function __construct()
     {

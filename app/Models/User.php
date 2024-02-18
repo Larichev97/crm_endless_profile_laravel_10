@@ -54,9 +54,8 @@ class User extends Authenticatable
      * Always encrypt the password when it is updated.
      *
      * @param $value
-    * @return string
     */
-    public function setPasswordAttribute($value)
+    public function setPasswordAttribute($value): void
     {
         $this->attributes['password'] = bcrypt($value);
     }
@@ -99,6 +98,16 @@ class User extends Authenticatable
     public function qrProfilesUpdated(): HasMany
     {
         return $this->hasMany(QrProfile::class, 'id_user_update');
+    }
+
+    /**
+     *  У одного Пользователя может быть много обновлённых им заявок из "Формы обратной связи"
+     *
+     * @return HasMany
+     */
+    public function ContactFormsUpdated(): HasMany
+    {
+        return $this->hasMany(ContactForm::class, 'id_employee');
     }
 
     /**

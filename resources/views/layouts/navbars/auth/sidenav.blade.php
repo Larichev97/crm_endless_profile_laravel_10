@@ -22,6 +22,15 @@
                 </a>
             </li>
             <li class="nav-item">
+                <a class="nav-link {{ Route::currentRouteName() == 'contact-forms.index' ? 'active' : '' }}" href="{{ route('contact-forms.index') }}">
+                    <div
+                        class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+                        <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
+                    </div>
+                    <span class="nav-link-text ms-1">Заявки из формы</span>
+                </a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link {{ Route::currentRouteName() == 'clients.index' ? 'active' : '' }}" href="{{ route('clients.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">

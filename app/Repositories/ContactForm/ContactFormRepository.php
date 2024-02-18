@@ -1,28 +1,21 @@
 <?php
 
-namespace App\Repositories\Client;
+namespace App\Repositories\ContactForm;
 
-use App\Models\Client as Model;
+use App\Models\ContactForm as Model;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
-final class ClientRepository extends CoreRepository
+final class ContactFormRepository extends CoreRepository
 {
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     * @var array|string[]
-     */
-    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'surname', 'email',];
-
     public function __construct()
     {
         parent::__construct();
     }
 
     /**
-     * App\Models\Client
+     * App\Models\County
      *
      * @return string
      */

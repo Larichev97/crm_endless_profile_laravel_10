@@ -163,6 +163,21 @@ abstract class CoreRepository implements CoreRepositoryInterface
     }
 
     /**
+     *  Метод очищает кэш для конкретной модели
+     *
+     * @return void
+     */
+    public function cleanCache(): void
+    {
+        Cache::forget($this->getModelClass().'-getModelCollection');
+        Cache::forget($this->getModelClass().'-getForDropdownList');
+
+        if (Cache::supportsTags()) {
+            Cache::tags($this->getModelClass().'-getAllWithPaginate')->flush();
+        }
+    }
+
+    /**
      *  Метод добавляет к запросу дополнительные условия из массива {$filterFieldsData}
      *
      * @param Builder $query

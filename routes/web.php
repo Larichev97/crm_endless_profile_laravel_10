@@ -59,7 +59,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     // Setting entity:
     require_once 'settings/settings.php';
+
+    // ContactForm entity:
+    require_once 'contact_forms/contact_forms.php';
 });
 
 // Front QrProfile (test QR-CODE):
 Route::get('qr-profile/{id}', [FrontQrProfileController::class, 'show'])->name('front-qrs.show');
+
+// ContactForm entity via AJAX:
+require_once 'contact_forms/ajax_contact_forms.php';
