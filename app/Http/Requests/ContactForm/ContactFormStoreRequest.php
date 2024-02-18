@@ -27,7 +27,7 @@ final class ContactFormStoreRequest extends FormRequest
             'firstname' => 'required|string|max:150',
             'lastname' => 'nullable|string|max:150',
             'email' => 'required|email|max:255',
-            'phone_number' => 'required|min:12|max:13',
+            'phone_number' => 'required|min:12|max:20|string',
             'comment' => 'nullable',
             'id_employee' => 'min:0|integer',
         ];

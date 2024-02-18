@@ -50,11 +50,17 @@
     @endauth
 
     <!--   Core JS Files   -->
+    <script src="/assets/js/core/jquery-3.7.1.js"></script>
+    <script src="/assets/js/core/jquery.inputmask.bundle.js"></script>
     <script src="/assets/js/core/popper.min.js"></script>
     <script src="/assets/js/core/bootstrap.min.js"></script>
     <script src="/assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="/assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script>
+        /* Использование jQuery через "$": */
+        window.$ = window.jQuery = jQuery;
+        /* ------------------------------- */
+
         var win = navigator.platform.indexOf('Win') > -1;
 
         if (win && document.querySelector('#sidenav-scrollbar')) {

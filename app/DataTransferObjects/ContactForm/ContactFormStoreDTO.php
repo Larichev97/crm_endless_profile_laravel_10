@@ -25,7 +25,7 @@ final class ContactFormStoreDTO implements FormFieldsDtoInterface
         $this->firstname = (string) $contactFormStoreRequest->validated('firstname');
         $this->lastname = (string) $contactFormStoreRequest->validated('lastname');
         $this->email = (string) $contactFormStoreRequest->validated('email');
-        $this->phone_number = (string) $contactFormStoreRequest->validated('phone_number');
+        $this->phone_number = preg_replace('/[. ()-]*/','', $contactFormStoreRequest->validated('phone_number'));
         $this->comment = strip_tags($contactFormStoreRequest->validated('comment'));
         $this->id_employee = (int) $contactFormStoreRequest->validated('id_employee');
     }

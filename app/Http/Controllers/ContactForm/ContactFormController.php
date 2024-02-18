@@ -127,7 +127,9 @@ class ContactFormController extends Controller
                 abort(404);
             }
 
-            return view('contact_form.edit',compact(['contactForm',]));
+            $statusesListData = ContactFormStatusEnum::getStatusesList();
+
+            return view('contact_form.edit',compact(['contactForm', 'statusesListData',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
