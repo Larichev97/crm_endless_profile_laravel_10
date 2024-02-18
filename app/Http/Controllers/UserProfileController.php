@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Repositories\User\UserRepository;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
@@ -12,9 +14,14 @@ class UserProfileController extends Controller
         return view('pages.user-profile');
     }
 
-    public function update(Request $request)
+    /**
+     * @param Request $request
+     * @param UserRepository $userRepository
+     * @return RedirectResponse
+     */
+    public function update(Request $request, UserRepository $userRepository): RedirectResponse
     {
-        $attributes = $request->validate([
+        $request->validate([
             'username' => ['required','max:255', 'min:2'],
             'firstname' => ['max:100'],
             'lastname' => ['max:100'],
@@ -26,7 +33,7 @@ class UserProfileController extends Controller
             'about' => ['max:255']
         ]);
 
-        auth()->user()->update([
+        $updateUser = auth()->user()->update([
             'username' => $request->get('username'),
             'firstname' => $request->get('firstname'),
             'lastname' => $request->get('lastname'),
@@ -37,6 +44,13 @@ class UserProfileController extends Controller
             'postal' => $request->get('postal'),
             'about' => $request->get('about')
         ]);
-        return back()->with('succes', 'Profile succesfully updated');
+
+        if ($updateUser) {
+            $userRepository->cleanCache();
+
+            return back()->with('success', 'Данные профиля успешно обновлены.');
+        }
+
+        return back()->with('error', 'Ошибка! Данные профиля не обновлены.')->withInput();
     }
 }
