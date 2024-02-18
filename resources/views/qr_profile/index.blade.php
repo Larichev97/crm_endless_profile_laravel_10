@@ -41,7 +41,7 @@
                                 </thead>
                                 <tbody>
                                 <tr>
-                                    <form id="filter_form" action="{{ route('qrs.index') }}" method="GET">
+                                    <form id="qrs_filter_form" action="{{ route('qrs.index') }}" method="GET">
                                         <th class="text-center font-weight-bolder">
                                             <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
                                         </th>
@@ -157,5 +157,5 @@
 @endsection
 
 @push('js')
-    @include('components.filter-script')
+    @include('components.filter-script', ['idFilterForm' => 'qrs_filter_form'])
 @endpush

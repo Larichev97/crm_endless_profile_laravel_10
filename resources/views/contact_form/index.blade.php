@@ -18,6 +18,7 @@
                             </div>
                             <div class="col-6 d-flex">
                             {{-- <a class="btn btn-success" href="{{ route('contact-forms.create') }}" style="margin-left: auto">Добавить заявку</a> --}}
+                                <a class="btn btn-danger ms-auto" href="{{ route('contact-forms.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -38,7 +39,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <form id="filter_form" action="{{ route('qrs.index') }}" method="GET">
+                                        <form id="contacts_filter_form" action="{{ route('contact-forms.index') }}" method="GET">
                                             <th class="text-center font-weight-bolder">
                                                 <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
                                             </th>
@@ -120,7 +121,5 @@
 @endsection
 
 @push('js')
-    <script>
-
-    </script>
+    @include('components.filter-script', ['idFilterForm' => 'contacts_filter_form'])
 @endpush

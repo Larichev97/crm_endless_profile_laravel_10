@@ -9,6 +9,13 @@ use Illuminate\Support\Collection;
 
 final class ContactFormRepository extends CoreRepository
 {
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     * @var array|string[]
+     */
+    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'email', 'comment', 'phone_number',];
+
     public function __construct()
     {
         parent::__construct();

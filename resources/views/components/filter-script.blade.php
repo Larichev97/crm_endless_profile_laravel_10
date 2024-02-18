@@ -5,7 +5,7 @@
      *  Метод проверяет наличие заполенных полей фильтров и добавляет их к URL для редиректа
      */
     function handleFilterFormSubmit() {
-        const filterForm = document.getElementById('filter_form');
+        const filterForm = document.getElementById('{{ $idFilterForm }}');
 
         if (!filterForm) return;
 

@@ -41,7 +41,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <form id="filter_form" action="{{ route('clients.index') }}" method="GET">
+                                        <form id="clients_filter_form" action="{{ route('clients.index') }}" method="GET">
                                             <th class="text-center font-weight-bolder">
                                                 <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
                                             </th>
@@ -147,5 +147,5 @@
 @endsection
 
 @push('js')
-    @include('components.filter-script')
+    @include('components.filter-script', ['idFilterForm' => 'clients_filter_form'])
 @endpush
