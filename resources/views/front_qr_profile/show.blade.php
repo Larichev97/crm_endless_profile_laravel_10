@@ -133,6 +133,6 @@
             </div>
         </div>
 
-        @include('layouts.footers.auth.footer')
+        @include('layouts.footers.guest.footer')
     </div>
 @endsection

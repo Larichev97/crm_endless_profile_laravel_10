@@ -1,0 +1,109 @@
+<!-- Contact form modal -->
+<div class="modal fade" id="{{ $idContactFormModal }}" tabindex="-1" role="dialog" aria-labelledby="{{ $idContactFormModal }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+        <div class="modal-content">
+            <div class="modal-body p-0">
+                <div class="card card-plain">
+                    <div class="card-header pb-0 text-left">
+                        <h3 class="font-weight-bolder text-info text-gradient">Форма зворотнього зв'язку</h3>
+                    </div>
+                    <div class="card-body">
+                        <form role="form" class="text-left" id="{{ $idContactForm }}">
+                            <input hidden name="id_status" value="1">
+
+                            <label>Номер телефону <span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input type="text" id="phone_number" class="form-control" name="phone_number" placeholder="+380 (__) ___-__-__" aria-label="Номер телефону" aria-describedby="basic-addon1">
+                            </div>
+
+                            <label>Email <span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input type="email" class="form-control" id="email" name="email" placeholder="Введіть email..." aria-label="Email" aria-describedby="email-addon">
+                            </div>
+
+                            <label>Ім'я <span style="color: red">*</span></label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Введіть ім'я..." aria-label="Ім'я" aria-describedby="basic-addon1">
+                            </div>
+
+                            <label>Прізвище</label>
+                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Введіть прізвище..." aria-label="Прізвище" aria-describedby="basic-addon1">
+                            </div>
+
+                            <label>Коментар</label>
+                            <div class="input-group mb-3">
+                                <textarea class="form-control" rows="4" id="comment" name="comment" placeholder="Введіть коментар..." aria-label="Коментар" aria-describedby="basic-addon1"></textarea>
+                            </div>
+
+                            <div class="text-center">
+                                <button type="button" id="contactFormSubmitBtn" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Відправити</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@push('js')
+    <script>
+        /* Применяем маску к input для номера телефона ------------- */
+        const phoneNumberInput = $('#phone_number');
+
+        $(document).ready(function() {
+            $(phoneNumberInput).inputmask("+380 (99) 999-99-99");
+        });
+        /* --------------------------------------------------------- */
+
+        $(document).ready(function() {
+            $('#contactFormSubmitBtn').click(function(e) {
+                e.preventDefault();
+
+                // Удаляем все сообщения об ошибках с предыдущей отправки
+                $('#{{ $idContactForm }}').find('.invalid-validation').remove();
+                $('#{{ $idContactForm }} .is-invalid').removeClass('is-invalid');
+
+                // Получаем данные формы
+                let formData = $('#{{ $idContactForm }}').serialize();
+
+                // Отправка AJAX запроса
+                $.ajax({
+                    url: '{{ route('contact-forms.ajax-store') }}',
+                    method: 'POST',
+                    data: formData,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        // Обработка ответа сервера
+                        if (data.success) {
+                            // Успешная отправка формы
+                            alert('Форма успішно відправлена!');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        if (xhr.responseJSON && xhr.responseJSON.errors && Object.keys(xhr.responseJSON.errors).length) {
+                            // Добавляем сообщения об ошибках под каждым полем ввода
+                            $.each(xhr.responseJSON.errors, function(field, messages) {
+                                let input = $('#{{ $idContactForm }}').find('[name="' + field + '"]');
+
+                                input.addClass('is-invalid'); // Добавляем класс для подсветки поля
+
+                                if (messages && Object.keys(messages).length) {
+                                    $.each(messages, function(keyError, messageError) {
+                                        // Добавляем сообщение об ошибке
+                                        if (messageError) {
+                                            input.after('<p class="invalid-validation" style="color: red; margin-top: 10px;">' + messageError + '</p>');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+@endpush

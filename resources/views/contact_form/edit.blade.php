@@ -52,7 +52,7 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Номер телефона</strong>
-                        <input type="text" id="phone_number" placeholder="+38 (0__) ___-__-__" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" value="{{ old('phone_number', $contactForm->phone_number) }}">
+                        <input type="text" id="phone_number" placeholder="+380 (__) ___-__-__" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" value="{{ old('phone_number', $contactForm->phone_number) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
