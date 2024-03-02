@@ -42,7 +42,7 @@ class CityController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $cities = $this->cityRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
+            $cities = $this->cityRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
 
             return view('city.index',compact('cities'));
         } catch (Exception $exception) {

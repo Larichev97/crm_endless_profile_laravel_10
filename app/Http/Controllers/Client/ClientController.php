@@ -56,7 +56,7 @@ class ClientController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
             $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
 
-            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true, $filterFieldsArray);
+            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'desc', true, $filterFieldsArray);
 
             $statusesListData = ClientStatusEnum::getStatusesList();
             $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);

@@ -40,7 +40,7 @@ class SettingController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $settings = $this->settingRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
+            $settings = $this->settingRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
 
             return view('setting.index',compact('settings'));
         } catch (Exception $exception) {

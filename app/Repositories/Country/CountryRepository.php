@@ -15,7 +15,7 @@ final class CountryRepository extends CoreRepository
     }
 
     /**
-     * App\Models\County
+     * App\Models\Country
      *
      * @return string
      */
@@ -27,13 +27,15 @@ final class CountryRepository extends CoreRepository
     /**
      * @param int|null $perPage
      * @param int $page
+     * @param string $orderBy
+     * @param string $orderWay
      * @param bool $useCache
      * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $useCache, $filterFieldsData);
+        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $useCache, $filterFieldsData);
     }
 
     /**

@@ -45,7 +45,7 @@ class CountryController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $countries = $this->countryRepository->getAllWithPaginate(10, (int) $request->get('page', 1), true);
+            $countries = $this->countryRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
 
             return view('country.index',compact('countries'));
         } catch (Exception $exception) {

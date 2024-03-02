@@ -64,7 +64,7 @@ final class QrProfileController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
 
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), useCache: true, filterFieldsData: $filterFieldsArray);
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'desc', useCache: true, filterFieldsData: $filterFieldsArray);
 
             $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);
             $statusesListData = QrStatusEnum::getStatusesList();

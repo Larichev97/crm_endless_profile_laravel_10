@@ -106,11 +106,13 @@ abstract class CoreRepository implements CoreRepositoryInterface
      *
      * @param int|null $perPage
      * @param int $page
+     * @param string $orderBy
+     * @param string $orderWay
      * @param bool $useCache
      * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
     {
         $model = $this->startConditions();
 
@@ -122,6 +124,16 @@ abstract class CoreRepository implements CoreRepositoryInterface
         $query->select($fields_array);
 
         $this->setCustomQueryFilters($query, $filterFieldsData);
+
+        if ($orderBy !== 'id' && !in_array($orderBy, $fields_array)) {
+            $orderBy = 'id';
+        }
+
+        if (!in_array(strtolower($orderWay), ['asc', 'desc'])) {
+            $orderWay = 'desc';
+        }
+
+        $query->orderBy($orderBy, $orderWay);
 
         // File или Redis кэширование не поддерживает тегирование:
         if ($useCache && Cache::supportsTags()) {
