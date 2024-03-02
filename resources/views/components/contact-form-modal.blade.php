@@ -49,6 +49,14 @@
     </div>
 </div>
 
+@include('components.success-modal',
+    [
+        'idSuccessModal' => 'success_modal_contact_form',
+        'descriptionSuccessModal' => 'Форму зворотного зв\'язку надіслано.',
+        'titleSuccessModal' => '',
+    ]
+)
+
 @push('js')
     <script>
         /* Применяем маску к input для номера телефона ------------- */
@@ -82,8 +90,11 @@
                     success: function(data) {
                         // Обработка ответа сервера
                         if (data.success) {
-                            // Успешная отправка формы
-                            alert('Форма успішно відправлена!');
+                            $('#{{ $idContactFormModal }}').modal('hide');
+
+                            cleanFormFieldsValues();
+
+                            $('#success_modal_contact_form').modal('show');
                         }
                     },
                     error: function(xhr, status, error) {
@@ -110,5 +121,13 @@
                 });
             });
         });
+
+        function cleanFormFieldsValues() {
+            $('#phone_number').val('');
+            $('#email').val('');
+            $('#firstname').val('');
+            $('#lastname').val('');
+            $('#comment').val('');
+        }
     </script>
 @endpush
