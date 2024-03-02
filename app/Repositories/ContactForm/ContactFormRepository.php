@@ -22,7 +22,7 @@ final class ContactFormRepository extends CoreRepository
     }
 
     /**
-     * App\Models\County
+     * App\Models\ContactForm
      *
      * @return string
      */

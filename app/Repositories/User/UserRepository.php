@@ -29,7 +29,7 @@ final class UserRepository extends CoreRepository
     }
 
     /**
-     * App\Models\Client
+     * App\Models\User
      *
      * @return string
      */

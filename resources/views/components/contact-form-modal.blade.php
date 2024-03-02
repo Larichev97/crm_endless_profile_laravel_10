@@ -11,33 +11,35 @@
                         <form role="form" class="text-left" id="{{ $idContactForm }}">
                             <input hidden name="id_status" value="1">
 
-                            <label>Номер телефону <span style="color: red">*</span></label>
-                            <div class="input-group mb-3">
-                                <input type="text" id="phone_number" class="form-control" name="phone_number" placeholder="+380 (__) ___-__-__" aria-label="Номер телефону" aria-describedby="basic-addon1">
-                            </div>
+                            <div class="row">
+                                <label>Номер телефону <span style="color: red">*</span></label>
+                                <div class="input-group mb-3 js--phone_number">
+                                    <input type="text" id="phone_number" class="form-control" name="phone_number" placeholder="+380 (__) ___-__-__" aria-label="Номер телефону" aria-describedby="basic-addon1">
+                                </div>
 
-                            <label>Email <span style="color: red">*</span></label>
-                            <div class="input-group mb-3">
-                                <input type="email" class="form-control" id="email" name="email" placeholder="Введіть email..." aria-label="Email" aria-describedby="email-addon">
-                            </div>
+                                <label>Email <span style="color: red">*</span></label>
+                                <div class="input-group mb-3 js--email">
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="Введіть email..." aria-label="Email" aria-describedby="email-addon">
+                                </div>
 
-                            <label>Ім'я <span style="color: red">*</span></label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Введіть ім'я..." aria-label="Ім'я" aria-describedby="basic-addon1">
-                            </div>
+                                <label>Ім'я <span style="color: red">*</span></label>
+                                <div class="input-group mb-3 js--firstname">
+                                    <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Введіть ім'я..." aria-label="Ім'я" aria-describedby="basic-addon1">
+                                </div>
 
-                            <label>Прізвище</label>
-                            <div class="input-group mb-3">
-                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Введіть прізвище..." aria-label="Прізвище" aria-describedby="basic-addon1">
-                            </div>
+                                <label>Прізвище</label>
+                                <div class="input-group mb-3 js--lastname">
+                                    <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Введіть прізвище..." aria-label="Прізвище" aria-describedby="basic-addon1">
+                                </div>
 
-                            <label>Коментар</label>
-                            <div class="input-group mb-3">
-                                <textarea class="form-control" rows="4" id="comment" name="comment" placeholder="Введіть коментар..." aria-label="Коментар" aria-describedby="basic-addon1"></textarea>
-                            </div>
+                                <label>Коментар</label>
+                                <div class="input-group mb-3 js--comment">
+                                    <textarea class="form-control" rows="4" id="comment" name="comment" placeholder="Введіть коментар..." aria-label="Коментар" aria-describedby="basic-addon1"></textarea>
+                                </div>
 
-                            <div class="text-center">
-                                <button type="button" id="contactFormSubmitBtn" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Відправити</button>
+                                <div class="text-center">
+                                    <button type="button" id="contactFormSubmitBtn" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Відправити</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -64,6 +66,7 @@
                 // Удаляем все сообщения об ошибках с предыдущей отправки
                 $('#{{ $idContactForm }}').find('.invalid-validation').remove();
                 $('#{{ $idContactForm }} .is-invalid').removeClass('is-invalid');
+                $('#{{ $idContactForm }} .input-group').addClass('mb-3');
 
                 // Получаем данные формы
                 let formData = $('#{{ $idContactForm }}').serialize();
@@ -88,14 +91,16 @@
                             // Добавляем сообщения об ошибках под каждым полем ввода
                             $.each(xhr.responseJSON.errors, function(field, messages) {
                                 let input = $('#{{ $idContactForm }}').find('[name="' + field + '"]');
+                                let inputBlock = $('.js--' + field);
 
                                 input.addClass('is-invalid'); // Добавляем класс для подсветки поля
 
-                                if (messages && Object.keys(messages).length) {
+                                if (inputBlock && messages && Object.keys(messages).length) {
                                     $.each(messages, function(keyError, messageError) {
                                         // Добавляем сообщение об ошибке
                                         if (messageError) {
-                                            input.after('<p class="invalid-validation" style="color: red; margin-top: 10px;">' + messageError + '</p>');
+                                            inputBlock.removeClass('mb-3');
+                                            inputBlock.after('<span class="invalid-validation col-12 mb-3" style="color: red; margin-top: 5px; font-size: 14px;">' + messageError + '</span>');
                                         }
                                     });
                                 }
