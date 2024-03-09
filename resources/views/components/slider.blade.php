@@ -5,7 +5,7 @@
                 @foreach($galleryData as $keyItem => $galleryItem)
                     @if(!empty($galleryItem['imagePath']))
                         <div class="carousel-item{{ $keyItem == 0 ? ' active' : '' }} h-100">
-                            <img src="{{ asset($galleryItem['imagePath']) }}" class="d-block w-100" alt="{{ $galleryItem['imageAlt'] }}" style="max-width: 100%; display: block; margin: 0 auto; height: 350px;">
+                            <img src="{{ asset($galleryItem['imagePath']) }}" class="d-block w-100" alt="{{ $galleryItem['imageAlt'] }}" style="max-width: 100%; display: block; margin: 0 auto; height: {{ (int) $imageHeight }}px;">
                         </div>
                     @endif
                 @endforeach
