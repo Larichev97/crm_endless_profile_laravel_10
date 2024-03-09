@@ -16,7 +16,7 @@ enum ContactFormStatusEnum: int
         return match($this) {
             ContactFormStatusEnum::NEW => 'Новая',
             ContactFormStatusEnum::IN_PROCESS => 'В работе',
-            ContactFormStatusEnum::READY => 'Закрыта',
+            ContactFormStatusEnum::READY => 'Выполнена',
         };
     }
 

@@ -22,13 +22,15 @@ final class ClientUpdateRequest extends FormRequest
      */
     public function rules(): array
     {
+        $id = $this->request->get('id_client');
+
         return [
             'id_status' => 'required|min:1|integer',
             'id_country' => 'required|min:1|integer',
             'id_city' => 'required|min:1|integer',
-            'phone_number' => 'required',
-            'email' => 'required|email|max:255',
-            'bdate' => 'required|date',
+            'phone_number' => 'required|min:12|max:20|string|unique:clients,phone_number,'.$id,
+            'email' => 'required|email|max:255|unique:clients,email,'.$id,
+            'bdate' => 'nullable|date',
             'address' => 'nullable|max:255',
             'firstname' => 'required|max:100',
             'lastname' => 'required|max:100',

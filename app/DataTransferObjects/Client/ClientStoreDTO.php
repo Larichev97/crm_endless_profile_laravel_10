@@ -22,6 +22,7 @@ final class ClientStoreDTO implements FormFieldsDtoInterface
     public readonly UploadedFile|null $image;
     public readonly int $id_user_add;
     public readonly int $id_user_update;
+    public readonly int $id_contact_form;
 
     /**
      * @param ClientStoreRequest $clientStoreRequest
@@ -42,6 +43,9 @@ final class ClientStoreDTO implements FormFieldsDtoInterface
         $this->image = $clientStoreRequest->validated('image');
         $this->id_user_add = (int) $clientStoreRequest->validated('id_user_add');
         $this->id_user_update = (int) $clientStoreRequest->validated('id_user_update');
+
+        // Если перешли из формы "Обратной связи" для преобразования в Клиента
+        $this->id_contact_form = (int) $clientStoreRequest->validated('id_contact_form');
     }
 
     /**
@@ -55,7 +59,7 @@ final class ClientStoreDTO implements FormFieldsDtoInterface
             'id_city' => $this->id_city,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
-            'bdate' => $this->bdate,
+            'bdate' => empty($this->bdate) ? '1111-11-11' : $this->bdate,
             'address' => $this->address,
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,
@@ -63,6 +67,7 @@ final class ClientStoreDTO implements FormFieldsDtoInterface
             'manager_comment' => $this->manager_comment,
             'id_user_add' => $this->id_user_add,
             'id_user_update' => $this->id_user_update,
+            'id_contact_form' => $this->id_contact_form,
         ];
     }
 }

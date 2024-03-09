@@ -26,9 +26,9 @@ final class ClientStoreRequest extends FormRequest
             'id_status' => 'required|min:1|integer',
             'id_country' => 'required|min:1|integer',
             'id_city' => 'required|min:1|integer',
-            'phone_number' => 'required',
-            'email' => 'required|email|max:255',
-            'bdate' => 'required|date',
+            'phone_number' => 'required|min:12|max:20|string|unique:clients,phone_number',
+            'email' => 'required|email|max:255|unique:clients,email',
+            'bdate' => 'nullable|date',
             'address' => 'nullable|max:255',
             'firstname' => 'required|max:100',
             'lastname' => 'required|max:100',
@@ -37,6 +37,7 @@ final class ClientStoreRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_user_add' => 'required|min:0|integer',
             'id_user_update' => 'required|min:0|integer',
+            'id_contact_form' => 'nullable|min:1|integer',
         ];
     }
 }

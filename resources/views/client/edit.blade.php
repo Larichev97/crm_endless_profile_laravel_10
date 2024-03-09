@@ -83,7 +83,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Дата рождения <span style="color: red">*</span></strong>
+                        <strong>Дата рождения</strong>
                         <input type="date" name="bdate" class="form-control @error('bdate') is-invalid @enderror" placeholder="Укажите дату рождения клиента..." value="{{ old('bdate', $client->bdate) }}">
                     </div>
                 </div>
@@ -119,6 +119,12 @@
                                 @endforeach
                             @endif
                         </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Адрес</strong>
+                        <input type="text" id="address" name="address" class="form-control @error('address') is-invalid @enderror" placeholder="Укажите адрес клиента..." value="{{ old('address', $client->address) }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">

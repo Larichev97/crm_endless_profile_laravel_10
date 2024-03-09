@@ -95,7 +95,7 @@
             </li>
         </ul>
     </div>
-    <div class="sidenav-footer mx-3 ">
+    <div class="sidenav-footer mx-3 position-absolute bottom-3">
         <a href="/docs/bootstrap/overview/argon-dashboard/index.html" target="_blank"
             class="btn btn-dark btn-sm w-100 mb-3">Документация Argon</a>
 

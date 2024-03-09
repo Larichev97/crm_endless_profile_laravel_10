@@ -57,7 +57,7 @@ final class ClientUpdateDTO implements FormFieldsDtoInterface
             'id_city' => $this->id_city,
             'phone_number' => $this->phone_number,
             'email' => $this->email,
-            'bdate' => $this->bdate,
+            'bdate' => empty($this->bdate) ? '1111-11-11' : $this->bdate,
             'address' => $this->address,
             'firstname' => $this->firstname,
             'lastname' => $this->lastname,

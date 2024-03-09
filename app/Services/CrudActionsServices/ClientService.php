@@ -4,8 +4,11 @@ namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
+use App\Enums\ContactFormStatusEnum;
 use App\Models\Client;
+use App\Models\ContactForm;
 use App\Repositories\Client\ClientRepository;
+use App\Repositories\ContactForm\ContactFormRepository;
 use App\Services\FileService;
 use Illuminate\Http\Request;
 
@@ -27,6 +30,8 @@ class ClientService
         $clientModel = Client::query()->create(attributes: $formDataArray);
 
         if ($clientModel) {
+            $this->processCompletionContactForm($clientStoreDTO->id_contact_form, $clientStoreDTO->id_user_add);
+
             $formFilesNamesArray['photo_name'] = $fileService->processUploadFile(file: $clientStoreDTO->image, publicDirPath: $clientsImagesDirPath, oldFileName: '', newFileName: '');
 
             return (bool) $clientModel->update(attributes: $formFilesNamesArray);
@@ -97,7 +102,7 @@ class ClientService
         $contactFormData = [];
 
         // Сопадающие поля из формы "Обратной связи" для упрощения создания нового Клиента:
-        $clientFields = ['firstname', 'lastname', 'email', 'phone_number'];
+        $clientFields = ['id_contact_form', 'firstname', 'lastname', 'email', 'phone_number'];
 
         foreach ($clientFields as $keyClientField => $clientFieldName) {
             $currentFieldValue = $request->get($clientFieldName, '');
@@ -108,5 +113,33 @@ class ClientService
         }
 
         return $contactFormData;
+    }
+
+    /**
+     *  Закрытие формы "Обратной связи" конкретным сотрудником (преобразование в клиента)
+     *
+     * @param int $idContactForm
+     * @param int $idEmployee
+     * @return bool
+     */
+    public function processCompletionContactForm(int $idContactForm, int $idEmployee): bool
+    {
+        if ($idContactForm > 0) {
+            $contactFormRepository = new ContactFormRepository();
+
+            /** @var ContactForm $contactFormModel */
+            $contactFormModel = $contactFormRepository->getForEditModel($idContactForm);
+
+            if (!empty($contactFormModel) && is_object($contactFormModel)) {
+                $contactFormDataArray = [
+                    'id_status' => ContactFormStatusEnum::READY->value,
+                    'id_employee' => $idEmployee,
+                ];
+
+                return $contactFormModel->update($contactFormDataArray);
+            }
+        }
+
+        return false;
     }
 }

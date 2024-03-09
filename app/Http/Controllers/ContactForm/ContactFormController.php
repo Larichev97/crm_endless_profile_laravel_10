@@ -47,7 +47,7 @@ class ContactFormController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
 
-            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'desc',  useCache: false);
+            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'desc',  useCache: false, filterFieldsData: $filterFieldsArray);
 
             $statusesListData = ContactFormStatusEnum::getStatusesList();
             $employeesListData = $userRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname) AS name', useCache: true);

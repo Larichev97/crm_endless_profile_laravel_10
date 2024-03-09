@@ -17,7 +17,8 @@
             <div class="row">
                 <input type="hidden" name="id_status" class="form-control" value="@if(isset($idStatusNew)){{ intval($idStatusNew) }}@else{{ 1 }}@endif">
                 <input type="hidden" name="id_user_add" class="form-control" value="{{ auth()->user()->id }}">
-                <input type="hidden" name="id_user_update" class="form-control" value="0">
+                <input type="hidden" name="id_user_update" class="form-control" value="{{ auth()->user()->id }}">
+                <input type="hidden" name="id_contact_form" class="form-control" value="{{ intval($id_contact_form) }}">
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
@@ -57,7 +58,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Дата рождения <span style="color: red">*</span></strong>
+                        <strong>Дата рождения</strong>
                         <input type="date" name="bdate" class="form-control @error('bdate') is-invalid @enderror" placeholder="Укажите дату рождения клиента..." value="{{ old('bdate') }}">
                     </div>
                 </div>
@@ -93,6 +94,12 @@
                                 @endforeach
                             @endif
                         </select>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="form-group">
+                        <strong>Адрес</strong>
+                        <input type="text" name="address" class="form-control @error('address') is-invalid @enderror" placeholder="Укажите адрес клиента..." value="{{ old('address') }}">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
