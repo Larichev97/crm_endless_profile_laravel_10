@@ -28,13 +28,13 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Имя <span style="color: red">*</span></strong>
-                        <input type="text" name="firstname" class="form-control @error('firstname') is-invalid @enderror" placeholder="Укажите имя клиента..." value="{{ old('firstname') }}">
+                        <input type="text" name="firstname" class="form-control @error('firstname') is-invalid @enderror" placeholder="Укажите имя клиента..." value="@if(!empty($firstname) && empty(old('firstname'))){{ $firstname }}@else{{ old('firstname') }}@endif">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Фамилия <span style="color: red">*</span></strong>
-                        <input type="text" name="lastname" class="form-control @error('lastname') is-invalid @enderror" placeholder="Укажите фамилию клиента..." value="{{ old('lastname') }}">
+                        <input type="text" name="lastname" class="form-control @error('lastname') is-invalid @enderror" placeholder="Укажите фамилию клиента..." value="@if(!empty($lastname) && empty(old('lastname'))){{ $lastname }}@else{{ old('lastname') }}@endif">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
@@ -46,13 +46,13 @@
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Email <span style="color: red">*</span></strong>
-                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Укажите email клиента..." value="{{ old('email') }}">
+                        <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Укажите email клиента..." value="@if(!empty($email) && empty(old('email'))){{ $email }}@else{{ old('email') }}@endif">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
                         <strong>Моб. телефон <span style="color: red">*</span></strong>
-                        <input type="text" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" placeholder="+380680000000" value="{{ old('phone_number') }}">
+                        <input type="text" id="client_phone_number" name="phone_number" class="form-control @error('phone_number') is-invalid @enderror" placeholder="+380 (__) ___-__-__" value="@if(!empty($phone_number) && empty(old('phone_number'))){{ $phone_number }}@else{{ old('phone_number') }}@endif">
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
@@ -111,3 +111,12 @@
         @include('layouts.footers.auth.footer')
     </div>
 @endsection
+@push('js')
+    <script>
+        const clientPhoneNumberInput = $('#client_phone_number');
+
+        $(document).ready(function() {
+            $(clientPhoneNumberInput).inputmask("+380 (99) 999-99-99");
+        });
+    </script>
+@endpush

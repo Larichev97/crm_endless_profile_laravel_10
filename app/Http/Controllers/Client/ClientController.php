@@ -71,16 +71,19 @@ class ClientController extends Controller
     /**
      * Show the form for creating a new resource.
      *
+     * @param Request $request
      * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function create(): Application|Factory|View|\Illuminate\Foundation\Application
+    public function create(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
+        $contactFormDataArray = $this->clientService->processGetContactFormData($request);
+
         $idStatusNew = ClientStatusEnum::NEW->value;
 
         $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
         $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-        return view('client.create', compact('idStatusNew', 'countriesListData', 'citiesListData',));
+        return view('client.create', compact('idStatusNew', 'countriesListData', 'citiesListData'), $contactFormDataArray);
     }
 
     /**

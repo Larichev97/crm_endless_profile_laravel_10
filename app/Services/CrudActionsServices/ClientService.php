@@ -7,6 +7,7 @@ use App\DataTransferObjects\Client\ClientUpdateDTO;
 use App\Models\Client;
 use App\Repositories\Client\ClientRepository;
 use App\Services\FileService;
+use Illuminate\Http\Request;
 
 class ClientService
 {
@@ -83,5 +84,29 @@ class ClientService
         }
 
         return false;
+    }
+
+    /**
+     *  Формирование массива с полями о будущем Клиенте из формы "Обратной связи"
+     *
+     * @param Request $request
+     * @return array
+     */
+    public function processGetContactFormData(Request $request): array
+    {
+        $contactFormData = [];
+
+        // Сопадающие поля из формы "Обратной связи" для упрощения создания нового Клиента:
+        $clientFields = ['firstname', 'lastname', 'email', 'phone_number'];
+
+        foreach ($clientFields as $keyClientField => $clientFieldName) {
+            $currentFieldValue = $request->get($clientFieldName, '');
+
+            if (!empty($currentFieldValue)) {
+                $contactFormData[$clientFieldName] = $currentFieldValue;
+            }
+        }
+
+        return $contactFormData;
     }
 }
