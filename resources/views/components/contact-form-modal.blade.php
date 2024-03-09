@@ -1,11 +1,11 @@
 <!-- Contact form modal -->
 <div class="modal fade" id="{{ $idContactFormModal }}" tabindex="-1" role="dialog" aria-labelledby="{{ $idContactFormModal }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-md" role="document" style="margin: 1.5rem">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-body p-0">
                 <div class="card card-plain">
                     <div class="card-header pb-0 text-left">
-                        <h4 class="font-weight-bolder text-info text-gradient">Форма зворотного зв'язку</h4>
+                        <h4 class="font-weight-bolder text-info text-gradient text-center">Форма зворотного зв'язку</h4>
                     </div>
                     <div class="card-body">
                         <form role="form" class="text-left" id="{{ $idContactForm }}">
