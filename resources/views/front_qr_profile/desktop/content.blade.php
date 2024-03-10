@@ -10,6 +10,13 @@
                     </div>
                     <div class="card-body">
                         <div class="row">
+                            <div class="col-12 p-3 text-center">
+                                @if (!empty($photoPath))
+                                    <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm mb-3" width="250" height="280">
+                                @else
+                                    <img src="/img/user_avatar.png" alt="user_avatar.png" class=" border-radius-lg shadow-sm mb-3" width="250" height="280">
+                                @endif
+                            </div>
                             <div class="col-12 text-center">
                                 <h5 class="mb-1" style="font-weight: bold;">{{ $qrProfile->fullName }}</h5>
                                 <h6 class="mb-3">
@@ -18,17 +25,10 @@
                                     @if(!empty($qrProfile->death_date)) {{ \Carbon\Carbon::parse($qrProfile->death_date)->format('d.m.Y') }} @else <span class="align-content-center" style="font-size: 17px!important;">∞</span >@endif
                                 </h6>
                             </div>
-                            <div class="col-12 p-3 text-center">
-                                @if (!empty($photoPath))
-                                    <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm mb-3" width="250" height="280">
-                                @else
-                                    <img src="/img/user_avatar.png" alt="user_avatar.png" class=" border-radius-lg shadow-sm mb-3" width="250" height="280">
-                                @endif
-                            </div>
                         </div>
                     </div>
                 </div>
-                @if(isset($sliderGalleryImagesData) && is_array($sliderGalleryImagesData))
+                @if(!empty($sliderGalleryImagesData) && is_array($sliderGalleryImagesData))
                     <div class="card shadow-lg mt-4">
                         <div class="card-header text-center d-flex align-items-center justify-content-center" style="background-color: #172b4d; height: 100%">
                             <h5 class="text-white mb-0">Галерея</h5>
@@ -51,7 +51,7 @@
                     <div class="card-body">
                         <div class="row">
                             @if(!empty($qrProfile->country->name))
-                                <div class="col-md-6">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Країна народження</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -61,7 +61,7 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->city->name))
-                                <div class="col-md-6">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Місто народження</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -71,7 +71,7 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->last_wish))
-                                <div class="col-md-6">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Останнє бажання</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -81,7 +81,7 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->profession))
-                                <div class="col-md-6">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Професія</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -91,7 +91,7 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->hobbies))
-                                <div class="col-md-12">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Хобі</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -101,17 +101,17 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->favourite_music_artist))
-                                <div class="col-md-12">
+                                <div class="col-12">
                                     <div class="mb-3">
-                                        <h6 class="fw-bold">Улюблений музичний виконавець</h6>
+                                        <h6 class="fw-bold">Улюблена музика</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
-                                            <span class="text-dark">{{ $qrProfile->favourite_music_artist }}</span>
+                                            <a href="https://music.youtube.com/search?q={{ $qrProfile->favourite_music_artist }}" class="text-dark" target="_blank" style="font-weight: bold!important;">{{ $qrProfile->favourite_music_artist }}</a>
                                         </div>
                                     </div>
                                 </div>
                             @endif
                             @if(!empty($qrProfile->voice_message_file_name) && !empty($voiceMessagePath))
-                                <div class="col-md-6">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Голосове повідомлення</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
@@ -121,17 +121,17 @@
                                 </div>
                             @endif
                             @if(!empty($qrProfile->link))
-                                <div class="col-md-12">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Посилання</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">
-                                            <a href="{{ $qrProfile->link }}" class="text-dark text-field">{{ $qrProfile->link }}</a>
+                                            <a href="{{ $qrProfile->link }}" class="text-dark text-field" style="font-weight: bold!important;" target="_blank">{{ $qrProfile->link }}</a>
                                         </div>
                                     </div>
                                 </div>
                             @endif
                             @if(!empty($qrProfile->biography))
-                                <div class="col-md-12">
+                                <div class="col-12">
                                     <div class="mb-3">
                                         <h6 class="fw-bold">Біографія</h6>
                                         <div class="mb-4 p-3 border bg-light" style="border-radius: 1rem!important;">

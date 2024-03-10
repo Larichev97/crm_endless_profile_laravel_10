@@ -18,6 +18,15 @@
                     </div>
                     <div class="card-body d-flex">
                         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                            <button
+                                type="button"
+                                class="btn btn-lg bg-gradient-warning text-dark"
+                                onclick="copyToClipboard('command_text_qr_generate')"
+                                data-toggle="tooltip" data-placement="bottom" title="Скопировать команду"
+                            >
+                                php artisan qrs:generate <i class="fas fa-copy"></i>
+                            </button>
+                            {{-- Пример формы с выполнением Команды:
                             <form id="form_generate_qr_codes" action="{{ route('settings.generate-qr-codes') }}" method="POST">
                                 @csrf
                                 @method('POST')
@@ -34,6 +43,7 @@
                                     <span class="fas fa-copy" style="cursor: pointer;" onclick="copyToClipboard('command_text_qr_generate')" data-toggle="tooltip" data-placement="bottom" title="Скопировать команду"></span>
                                 </p>
                             </form>
+                            --}}
                         </div>
                     </div>
                 </div>

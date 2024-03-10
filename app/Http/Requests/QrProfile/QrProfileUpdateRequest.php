@@ -28,7 +28,7 @@ final class QrProfileUpdateRequest extends FormRequest
             'id_country' => 'required|min:1|integer',
             'id_city' => 'required|min:1|integer',
             'birth_date' => 'nullable|date',
-            'death_date' => 'required|date',
+            'death_date' => 'nullable|date',
             'firstname' => 'required|string|max:150',
             'lastname' => 'required|string|max:150',
             'surname' => 'nullable|string|max:150',

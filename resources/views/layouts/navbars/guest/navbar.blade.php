@@ -18,6 +18,10 @@
                         </span>
                     </button>
                     <div class="collapse navbar-collapse" id="navigation">
+                        @if(Agent::isMobile() || Agent::isTablet())
+                            <button type="button" class="btn btn-block mb-3 btn-xs btn-dark text-uppercase" data-bs-toggle="modal" data-bs-target="#contact_form_modal">Замовити QR-профіль</button>
+                        @endif
+
                         <ul class="navbar-nav mx-auto">
                             <li class="nav-item">
                                 <span class="nav-link d-flex align-items-center me-2 active" aria-current="page">

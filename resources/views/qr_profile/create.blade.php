@@ -68,7 +68,7 @@
                 </div>
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
-                        <strong>Дата смерти <span style="color: red">*</span></strong>
+                        <strong>Дата смерти</strong>
                         <input type="date" name="death_date" class="form-control @error('death_date') is-invalid @enderror" placeholder="Укажите дату смерти..." value="{{ old('death_date') }}">
                     </div>
                 </div>
