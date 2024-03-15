@@ -5,17 +5,17 @@ namespace App\DataTransferObjects\City;
 use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\City\CityUpdateRequest;
 
-final class CityUpdateDTO implements FormFieldsDtoInterface
+final readonly class CityUpdateDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_country;
-    public readonly string $name;
-    public readonly int $is_active;
+    public int $id_country;
+    public string $name;
+    public int $is_active;
 
     /**
      * @param CityUpdateRequest $cityUpdateRequest
      * @param int $id_city
      */
-    public function __construct(CityUpdateRequest $cityUpdateRequest, public readonly int $id_city)
+    public function __construct(CityUpdateRequest $cityUpdateRequest, public int $id_city)
     {
         $this->id_country = (int) $cityUpdateRequest->validated('id_country');
         $this->name = (string) $cityUpdateRequest->validated('name');

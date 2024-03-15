@@ -6,19 +6,19 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Country\CountryUpdateRequest;
 use Illuminate\Http\UploadedFile;
 
-final class CountryUpdateDTO implements FormFieldsDtoInterface
+final readonly class CountryUpdateDTO implements FormFieldsDtoInterface
 {
-    public readonly string $name;
-    public readonly string $iso_code;
-    public readonly int $is_active;
-    public readonly string $flag_file_name;
-    public readonly UploadedFile|null $flag_file;
+    public string $name;
+    public string $iso_code;
+    public int $is_active;
+    public string $flag_file_name;
+    public UploadedFile|null $flag_file;
 
     /**
      * @param CountryUpdateRequest $countryUpdateRequest
      * @param int $id_country
      */
-    public function __construct(CountryUpdateRequest $countryUpdateRequest, public readonly int $id_country)
+    public function __construct(CountryUpdateRequest $countryUpdateRequest, public int $id_country)
     {
         $this->name = (string) $countryUpdateRequest->validated('name');
         $this->iso_code = strtolower($countryUpdateRequest->validated('iso_code'));

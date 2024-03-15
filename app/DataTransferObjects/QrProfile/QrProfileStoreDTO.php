@@ -6,33 +6,33 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\QrProfile\QrProfileStoreRequest;
 use Illuminate\Http\UploadedFile;
 
-final class QrProfileStoreDTO implements FormFieldsDtoInterface
+final readonly class QrProfileStoreDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_status;
-    public readonly int $id_client;
-    public readonly int $id_country;
-    public readonly int $id_city;
-    public readonly string $birth_date;
-    public readonly string $death_date;
-    public readonly string $firstname;
-    public readonly string $lastname;
-    public readonly string $surname;
-    public readonly string $cause_death;
-    public readonly string $profession;
-    public readonly string $hobbies;
-    public readonly string $biography;
-    public readonly string $last_wish;
-    public readonly string $favourite_music_artist;
-    public readonly string $link;
-    public readonly string $geo_latitude;
-    public readonly string $geo_longitude;
-    public readonly string $photo_file_name;
-    public readonly UploadedFile|null $photo_file;
-    public readonly string $voice_message_file_name;
-    public readonly UploadedFile|null $voice_message_file;
-    public readonly string $qr_code_file_name;
-    public readonly int $id_user_add;
-    public readonly int $id_user_update;
+    public int $id_status;
+    public int $id_client;
+    public int $id_country;
+    public int $id_city;
+    public string $birth_date;
+    public string $death_date;
+    public string $firstname;
+    public string $lastname;
+    public string $surname;
+    public string $cause_death;
+    public string $profession;
+    public string $hobbies;
+    public string $biography;
+    public string $last_wish;
+    public string $favourite_music_artist;
+    public string $link;
+    public string $geo_latitude;
+    public string $geo_longitude;
+    public string $photo_file_name;
+    public UploadedFile|null $photo_file;
+    public string $voice_message_file_name;
+    public UploadedFile|null $voice_message_file;
+    public string $qr_code_file_name;
+    public int $id_user_add;
+    public int $id_user_update;
 
     /**
      * @param QrProfileStoreRequest $qrProfileStoreRequest

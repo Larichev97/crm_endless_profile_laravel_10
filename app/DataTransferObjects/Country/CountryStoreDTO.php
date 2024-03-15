@@ -6,13 +6,13 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Country\CountryStoreRequest;
 use Illuminate\Http\UploadedFile;
 
-final class CountryStoreDTO implements FormFieldsDtoInterface
+final readonly class CountryStoreDTO implements FormFieldsDtoInterface
 {
-    public readonly string $name;
-    public readonly string $iso_code;
-    public readonly int $is_active;
-    public readonly string $flag_file_name;
-    public readonly UploadedFile|null $flag_file;
+    public string $name;
+    public string $iso_code;
+    public int $is_active;
+    public string $flag_file_name;
+    public UploadedFile|null $flag_file;
 
     /**
      * @param CountryStoreRequest $countryStoreRequest

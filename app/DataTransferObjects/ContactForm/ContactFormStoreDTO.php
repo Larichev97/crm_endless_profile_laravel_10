@@ -6,15 +6,15 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Enums\ContactFormStatusEnum;
 use App\Http\Requests\ContactForm\ContactFormStoreRequest;
 
-final class ContactFormStoreDTO implements FormFieldsDtoInterface
+final readonly class ContactFormStoreDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_status;
-    public readonly string $firstname;
-    public readonly string $lastname;
-    public readonly string $email;
-    public readonly string $phone_number;
-    public readonly string $comment;
-    public readonly int $id_employee;
+    public int $id_status;
+    public string $firstname;
+    public string $lastname;
+    public string $email;
+    public string $phone_number;
+    public string $comment;
+    public int $id_employee;
 
     /**
      * @param ContactFormStoreRequest $contactFormStoreRequest

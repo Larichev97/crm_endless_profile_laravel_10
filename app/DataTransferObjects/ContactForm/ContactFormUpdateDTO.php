@@ -5,21 +5,21 @@ namespace App\DataTransferObjects\ContactForm;
 use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\ContactForm\ContactFormUpdateRequest;
 
-final class ContactFormUpdateDTO implements FormFieldsDtoInterface
+final readonly class ContactFormUpdateDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_status;
-    public readonly string $firstname;
-    public readonly string $lastname;
-    public readonly string $email;
-    public readonly string $phone_number;
-    public readonly string $comment;
-    public readonly int $id_employee;
+    public int $id_status;
+    public string $firstname;
+    public string $lastname;
+    public string $email;
+    public string $phone_number;
+    public string $comment;
+    public int $id_employee;
 
     /**
      * @param ContactFormUpdateRequest $contactFormUpdateRequest
      * @param int $idContactForm
      */
-    public function __construct(ContactFormUpdateRequest $contactFormUpdateRequest, public readonly int $idContactForm)
+    public function __construct(ContactFormUpdateRequest $contactFormUpdateRequest, public int $idContactForm)
     {
         $this->id_status = (int) $contactFormUpdateRequest->validated('id_status');
         $this->firstname = (string) $contactFormUpdateRequest->validated('firstname');

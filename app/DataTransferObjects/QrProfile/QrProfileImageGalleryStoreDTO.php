@@ -5,11 +5,11 @@ namespace App\DataTransferObjects\QrProfile;
 use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\QrProfile\QrProfileImageGalleryStoreRequest;
 
-final class QrProfileImageGalleryStoreDTO implements FormFieldsDtoInterface
+final readonly class QrProfileImageGalleryStoreDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_qr_profile;
-    public readonly int $is_active;
-    public readonly array $gallery_photos;
+    public int $id_qr_profile;
+    public int $is_active;
+    public array $gallery_photos;
 
     /**
      * @param QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest

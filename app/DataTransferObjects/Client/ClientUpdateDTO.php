@@ -6,28 +6,28 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Http\Requests\Client\ClientUpdateRequest;
 use Illuminate\Http\UploadedFile;
 
-final class ClientUpdateDTO implements FormFieldsDtoInterface
+final readonly class ClientUpdateDTO implements FormFieldsDtoInterface
 {
-    public readonly int $id_status;
-    public readonly int $id_country;
-    public readonly int $id_city;
-    public readonly string $phone_number;
-    public readonly string $email;
-    public readonly string $bdate;
-    public readonly string|null $address;
-    public readonly string $firstname;
-    public readonly string $lastname;
-    public readonly string $surname;
-    public readonly string $manager_comment;
-    public readonly string $photo_name;
-    public readonly UploadedFile|null $image;
-    public readonly int $id_user_add;
-    public readonly int $id_user_update;
+    public int $id_status;
+    public int $id_country;
+    public int $id_city;
+    public string $phone_number;
+    public string $email;
+    public string $bdate;
+    public string|null $address;
+    public string $firstname;
+    public string $lastname;
+    public string $surname;
+    public string $manager_comment;
+    public string $photo_name;
+    public UploadedFile|null $image;
+    public int $id_user_add;
+    public int $id_user_update;
 
     /**
      * @param ClientUpdateRequest $clientStoreRequest
      */
-    public function __construct(ClientUpdateRequest $clientStoreRequest, public readonly int $id_client)
+    public function __construct(ClientUpdateRequest $clientStoreRequest, public int $id_client)
     {
         $this->id_status = (int) $clientStoreRequest->validated('id_status');
         $this->id_country = (int) $clientStoreRequest->validated('id_country');
