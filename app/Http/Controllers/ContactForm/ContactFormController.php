@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactForm\ContactFormStoreRequest;
 use App\Http\Requests\ContactForm\ContactFormUpdateRequest;
 use App\Repositories\ContactForm\ContactFormRepository;
+use App\Repositories\Setting\SettingRepository;
 use App\Repositories\User\UserRepository;
 use App\Services\CrudActionsServices\ContactFormService;
 use App\Services\FilterTableService;
@@ -25,10 +26,12 @@ class ContactFormController extends Controller
     /**
      * @param ContactFormService $contactFormService
      * @param ContactFormRepository $contactFormRepository
+     * @param SettingRepository $settingRepository
      */
     public function __construct(
         readonly ContactFormService $contactFormService,
         readonly ContactFormRepository $contactFormRepository,
+        readonly SettingRepository $settingRepository,
     )
     {
     }
@@ -79,7 +82,7 @@ class ContactFormController extends Controller
         try {
             $contactFormStoreDTO = new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest);
 
-            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO);
+            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO, settingRepository: $this->settingRepository);
 
             if ($createContactForm) {
                 return redirect()->route('contact-forms.index')->with('success','Форма обратной связи успешно создана.');
@@ -191,7 +194,7 @@ class ContactFormController extends Controller
         try {
             $contactFormStoreDTO = new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest);
 
-            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO);
+            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO, settingRepository: $this->settingRepository);
 
             if ($createContactForm) {
                 return response()->json(['success' => true, 'message' => 'Форма зворотного зв\'язку успішно створена.'], 201);

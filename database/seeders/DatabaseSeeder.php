@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Client;
 use App\Models\QrProfile;
-use Faker\Factory;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -21,12 +20,12 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'username' => 'admin',
             'firstname' => 'Admin',
-            'lastname' => 'Admin',
-            'email' => 'admin@argon.com',
+            'lastname' => 'Adminovich',
+            'email' => 'admin@endless-profile.com',
             'city' => 'Днепр',
             'country' => 'Украина',
             'postal' => '49018',
-            'about' => 'developer',
+            'about' => 'Super Admin',
             'password' => bcrypt('secret'),
             'created_at' => date('Y-m-d H:i:s'),
         ]);
@@ -40,6 +39,11 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'QR_CODE_IMAGE_SIZE',
                 'value' => '400',
+                'created_at' => date('Y-m-d H:i:s'),
+            ],
+            [
+                'name' => 'TELEGRAM_CHANNEL_ID',
+                'value' => '0',
                 'created_at' => date('Y-m-d H:i:s'),
             ],
         ]);
