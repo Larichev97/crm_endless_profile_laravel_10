@@ -18,7 +18,7 @@
                 <input type="hidden" name="id_status" class="form-control" value="@if(isset($idStatusNew)){{ intval($idStatusNew) }}@else{{ 1 }}@endif">
                 <input type="hidden" name="id_user_add" class="form-control" value="{{ auth()->user()->id }}">
                 <input type="hidden" name="id_user_update" class="form-control" value="{{ auth()->user()->id }}">
-                <input type="hidden" name="id_contact_form" class="form-control" value="{{ intval($id_contact_form) }}">
+                <input type="hidden" name="id_contact_form" class="form-control" value="@if(!empty($id_contact_form)){{ intval($id_contact_form) }}@else0@endif">
 
                 <div class="col-xs-12 col-sm-12 col-md-12">
                     <div class="form-group">
