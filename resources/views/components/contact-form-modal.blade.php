@@ -37,6 +37,8 @@
                                     <textarea class="form-control" rows="4" id="comment" name="comment" placeholder="Введіть коментар..." aria-label="Коментар" aria-describedby="basic-addon1"></textarea>
                                 </div>
 
+                                <span id="modal_error_message_block" style="color: red"></span>
+
                                 <div class="text-center">
                                     <button type="button" id="contactFormSubmitBtn" class="btn btn-round bg-gradient-info btn-lg w-100 mt-4 mb-0">Відправити</button>
                                 </div>
@@ -101,6 +103,19 @@
                         }
                     },
                     error: function(xhr, status, error) {
+                        let errorSpan = $("#modal_error_message_block");
+
+                        if (errorSpan) {
+                            errorSpan.hide();
+                            errorSpan.text('');
+                        }
+
+                        // Too Many Requests:
+                        if (xhr.status === 429 && errorSpan) {
+                            errorSpan.text('Нещодавно Ви вже надіслали запит. Будь ласка, спробуйте пізніше.');
+                            errorSpan.show();
+                        }
+
                         if (xhr.responseJSON && xhr.responseJSON.errors && Object.keys(xhr.responseJSON.errors).length) {
                             // Добавляем сообщения об ошибках под каждым полем ввода
                             $.each(xhr.responseJSON.errors, function(field, messages) {
@@ -131,6 +146,13 @@
             $('#firstname').val('');
             $('#lastname').val('');
             $('#comment').val('');
+
+            let errorSpan = $("#modal_error_message_block");
+
+            if(errorSpan) {
+                errorSpan.hide();
+                errorSpan.text('');
+            }
         }
     </script>
 @endpush
