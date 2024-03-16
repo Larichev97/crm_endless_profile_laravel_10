@@ -1,5 +1,5 @@
 <div class="modal fade" id="{{ $idSuccessModal }}" tabindex="-1" role="dialog" aria-labelledby="{{ $idSuccessModal }}" aria-hidden="true" style="display: none">
-    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+    <div class="modal-dialog modal-danger modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 @if(!empty($titleSuccessModal))
