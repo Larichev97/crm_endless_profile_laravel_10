@@ -62,10 +62,13 @@ Route::group(['middleware' => 'auth'], function () {
 
     // ContactForm entity:
     require_once 'contact_forms/contact_forms.php';
+
+    // Terminal Command entity:
+    require_once 'terminal_commands/terminal_commands.php';
 });
 
-// Front QrProfile (test QR-CODE):
+// Front QrProfile (view profile via QR-Code):
 Route::get('qr-profile/{id}', [FrontQrProfileController::class, 'show'])->name('front-qrs.show');
 
-// ContactForm entity via AJAX:
+// ContactForm entity (via AJAX):
 require_once 'contact_forms/ajax_contact_forms.php';

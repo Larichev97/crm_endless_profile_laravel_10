@@ -12,50 +12,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Команды для терминала</h6>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body d-flex">
-                        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
-                            <button
-                                type="button"
-                                class="btn btn-lg bg-gradient-warning text-dark"
-                                onclick="copyToClipboard('command_text_qr_generate')"
-                                data-toggle="tooltip" data-placement="bottom" title="Скопировать команду"
-                            >
-                                php artisan qrs:generate <i class="fas fa-copy"></i>
-                            </button>
-                            {{-- Пример формы с выполнением Команды:
-                            <form id="form_generate_qr_codes" action="{{ route('settings.generate-qr-codes') }}" method="POST">
-                                @csrf
-                                @method('POST')
-                                <button
-                                    type="button"
-                                    id="submit_btn_generate_qr_codes"
-                                    class="btn btn-lg bg-gradient-warning"
-                                    onclick="openConfirmModal('modal-default', 'modal-title-default', 'modal-body-content', 'Подтверждение', 'Вы действительно хотите выполнить команду?')"
-                                >
-                                    <i class="fas fa-qrcode"></i> Сгенерировать все QR коды
-                                </button>
-                                <p class="font-weight-bolder text-dark">
-                                    <span id="command_text_qr_generate">php artisan qrs:generate</span>
-                                    <span class="fas fa-copy" style="cursor: pointer;" onclick="copyToClipboard('command_text_qr_generate')" data-toggle="tooltip" data-placement="bottom" title="Скопировать команду"></span>
-                                </p>
-                            </form>
-                            --}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-12">
-                <div class="card mb-4">
-                    <div class="card-header pb-0">
-                        <div class="row">
-                            <div class="col-6">
-                                <h6 class="">Список настроек</h6>
+                                <h5 class="">Список настроек, которые используются в коде</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('settings.create') }}" style="margin-left: auto">Добавить настройку</a>
@@ -111,28 +68,4 @@
             </div>
         </div>
     </div>
-
-    @include('components.confirm-modal', ['idFormSubmit' => 'form_generate_qr_codes'])
 @endsection
-
-@push('js')
-    @include('components.copy-text-script')
-
-    <script>
-        /**
-         * @param modalId
-         * @param titleId
-         * @param descriptionId
-         * @param titleText
-         * @param descriptionText
-         */
-        function openConfirmModal(modalId, titleId, descriptionId, titleText, descriptionText) {
-            document.getElementById(titleId).innerText = titleText;
-            document.getElementById(descriptionId).innerHTML = descriptionText;
-
-            let modal = new bootstrap.Modal(document.getElementById(modalId));
-
-            modal.show();
-        }
-    </script>
-@endpush

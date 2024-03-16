@@ -14,7 +14,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список заявок</h6>
+                                <h5 class="">Список заявок</h5>
                             </div>
                             <div class="col-6 d-flex">
                             {{-- <a class="btn btn-success" href="{{ route('contact-forms.create') }}" style="margin-left: auto">Добавить заявку</a> --}}

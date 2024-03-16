@@ -14,7 +14,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список клиентов</h6>
+                                <h5>Список клиентов</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('clients.create') }}" style="margin-left: auto">Добавить клиента</a>

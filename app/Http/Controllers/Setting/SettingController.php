@@ -167,19 +167,4 @@ class SettingController extends Controller
             return response()->json(['error' => $exception->getMessage()], 401);
         }
     }
-
-    /**
-     * @return RedirectResponse
-     */
-    public function commandGenerateQrCodes(): RedirectResponse
-    {
-        $exitCode = Artisan::call('qrs:generate');
-
-        // Команда выполнена успешно:
-        if ($exitCode === 0) {
-            return redirect()->back()->with('success', 'Команда для генерирования изображений QR-кодов успешно выполнена!');
-        }
-
-        return redirect()->back()->with('error', 'Ошибка! Команда для генерирования изображений QR-кодов не выполнена!');
-    }
 }

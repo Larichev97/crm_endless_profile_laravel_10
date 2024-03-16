@@ -12,7 +12,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список стран</h6>
+                                <h5 class="">Список стран</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('countries.create') }}" style="margin-left: auto">Добавить страну</a>

@@ -28,7 +28,4 @@ Route::prefix('settings')->group(function () {
 
     // Destroy: удаление конкретного ресурса
     Route::delete('/{id}', [SettingController::class, 'destroy'])->name('settings.destroy');
-
-    // Generate all QR-codes Images: команда для терминала
-    Route::post('/generate-qr-codes', [SettingController::class, 'commandGenerateQrCodes'])->name('settings.generate-qr-codes');
 });

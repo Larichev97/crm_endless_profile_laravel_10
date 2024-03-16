@@ -12,7 +12,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список городов</h6>
+                                <h5>Список городов</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('cities.create') }}" style="margin-left: auto">Добавить город</a>

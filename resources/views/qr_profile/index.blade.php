@@ -14,7 +14,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h6 class="">Список QR-профилей</h6>
+                                <h5>Список QR-профилей</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>

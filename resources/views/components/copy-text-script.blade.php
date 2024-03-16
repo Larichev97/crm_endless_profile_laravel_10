@@ -2,17 +2,15 @@
     /**
      *  Функция для копирования текста.
      *
-     *  Добавляется через атрибут onclick="copyToClipboard('some_id_name')".
+     *  Добавляется через атрибут onclick="copyToClipboard('some_text_for_copy')".
      *
-     * @param commandTextId ID тега, из которого будет скопирован текст
+     * @param commandText текст, который будет скопирован в буфер обмена
      */
-    function copyToClipboard(commandTextId) {
-        let commandText = document.getElementById(commandTextId);
-
+    function copyToClipboard(commandText) {
         // Создаем временный элемент textarea:
         let textarea = document.createElement('textarea');
 
-        textarea.value = commandText.innerText;
+        textarea.value = commandText;
 
         document.body.appendChild(textarea);
 
