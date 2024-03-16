@@ -37,7 +37,7 @@ final class ClientStoreRequest extends FormRequest
             'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'id_user_add' => 'required|min:0|integer',
             'id_user_update' => 'required|min:0|integer',
-            'id_contact_form' => 'nullable|min:1|integer',
+            'id_contact_form' => 'nullable|min:0|integer',
         ];
     }
 }
