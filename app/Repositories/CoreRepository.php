@@ -16,6 +16,13 @@ use Illuminate\Support\Facades\Cache;
  */
 abstract class CoreRepository implements CoreRepositoryInterface
 {
+    const INPUT_TYPE_TEXT = 'text';
+    const INPUT_TYPE_TEXTAREA = 'textarea';
+    const INPUT_TYPE_SELECT = 'select';
+    const INPUT_TYPE_EMAIL = 'email';
+    const INPUT_TYPE_DATE = 'date';
+    const INPUT_TYPE_DATETIME = 'datetime';
+
     /**
      * @var int Время жизни кэша по умолчанию: 1 месяц
      */
@@ -172,6 +179,20 @@ abstract class CoreRepository implements CoreRepositoryInterface
         }
 
         return $result;
+    }
+
+    /**
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "{group_name}.index")
+     *
+     * @return array|string[]
+     */
+    public function getDisplayedFieldsOnIndexPage(): array
+    {
+        return [
+            'id'            => ['field' => 'id', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => '#'],
+            'created_at'    => ['field' => 'created_at', 'field_input_type' => self::INPUT_TYPE_DATE, 'field_title' => 'Дата создания'],
+            'updated_at'    => ['field' => 'updated_at', 'field_input_type' => self::INPUT_TYPE_DATE, 'field_title' => 'Дата редактирования'],
+        ];
     }
 
     /**

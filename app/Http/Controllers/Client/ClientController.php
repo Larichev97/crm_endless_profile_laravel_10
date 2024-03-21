@@ -53,16 +53,20 @@ class ClientController extends Controller
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
+            $sortBy = strtolower($request->get('sort_by', 'id'));
+            $sortWay = strtolower($request->get('sort_way', 'desc'));
+
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
             $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
 
-            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'desc', true, $filterFieldsArray);
+            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), $sortBy, $sortWay, false, $filterFieldsArray);
+            $displayedFields = $this->clientRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ClientStatusEnum::getStatusesList();
             $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
             $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
 
-            return view('client.index',compact(['clients', 'filterFieldsObject', 'statusesListData', 'countriesListData', 'citiesListData',]));
+            return view('client.index', compact(['clients', 'displayedFields','filterFieldsObject', 'statusesListData', 'countriesListData', 'citiesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

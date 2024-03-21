@@ -55,4 +55,24 @@ final class ClientRepository extends CoreRepository
     {
         return parent::getForDropdownList($fieldId, $fieldName, $useCache);
     }
+
+    /**
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "clients.index")
+     *
+     * @return array|string[]
+     */
+    public function getDisplayedFieldsOnIndexPage(): array
+    {
+        return [
+            'id'            => ['field' => 'id', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => '#'],
+            'firstname'     => ['field' => 'firstname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Имя'],
+            'lastname'      => ['field' => 'lastname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Фамилия'],
+            'surname'       => ['field' => 'surname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Отчество'],
+            'email'         => ['field' => 'email', 'field_input_type' => self::INPUT_TYPE_EMAIL, 'field_title' => 'Email'],
+            'phone_number'  => ['field' => 'phone_number', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Моб. номер'],
+            'id_country'    => ['field' => 'id_country', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Страна'],
+            'id_city'       => ['field' => 'id_city', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Город'],
+            'id_status'     => ['field' => 'id_status', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Статус'],
+        ];
+    }
 }
