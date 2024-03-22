@@ -61,16 +61,21 @@ final class QrProfileController extends Controller
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
+            $page = (int) $request->get('page', 1);
+            $sortBy = strtolower($request->get('sort_by', 'id'));
+            $sortWay = strtolower($request->get('sort_way', 'desc'));
+
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
 
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'desc', useCache: true, filterFieldsData: $filterFieldsArray);
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, useCache: true, filterFieldsData: $filterFieldsArray);
+            $displayedFields = $this->qrProfileRepository->getDisplayedFieldsOnIndexPage();
 
             $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);
             $statusesListData = QrStatusEnum::getStatusesList();
             $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
-            return view('qr_profile.index',compact(['qrProfiles', 'filterFieldsObject', 'clientsListData', 'statusesListData', 'countriesListData',]));
+            return view('qr_profile.index',compact(['qrProfiles', 'displayedFields', 'filterFieldsObject', 'clientsListData', 'statusesListData', 'countriesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }

@@ -53,13 +53,14 @@ class ClientController extends Controller
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
+            $page = (int) $request->get('page', 1);
             $sortBy = strtolower($request->get('sort_by', 'id'));
             $sortWay = strtolower($request->get('sort_way', 'desc'));
 
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
             $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
 
-            $clients = $this->clientRepository->getAllWithPaginate(10, (int) $request->get('page', 1), $sortBy, $sortWay, false, $filterFieldsArray);
+            $clients = $this->clientRepository->getAllWithPaginate(10, $page, $sortBy, $sortWay, false, $filterFieldsArray);
             $displayedFields = $this->clientRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ClientStatusEnum::getStatusesList();

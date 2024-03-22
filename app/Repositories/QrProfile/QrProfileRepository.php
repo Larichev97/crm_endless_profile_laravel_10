@@ -94,4 +94,24 @@ final class QrProfileRepository extends CoreRepository
 
         return $query;
     }
+
+    /**
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "qrs.index")
+     *
+     * @return array|string[]
+     */
+    public function getDisplayedFieldsOnIndexPage(): array
+    {
+        return [
+            'id'            => ['field' => 'id', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => '#'],
+            'firstname'     => ['field' => 'firstname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Имя'],
+            'lastname'      => ['field' => 'lastname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Фамилия'],
+            'surname'       => ['field' => 'surname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Отчество'],
+            'death_date'    => ['field' => 'death_date', 'field_input_type' => self::INPUT_TYPE_DATE, 'field_title' => 'Дата смерти'],
+            'id_country'    => ['field' => 'id_country', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Страна'],
+            'id_client'     => ['field' => 'id_client', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Принадлежит клиенту'],
+            'with_qr_code'  => ['field' => 'with_qr_code', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'QR-Код'],
+            'id_status'     => ['field' => 'id_status', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Статус'],
+        ];
+    }
 }
