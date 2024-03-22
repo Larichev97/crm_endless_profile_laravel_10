@@ -7,7 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Facades\File;
 
-class QrProfileImage extends Model
+/**
+ * @property int $id
+ * @property int $id_qr_profile
+ * @property string $image_name
+ * @property int $position
+ * @property int $is_active
+ */
+final class QrProfileImage extends Model
 {
     use HasFactory;
 

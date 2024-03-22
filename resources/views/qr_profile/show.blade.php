@@ -30,12 +30,12 @@
                     <div class="col-lg-5 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
                         @if(!empty($qrProfile->userWhoCreated) && (int) $qrProfile->userWhoCreated->id > 0)
                             <div class="row">
-                                <span class="text-left text-secondary">Создал: {{ $qrProfile->userWhoCreated->fullName }} ({{ $qrProfile->created_at->format('d.m.Y H:i:s') }})</span>
+                                <span class="text-left text-secondary">Создал: {{ $qrProfile->userWhoCreated->fullName }} @if(!empty($qrProfile->created_at)) ({{ $qrProfile->created_at->format('d.m.Y H:i:s') }}) @endif</span>
                             </div>
                         @endif
                         @if(!empty($qrProfile->userWhoUpdated) && (int) $qrProfile->userWhoUpdated->id > 0)
                             <div class="row">
-                                <span class="text-left text-secondary">Редактировал: {{ $qrProfile->userWhoUpdated->fullName }} ({{ $qrProfile->updated_at->format('d.m.Y H:i:s') }})</span>
+                                <span class="text-left text-secondary">Редактировал: {{ $qrProfile->userWhoUpdated->fullName }} @if(!empty($qrProfile->updated_at)) ({{ $qrProfile->updated_at->format('d.m.Y H:i:s') }}) @endif</span>
                             </div>
                         @endif
                     </div>

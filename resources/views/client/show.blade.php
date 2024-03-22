@@ -30,12 +30,12 @@
                     <div class="col-lg-5 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
                         @if(!empty($client->userWhoCreated) && (int) $client->userWhoCreated->id > 0)
                             <div class="row">
-                                <span class="text-left text-secondary">Создал: {{ $client->userWhoCreated->fullName }} ({{ $client->created_at->format('d.m.Y H:i:s') }})</span>
+                                <span class="text-left text-secondary">Создал: {{ $client->userWhoCreated->fullName }} @if(!empty($client->created_at)) ({{ $client->created_at->format('d.m.Y H:i:s') }}) @endif</span>
                             </div>
                         @endif
                         @if(!empty($client->userWhoUpdated) && (int) $client->userWhoUpdated->id > 0)
                             <div class="row">
-                                <span class="text-left text-secondary">Редактировал: {{ $client->userWhoUpdated->fullName }} ({{ $client->updated_at->format('d.m.Y H:i:s') }})</span>
+                                <span class="text-left text-secondary">Редактировал: {{ $client->userWhoUpdated->fullName }} @if(!empty($client->updated_at)) {{ $client->updated_at->format('d.m.Y H:i:s') }}) @endif</span>
                             </div>
                         @endif
                     </div>

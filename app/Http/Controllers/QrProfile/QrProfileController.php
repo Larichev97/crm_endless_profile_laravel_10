@@ -280,7 +280,7 @@ final class QrProfileController extends Controller
     }
 
     /**
-     *  Удаление фотографии из галереи Qr-профиля
+     *  Удаление фотографии из галереи QR-профиля
      *
      * @param $id
      * @param QrProfileImageRepository $qrProfileImageRepository

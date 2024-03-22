@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property int $id_country
+ * @property string $name
+ * @property int $is_active
+ */
 final class City extends Model
 {
     protected $table = 'cities';

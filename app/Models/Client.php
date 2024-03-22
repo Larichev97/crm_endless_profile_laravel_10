@@ -10,6 +10,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $id_status
+ * @property int $id_country
+ * @property int $id_city
+ * @property string $phone_number
+ * @property string $email
+ * @property string $bdate
+ * @property string $address
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $surname
+ * @property string $photo_name
+ * @property string $manager_comment
+ * @property int $id_user_add
+ * @property int $id_user_update
+ * @property string $created_at
+ * @property string $updated_at
+ * @property string $deleted_at
+ */
 final class Client extends Model
 {
     use HasFactory;

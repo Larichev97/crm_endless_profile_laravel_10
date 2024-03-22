@@ -10,6 +10,34 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property int $id
+ * @property int $id_status
+ * @property int $id_client
+ * @property int $id_country
+ * @property int $id_city
+ * @property string $birth_date
+ * @property string $death_date
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $surname
+ * @property string $cause_death
+ * @property string $profession
+ * @property string $hobbies
+ * @property string $biography
+ * @property string $last_wish
+ * @property string $favourite_music_artist
+ * @property string $link
+ * @property string $geo_latitude
+ * @property string $geo_longitude
+ * @property string $photo_file_name
+ * @property string $voice_message_file_name
+ * @property string $qr_code_file_name
+ * @property int $id_user_add
+ * @property int $id_user_update
+ * @property string $created_at
+ * @property string $updated_at
+ */
 final class QrProfile extends Model
 {
     use HasFactory;

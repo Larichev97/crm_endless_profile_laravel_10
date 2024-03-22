@@ -8,7 +8,19 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ContactForm extends Model
+/**
+ * @property int $id
+ * @property int $id_status
+ * @property string $firstname
+ * @property string $lastname
+ * @property string $email
+ * @property string $phone_number
+ * @property string $comment
+ * @property int $id_employee
+ * @property string $created_at
+ * @property string $updated_at
+ */
+final class ContactForm extends Model
 {
     protected $table = 'contact_forms';
 

@@ -5,6 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/**
+ * @property int $id
+ * @property string $name
+ * @property string $iso_code
+ * @property int $is_active
+ * @property string $flag_file_name
+ */
 final class Country extends Model
 {
     protected $table = 'countries';
