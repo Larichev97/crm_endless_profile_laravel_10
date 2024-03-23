@@ -12,6 +12,8 @@ final class ContactFormRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'email', 'comment', 'phone_number',];
@@ -58,6 +60,8 @@ final class ContactFormRepository extends CoreRepository
 
     /**
      *  Список полей с названиями, которые необходимо отобразить в списке (route "contact-forms.index")
+     *
+     *  [Override]
      *
      * @return array|string[]
      */

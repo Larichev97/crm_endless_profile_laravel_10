@@ -14,6 +14,8 @@ final class CityRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchLikeFieldsArray = ['name',];
@@ -48,6 +50,8 @@ final class CityRepository extends CoreRepository
     }
 
     /**
+     *  [Override]
+     *
      * @param string $fieldId
      * @param string $fieldName
      * @param bool $useCache
@@ -83,6 +87,8 @@ final class CityRepository extends CoreRepository
     }
 
     /**
+     *  [Override]
+     *
      * @param Builder $query
      * @param array $filterFieldsData
      * @return Builder
@@ -118,6 +124,8 @@ final class CityRepository extends CoreRepository
 
     /**
      *  Список полей с названиями, которые необходимо отобразить в списке (route "cities.index")
+     *
+     *  [Override]
      *
      * @return array|string[]
      */

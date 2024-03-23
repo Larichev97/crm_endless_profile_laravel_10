@@ -12,12 +12,16 @@ final class UserRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchDateFieldsArray = ['created_at', 'updated_at',];
 
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     *  [Override]
      *
      * @var array|string[]
      */
