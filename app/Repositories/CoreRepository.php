@@ -132,6 +132,9 @@ abstract class CoreRepository implements CoreRepositoryInterface
 
         $this->setCustomQueryFilters($query, $filterFieldsData);
 
+        $orderBy = strtolower($orderBy);
+        $orderWay = strtolower($orderWay);
+
         if ($orderBy !== 'id' && !in_array($orderBy, $fields_array)) {
             $orderBy = 'id';
         }

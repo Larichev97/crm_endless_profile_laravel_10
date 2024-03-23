@@ -12,6 +12,8 @@ final class ClientRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'surname', 'email',];
@@ -58,6 +60,8 @@ final class ClientRepository extends CoreRepository
 
     /**
      *  Список полей с названиями, которые необходимо отобразить в списке (route "clients.index")
+     *
+     *  [Override]
      *
      * @return array|string[]
      */

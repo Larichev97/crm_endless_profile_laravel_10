@@ -12,7 +12,7 @@
                     <div class="card-header pb-0">
                         <div class="row">
                             <div class="col-6">
-                                <h5 class="">Список настроек, которые используются в коде</h5>
+                                <h5 class="">Список настроек для кода</h5>
                             </div>
                             <div class="col-6 d-flex">
                                 <a class="btn btn-success" href="{{ route('settings.create') }}" style="margin-left: auto">Добавить настройку</a>
@@ -44,17 +44,8 @@
                                                 <h6 class="mb-0 text-sm">{{ $settingItem->value }}</h6>
                                             </div>
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <form action="{{ route('settings.destroy', $settingItem->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('settings.show', $settingItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('settings.edit', $settingItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
 
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </td>
+                                        @include('components.table-with-data.table-row-actions', ['entityId' => $settingItem->id, 'destroyRouteName' => 'settings.destroy', 'showRouteName' => 'settings.show', 'editRouteName' => 'settings.edit',])
                                     </tr>
                                 @endforeach
                                 </tbody>

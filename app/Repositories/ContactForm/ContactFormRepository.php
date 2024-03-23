@@ -12,6 +12,8 @@ final class ContactFormRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'email', 'comment', 'phone_number',];
@@ -54,5 +56,25 @@ final class ContactFormRepository extends CoreRepository
     public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
         return parent::getForDropdownList($fieldId, $fieldName, $useCache);
+    }
+
+    /**
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "contact-forms.index")
+     *
+     *  [Override]
+     *
+     * @return array|string[]
+     */
+    public function getDisplayedFieldsOnIndexPage(): array
+    {
+        return [
+            'id'            => ['field' => 'id', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => '#'],
+            'firstname'     => ['field' => 'firstname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Имя'],
+            'lastname'      => ['field' => 'lastname', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Фамилия'],
+            'email'         => ['field' => 'email', 'field_input_type' => self::INPUT_TYPE_EMAIL, 'field_title' => 'Email'],
+            'phone_number'  => ['field' => 'phone_number', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Моб. номер'],
+            'id_status'     => ['field' => 'id_status', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Статус Заявки'],
+            'id_employee'   => ['field' => 'id_employee', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Кто редактировал'],
+        ];
     }
 }

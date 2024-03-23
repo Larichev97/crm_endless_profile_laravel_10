@@ -6,8 +6,6 @@
     <div class="container-fluid py-4">
         @include('components.alert')
 
-        @php $isObjectFilterFiles = (isset($filterFieldsObject) && is_object($filterFieldsObject)); @endphp
-
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4">
@@ -23,96 +21,84 @@
                         </div>
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
-                        <div class="table-responsive p-0">
-                            <table class="table align-items-center mb-0">
-                                <thead>
-                                    <tr>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">#</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Имя</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Фамилия</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Email</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Номер телефона</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Статус заявки</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Кто редактировал</th>
-                                        <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <form id="contacts_filter_form" action="{{ route('contact-forms.index') }}" method="GET">
-                                            <th class="text-center font-weight-bolder">
-                                                <input type="text" name="filter_id" id="filter_id" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->id)){{ $filterFieldsObject->id }}@endif">
-                                            </th>
-                                            <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
-                                                <input type="text" name="filter_firstname" id="filter_firstname" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->firstname)){{ $filterFieldsObject->firstname }}@endif">
-                                            </th>
-                                            <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
-                                                <input type="text" name="filter_lastname" id="filter_lastname" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->lastname)){{ $filterFieldsObject->lastname }}@endif">
-                                            </th>
-                                            <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">
-                                                <input type="text" name="filter_email" id="filter_email" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->email)){{ $filterFieldsObject->email }}@endif">
-                                            </th>
-                                            <th class="text-center font-weight-bolder">
-                                                <input type="text" name="filter_phone_number" id="filter_phone_number" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->phone_number)){{ $filterFieldsObject->phone_number }}@endif">
-                                            </th>
-                                            <th class="text-center font-weight-bolder">
-                                                @if(!empty($statusesListData))
-                                                    <select class="form-control" name="filter_id_status" id="filter_id_status">
-                                                        <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->id_status)) selected="selected" @endif>Выберите из списка...</option>
-                                                        @foreach($statusesListData as $statusItem)
-                                                            <option value="{{ $statusItem['id'] }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->id_status) && (int) $filterFieldsObject->id_status == (int) $statusItem['id']) selected="selected" @endif>{{ $statusItem['name'] }}</option>
-                                                        @endforeach
-                                                    </select>
-                                                @endif
-                                            </th>
-                                            <th class="text-center font-weight-bolder">
-                                                <select class="form-control" name="filter_id_employee" id="filter_id_employee">
-                                                    <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->id_employee)) selected="selected" @endif>Выберите сотрудника из списка...</option>
-                                                    {{-- Массив коллекций сотрудников только с полями "id" и "name" --}}
-                                                    @if(!empty($employeesListData))
-                                                        @foreach($employeesListData as $employeeItem)
-                                                            <option value="{{ $employeeItem->id }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->id_employee) && (int) $filterFieldsObject->id_employee == (int) $employeeItem->id) selected="selected" @endif>
-                                                                {{ $employeeItem->name }}
-                                                            </option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </th>
-                                            <th class="text-center text-secondary font-weight-bolder">
-                                                <button type="submit" class="btn btn-info" style="margin-bottom: 0;">Фильтр</button>
-                                            </th>
-                                        </form>
-                                    </tr>
-                                    @foreach ($contactForms as $contactFormItem)
+                        @if(!empty($displayedFields) && is_array($displayedFields))
+                            <div class="table-responsive p-0">
+                                <table class="table align-items-center mb-0">
+                                    <thead>
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'contact-forms.index'])
+                                    </thead>
+                                    <tbody>
                                         <tr>
-                                            <td class="align-middle text-center">{{ $contactFormItem->id }}</td>
-                                            <td class="align-middle text-center">{{ $contactFormItem->firstname }}</td>
-                                            <td class="align-middle text-center">{{ $contactFormItem->lastname }}</td>
-                                            <td class="align-middle text-center">{{ $contactFormItem->email }}</td>
-                                            <td class="align-middle text-center">{{ $contactFormItem->phone_number }}</td>
-                                            <td class="align-middle text-center text-sm">
-                                                <span class="badge badge-sm bg-gradient-{{ $contactFormItem->statusGradientColor }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $contactFormItem->statusName }}</span>
-                                            </td>
-                                            <td class="align-middle text-center">{{ $contactFormItem->userWhoUpdated->fullName ?? '--' }}</td>
-                                            <td class="align-middle text-center">
-                                                <form action="{{ route('contact-forms.destroy', $contactFormItem->id) }}" method="POST">
-                                                    <a class="btn btn-info btn-sm" href="{{ route('contact-forms.show', $contactFormItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                    <a class="btn btn-primary btn-sm" href="{{ route('contact-forms.edit', $contactFormItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
+                                            <form id="contacts_filter_form" action="{{ route('contact-forms.index') }}" method="GET">
+                                                <input type="hidden" name="sort_by" value="{{ $sortBy }}">
+                                                <input type="hidden" name="sort_way" value="{{ $sortWay }}">
 
-                                                    @csrf
-                                                    @method('DELETE')
+                                                @php $isObjectFilterFiles = (isset($filterFieldsObject) && is_object($filterFieldsObject)); @endphp
 
-                                                    <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
-                                                </form>
-                                            </td>
+                                                @foreach($displayedFields as $displayedFieldArray)
+                                                    @if(!empty($displayedFieldArray) && is_array($displayedFieldArray))
+                                                        <th class="text-center font-weight-bolder">
+                                                            @php $currentFieldName = (string) $displayedFieldArray['field']; @endphp
+
+                                                            {{-- Выпадающий список --}}
+                                                            @if('select' === $displayedFieldArray['field_input_type'])
+                                                                <select class="form-control" name="filter_{{ $currentFieldName }}" id="filter_{{ $currentFieldName }}">
+                                                                    <option value="0" @if($isObjectFilterFiles && empty($filterFieldsObject->$currentFieldName)) selected="selected" @endif>Выберите из списка...</option>
+
+                                                                    @if('id_status' === $currentFieldName && !empty($statusesListData))
+                                                                        @foreach($statusesListData as $statusItem)
+                                                                            <option value="{{ $statusItem['id'] }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->$currentFieldName) && (int) $filterFieldsObject->$currentFieldName == (int) $statusItem['id']) selected="selected" @endif>
+                                                                                {{ $statusItem['name'] }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    @elseif('id_employee' === $currentFieldName && !empty($employeesListData))
+                                                                        @foreach($employeesListData as $employeeItem)
+                                                                            <option value="{{ $employeeItem->id }}" @if($isObjectFilterFiles && !empty($filterFieldsObject->$currentFieldName) && (int) $filterFieldsObject->$currentFieldName == (int) $employeeItem->id) selected="selected" @endif>
+                                                                                {{ $employeeItem->name }}
+                                                                            </option>
+                                                                        @endforeach
+                                                                    @endif
+                                                                </select>
+                                                            @else
+                                                                <input type="{{ $displayedFieldArray['field_input_type'] }}" name="filter_{{ $currentFieldName }}" id="filter_{{ $currentFieldName }}" class="form-control" value="@if($isObjectFilterFiles && !empty($filterFieldsObject->$currentFieldName)){{ $filterFieldsObject->$currentFieldName }}@endif">
+                                                            @endif
+                                                        </th>
+                                                    @endif
+                                                @endforeach
+
+                                                <th class="text-center text-secondary font-weight-bolder">
+                                                    <button type="submit" class="btn btn-info" style="margin-bottom: 0;">Фильтр</button>
+                                                </th>
+                                            </form>
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
+                                        @foreach ($contactForms as $contactFormItem)
+                                            <tr>
+                                                @foreach($displayedFields as $displayedFieldArray)
+                                                    @php $currentFieldName = (string) $displayedFieldArray['field']; @endphp
 
-                            {{-- Custom pagination template: resources/views/components/pagination.blade.php --}}
-                            {!! $contactForms->links('components.pagination') !!}
-                        </div>
+                                                    {{-- Уникальный вывод значения у поля: --}}
+                                                    @if('id_status' === $currentFieldName)
+                                                        <td class="align-middle text-center text-sm">
+                                                            <span class="badge badge-sm bg-gradient-{{ $contactFormItem->statusGradientColor }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $contactFormItem->statusName }}</span>
+                                                        </td>
+                                                    @elseif('id_employee' === $currentFieldName)
+                                                        <td class="align-middle text-center">{{ $contactFormItem->userWhoUpdated->fullName ?? '--' }}</td>
+                                                    {{-- Вывод значения из свойства модели: --}}
+                                                    @else
+                                                        <td class="align-middle text-center">{{ $contactFormItem->$currentFieldName }}</td>
+                                                    @endif
+                                                @endforeach
+
+                                                @include('components.table-with-data.table-row-actions', ['entityId' => $contactFormItem->id, 'destroyRouteName' => 'contact-forms.destroy', 'showRouteName' => 'contact-forms.show', 'editRouteName' => 'contact-forms.edit',])
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+
+                                {{-- Custom pagination template: resources/views/components/pagination.blade.php --}}
+                                {!! $contactForms->links('components.pagination') !!}
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -13,12 +13,16 @@ final class QrProfileRepository extends CoreRepository
     /**
      *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
      *
+     *  [Override]
+     *
      * @var array|string[]
      */
     protected array $searchDateFieldsArray = ['birth_date', 'death_date',];
 
     /**
      *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     *  [Override]
      *
      * @var array|string[]
      */
@@ -65,6 +69,8 @@ final class QrProfileRepository extends CoreRepository
     }
 
     /**
+     *  [Override]
+     *
      * @param Builder $query
      * @param array $filterFieldsData
      * @return Builder
@@ -97,6 +103,8 @@ final class QrProfileRepository extends CoreRepository
 
     /**
      *  Список полей с названиями, которые необходимо отобразить в списке (route "qrs.index")
+     *
+     *  [Override]
      *
      * @return array|string[]
      */
