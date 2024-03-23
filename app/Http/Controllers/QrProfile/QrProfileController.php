@@ -62,8 +62,8 @@ final class QrProfileController extends Controller
     {
         try {
             $page = (int) $request->get('page', 1);
-            $sortBy = strtolower($request->get('sort_by', 'id'));
-            $sortWay = strtolower($request->get('sort_way', 'desc'));
+            $sortBy = $request->get('sort_by', 'id');
+            $sortWay = $request->get('sort_way', 'desc');
 
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);

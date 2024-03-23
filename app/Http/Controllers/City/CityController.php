@@ -10,6 +10,7 @@ use App\Http\Requests\City\CityUpdateRequest;
 use App\Repositories\City\CityRepository;
 use App\Repositories\Country\CountryRepository;
 use App\Services\CrudActionsServices\CityService;
+use App\Services\FilterTableService;
 use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
@@ -37,16 +38,25 @@ class CityController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
+     * @param FilterTableService $filterTableService
      * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
      */
-    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService,): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $cities = $this->cityRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
+            $page = (int) $request->get(key: 'page', default: 1);
+            $sortBy = $request->get(key: 'sort_by', default: 'id');
+            $sortWay = $request->get(key: 'sort_way', default: 'desc');
 
-            return view('city.index',compact('cities'));
+            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
+            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject(filterFieldsArray: $filterFieldsArray);
+
+            $cities = $this->cityRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, useCache: true, filterFieldsData: $filterFieldsArray);
+            $displayedFields = $this->cityRepository->getDisplayedFieldsOnIndexPage();
+
+            return view(view: 'city.index', data: compact(['cities', 'displayedFields', 'filterFieldsObject', 'sortBy', 'sortWay']));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 
@@ -57,9 +67,9 @@ class CityController extends Controller
      */
     public function create(): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+        $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
-        return view('city.create', compact(['countriesListData',]));
+        return view(view: 'city.create', data: compact(['countriesListData',]));
     }
 
     /**
@@ -71,17 +81,17 @@ class CityController extends Controller
     public function store(CityStoreRequest $cityStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $cityStoreDTO = new CityStoreDTO($cityStoreRequest);
+            $cityStoreDTO = new CityStoreDTO(cityStoreRequest: $cityStoreRequest);
 
-            $createCity = $this->cityService->processStore($cityStoreDTO);
+            $createCity = $this->cityService->processStore(cityStoreDTO: $cityStoreDTO);
 
             if ($createCity) {
-                return redirect()->route('cities.index')->with('success','Город успешно создан.');
+                return redirect()->route(route: 'cities.index')->with(key: 'success', value: 'Город успешно создан.');
             }
 
-            return back()->with('error','Ошибка! Город не создан.')->withInput();
+            return back()->with(key: 'error', value: 'Ошибка! Город не создан.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 
@@ -94,15 +104,15 @@ class CityController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $city = $this->cityRepository->getForEditModel((int) $id, true);
+            $city = $this->cityRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($city)) {
-                abort(404);
+                abort(code: 404);
             }
 
-            return view('city.show',compact(['city',]));
+            return view(view: 'city.show', data: compact(['city',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 
@@ -115,17 +125,17 @@ class CityController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $city = $this->cityRepository->getForEditModel((int) $id, true);
+            $city = $this->cityRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($city)) {
-                abort(404);
+                abort(code: 404);
             }
 
-            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
-            return view('city.edit',compact(['city', 'countriesListData',]));
+            return view(view: 'city.edit', data: compact(['city', 'countriesListData',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 
@@ -139,17 +149,17 @@ class CityController extends Controller
     public function update(CityUpdateRequest $cityUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $cityUpdateDTO = new CityUpdateDTO($cityUpdateRequest, (int) $id);
+            $cityUpdateDTO = new CityUpdateDTO(cityUpdateRequest: $cityUpdateRequest, id_city: (int) $id);
 
-            $updateCity = $this->cityService->processUpdate($cityUpdateDTO, $this->cityRepository);
+            $updateCity = $this->cityService->processUpdate(cityUpdateDTO: $cityUpdateDTO, cityRepository: $this->cityRepository);
 
             if ($updateCity) {
-                return redirect()->route('cities.index')->with('success', sprintf('Данные города #%s успешно обновлены.', $id));
+                return redirect()->route(route: 'cities.index')->with(key: 'success', value: sprintf('Данные города #%s успешно обновлены.', $id));
             }
 
-            return back()->with('error', sprintf('Ошибка! Данные города #%s не обновлены.', $id))->withInput();
+            return back()->with(key: 'error', value: sprintf('Ошибка! Данные города #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 
@@ -162,15 +172,15 @@ class CityController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteCity = $this->cityService->processDestroy($id, $this->cityRepository);
+            $deleteCity = $this->cityService->processDestroy(id: $id, cityRepository: $this->cityRepository);
 
             if ($deleteCity) {
-                return redirect()->route('cities.index')->with('success', sprintf('Город #%s успешно удален.', $id));
+                return redirect()->route(route: 'cities.index')->with(key: 'success', value: sprintf('Город #%s успешно удален.', $id));
             }
 
-            return back()->with('error', sprintf('Ошибка! Город #%s не удален.', $id));
+            return back()->with(key: 'error', value: sprintf('Ошибка! Город #%s не удален.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }
     }
 }

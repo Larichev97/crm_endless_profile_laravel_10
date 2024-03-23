@@ -10,6 +10,13 @@ use Illuminate\Support\Facades\Cache;
 
 final class CityRepository extends CoreRepository
 {
+    /**
+     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
+     *
+     * @var array|string[]
+     */
+    protected array $searchLikeFieldsArray = ['name',];
+
     public function __construct()
     {
         parent::__construct();
@@ -72,5 +79,20 @@ final class CityRepository extends CoreRepository
         }
 
         return $result;
+    }
+
+    /**
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "cities.index")
+     *
+     * @return array|string[]
+     */
+    public function getDisplayedFieldsOnIndexPage(): array
+    {
+        return [
+            'id'            => ['field' => 'id', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => '#'],
+            'name'          => ['field' => 'name', 'field_input_type' => self::INPUT_TYPE_TEXT, 'field_title' => 'Название'],
+            'id_country'    => ['field' => 'id_country', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Страна'],
+            'is_active'     => ['field' => 'is_active', 'field_input_type' => self::INPUT_TYPE_SELECT, 'field_title' => 'Включен'],
+        ];
     }
 }
