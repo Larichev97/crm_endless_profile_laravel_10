@@ -27,17 +27,7 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        <tr>
-                                            @foreach($displayedFields as $displayedFieldArray)
-                                                <th class="text-center text-dark text-xs font-weight-bolder">
-                                                    <label for="filter_{{ $displayedFieldArray['field'] }}">{{ $displayedFieldArray['field_title'] }}</label>
-                                                    <a href="{{ route('contact-forms.index', ['sort_by' => $displayedFieldArray['field'], 'sort_way' => 'desc']) }}"><i class="fa fa-arrow-down @if($sortBy === $displayedFieldArray['field'] && $sortWay === 'desc') text-warning @endif"></i></a>
-                                                    <a href="{{ route('contact-forms.index', ['sort_by' => $displayedFieldArray['field'], 'sort_way' => 'asc']) }}"><i class="fa fa-arrow-up @if($sortBy === $displayedFieldArray['field'] && $sortWay === 'asc') text-warning @endif"></i></a>
-                                                </th>
-                                            @endforeach
-
-                                            <th class="align-middle text-center text-secondary text-xs font-weight-bolder opacity-8">Действия</th>
-                                        </tr>
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'contact-forms.index'])
                                     </thead>
                                     <tbody>
                                         <tr>
@@ -99,17 +89,7 @@
                                                     @endif
                                                 @endforeach
 
-                                                <td class="align-middle text-center">
-                                                    <form action="{{ route('contact-forms.destroy', $contactFormItem->id) }}" method="POST">
-                                                        <a class="btn btn-info btn-sm" href="{{ route('contact-forms.show', $contactFormItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                        <a class="btn btn-primary btn-sm" href="{{ route('contact-forms.edit', $contactFormItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
-
-                                                        @csrf
-                                                        @method('DELETE')
-
-                                                        <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
-                                                    </form>
-                                                </td>
+                                                @include('components.table-with-data.table-row-actions', ['entityId' => $contactFormItem->id, 'destroyRouteName' => 'contact-forms.destroy', 'showRouteName' => 'contact-forms.show', 'editRouteName' => 'contact-forms.edit',])
                                             </tr>
                                         @endforeach
                                     </tbody>

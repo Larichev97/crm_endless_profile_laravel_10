@@ -23,13 +23,7 @@
                         <div class="table-responsive p-0">
                             <table class="table align-items-center mb-0">
                                 <thead>
-                                    <tr>
-                                        <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">#</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Название</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Страна</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Включен</th>
-                                        <th class="text-center text-secondary text-xs font-weight-bolder opacity-7">Действия</th>
-                                    </tr>
+                                    @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'cities.index'])
                                 </thead>
                                 <tbody>
                                 @foreach ($cities as $cityItem)
@@ -52,17 +46,8 @@
                                                 <i class="fas fa-ban" style="color: #f5365c"></i>
                                             @endif
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <form action="{{ route('cities.destroy', $cityItem->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('cities.show', $cityItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('cities.edit', $cityItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
 
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </td>
+                                        @include('components.table-with-data.table-row-actions', ['entityId' => $cityItem->id, 'destroyRouteName' => 'cities.destroy', 'showRouteName' => 'cities.show', 'editRouteName' => 'cities.edit',])
                                     </tr>
                                 @endforeach
                                 </tbody>

@@ -60,17 +60,8 @@
                                                 <i class="fas fa-ban" style="color: #f5365c"></i>
                                             @endif
                                         </td>
-                                        <td class="align-middle text-center">
-                                            <form action="{{ route('countries.destroy', $countryItem->id) }}" method="POST">
-                                                <a class="btn btn-info btn-sm" href="{{ route('countries.show', $countryItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-eye"></i></a>
-                                                <a class="btn btn-primary btn-sm" href="{{ route('countries.edit', $countryItem->id) }}" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-edit"></i></a>
 
-                                                @csrf
-                                                @method('DELETE')
-
-                                                <button type="submit" class="btn btn-danger btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;"><i class="fas fa-trash"></i></button>
-                                            </form>
-                                        </td>
+                                        @include('components.table-with-data.table-row-actions', ['entityId' => $countryItem->id, 'destroyRouteName' => 'countries.destroy', 'showRouteName' => 'countries.show', 'editRouteName' => 'countries.edit',])
                                     </tr>
                                 @endforeach
                                 </tbody>
