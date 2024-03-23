@@ -52,7 +52,7 @@ class ContactFormController extends Controller
             $sortWay = strtolower($request->get('sort_way', 'desc'));
 
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
-            $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
+            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);
 
             $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay,  useCache: false, filterFieldsData: $filterFieldsArray);
             $displayedFields = $this->contactFormRepository->getDisplayedFieldsOnIndexPage();

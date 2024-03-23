@@ -23,4 +23,13 @@ class FilterTableService
 
         return $filterFieldsArray;
     }
+
+    /**
+     * @param array $filterFieldsArray
+     * @return object
+     */
+    public function processConvertFilterFieldsToObject(array $filterFieldsArray):object
+    {
+        return (object) json_decode(json: json_encode(value: $filterFieldsArray), associative: false);
+    }
 }

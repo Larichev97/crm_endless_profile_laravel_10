@@ -58,7 +58,7 @@ class ClientController extends Controller
             $sortWay = strtolower($request->get('sort_way', 'desc'));
 
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
-            $filterFieldsObject = json_decode(json_encode($filterFieldsArray));
+            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);
 
             $clients = $this->clientRepository->getAllWithPaginate(10, $page, $sortBy, $sortWay, false, $filterFieldsArray);
             $displayedFields = $this->clientRepository->getDisplayedFieldsOnIndexPage();
