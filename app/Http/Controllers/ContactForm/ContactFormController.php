@@ -47,15 +47,20 @@ class ContactFormController extends Controller
     public function index(Request $request, FilterTableService $filterTableService, UserRepository $userRepository): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
+            $page = (int) $request->get('page', 1);
+            $sortBy = strtolower($request->get('sort_by', 'id'));
+            $sortWay = strtolower($request->get('sort_way', 'desc'));
+
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = json_decode(json: json_encode(value: $filterFieldsArray));
 
-            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'desc',  useCache: false, filterFieldsData: $filterFieldsArray);
+            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay,  useCache: false, filterFieldsData: $filterFieldsArray);
+            $displayedFields = $this->contactFormRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ContactFormStatusEnum::getStatusesList();
             $employeesListData = $userRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname) AS name', useCache: true);
 
-            return view('contact_form.index',compact(['contactForms', 'filterFieldsObject', 'statusesListData', 'employeesListData',]));
+            return view('contact_form.index',compact(['contactForms', 'displayedFields', 'filterFieldsObject', 'statusesListData', 'employeesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
             return response()->json(['error' => $exception->getMessage()], 401);
         }
