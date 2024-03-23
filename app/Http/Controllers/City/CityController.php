@@ -54,7 +54,9 @@ class CityController extends Controller
             $cities = $this->cityRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, useCache: true, filterFieldsData: $filterFieldsArray);
             $displayedFields = $this->cityRepository->getDisplayedFieldsOnIndexPage();
 
-            return view(view: 'city.index', data: compact(['cities', 'displayedFields', 'filterFieldsObject', 'sortBy', 'sortWay']));
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+
+            return view(view: 'city.index', data: compact(['cities', 'displayedFields', 'filterFieldsObject', 'sortBy', 'sortWay', 'countriesListData',]));
         } catch (Exception $exception) {
             return response()->json(data: ['error' => $exception->getMessage()], status: 401);
         }

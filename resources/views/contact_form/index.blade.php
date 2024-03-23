@@ -6,8 +6,6 @@
     <div class="container-fluid py-4">
         @include('components.alert')
 
-        @php $isObjectFilterFiles = (isset($filterFieldsObject) && is_object($filterFieldsObject)); @endphp
-
         <div class="row">
             <div class="col-12">
                 <div class="card mb-4">
@@ -34,6 +32,8 @@
                                             <form id="contacts_filter_form" action="{{ route('contact-forms.index') }}" method="GET">
                                                 <input type="hidden" name="sort_by" value="{{ $sortBy }}">
                                                 <input type="hidden" name="sort_way" value="{{ $sortWay }}">
+
+                                                @php $isObjectFilterFiles = (isset($filterFieldsObject) && is_object($filterFieldsObject)); @endphp
 
                                                 @foreach($displayedFields as $displayedFieldArray)
                                                     @if(!empty($displayedFieldArray) && is_array($displayedFieldArray))

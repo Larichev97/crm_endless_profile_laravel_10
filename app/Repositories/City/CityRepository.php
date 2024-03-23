@@ -5,6 +5,7 @@ namespace App\Repositories\City;
 use App\Models\City as Model;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -79,6 +80,40 @@ final class CityRepository extends CoreRepository
         }
 
         return $result;
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $filterFieldsData
+     * @return Builder
+     */
+    protected function setCustomQueryFilters(Builder $query, array $filterFieldsData): Builder
+    {
+        if (!empty($filterFieldsData)) {
+            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
+                if (!empty($filterFieldValue)) {
+                    $filterFieldName = (string) $filterFieldName;
+
+                    if ($filterFieldName == 'is_active') {
+                        $realValue = 0;
+
+                        if ((int) $filterFieldValue == 1) { // "Да" (1)
+                            $realValue = 1;
+                        }
+
+                        $query->where($filterFieldName, '=', $realValue);
+                    } elseif (in_array($filterFieldName, $this->searchDateFieldsArray)) {
+                        $query->whereDate($filterFieldName, '=', (string) $filterFieldValue);
+                    } elseif (in_array($filterFieldName, $this->searchLikeFieldsArray)) {
+                        $query->where($filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
+                    } else {
+                        $query->where($filterFieldName, '=', $filterFieldValue);
+                    }
+                }
+            }
+        }
+
+        return $query;
     }
 
     /**
