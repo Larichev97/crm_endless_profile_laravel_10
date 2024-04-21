@@ -15,7 +15,7 @@
                                 <h5 class="">Список стран</h5>
                             </div>
                             <div class="col-6 d-flex">
-                                <a class="btn btn-success" href="{{ route('countries.create') }}" style="margin-left: auto">Добавить страну</a>
+                                <a class="btn btn-success" href="{{ route('admin.countries.create') }}" style="margin-left: auto">Добавить страну</a>
                             </div>
                         </div>
                     </div>
@@ -61,7 +61,7 @@
                                             @endif
                                         </td>
 
-                                        @include('components.table-with-data.table-row-actions', ['entityId' => $countryItem->id, 'destroyRouteName' => 'countries.destroy', 'showRouteName' => 'countries.show', 'editRouteName' => 'countries.edit',])
+                                        @include('components.table-with-data.table-row-actions', ['entityId' => $countryItem->id, 'destroyRouteName' => 'admin.countries.destroy', 'showRouteName' => 'admin.countries.show', 'editRouteName' => 'admin.countries.edit',])
                                     </tr>
                                 @endforeach
                                 </tbody>

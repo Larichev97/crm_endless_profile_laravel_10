@@ -3,7 +3,7 @@
     <div class="sidenav-header">
         <i class="fas fa-times p-3 cursor-pointer text-secondary opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
             aria-hidden="true" id="iconSidenav"></i>
-        <a class="navbar-brand m-0" href="{{ route('home') }}"
+        <a class="navbar-brand m-0" href="{{ route('admin.dashboard') }}"
             target="_blank">
             <img src="/img/logo_icon_custom.png" class="navbar-brand-img h-100" alt="main_logo">
             <span class="ms-1 font-weight-bold">Главная</span>
@@ -13,7 +13,7 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
         <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'home' ? 'active' : '' }}" href="{{ route('home') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.dashboard' ? 'active' : '' }}" href="{{ route('admin.dashboard') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-tv-2 text-dark text-sm opacity-10"></i>
@@ -22,7 +22,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'contact-forms.index' ? 'active' : '' }}" href="{{ route('contact-forms.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.contact-forms.index' ? 'active' : '' }}" href="{{ route('admin.contact-forms.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -31,7 +31,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'clients.index' ? 'active' : '' }}" href="{{ route('clients.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.clients.index' ? 'active' : '' }}" href="{{ route('admin.clients.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -40,7 +40,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'qrs.index' ? 'active' : '' }}" href="{{ route('qrs.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.qrs.index' ? 'active' : '' }}" href="{{ route('admin.qrs.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -49,7 +49,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'countries.index' ? 'active' : '' }}" href="{{ route('countries.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.countries.index' ? 'active' : '' }}" href="{{ route('admin.countries.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -58,7 +58,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'cities.index' ? 'active' : '' }}" href="{{ route('cities.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.cities.index' ? 'active' : '' }}" href="{{ route('admin.cities.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -67,7 +67,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'settings.index' ? 'active' : '' }}" href="{{ route('settings.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.settings.index' ? 'active' : '' }}" href="{{ route('admin.settings.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -76,7 +76,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'terminal-commands.index' ? 'active' : '' }}" href="{{ route('terminal-commands.index') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.terminal-commands.index' ? 'active' : '' }}" href="{{ route('admin.terminal-commands.index') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-bullet-list-67 text-dark text-sm opacity-10"></i>
@@ -94,7 +94,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ Route::currentRouteName() == 'profile' ? 'active' : '' }}" href="{{ route('profile') }}">
+                <a class="nav-link {{ Route::currentRouteName() == 'admin.profile' ? 'active' : '' }}" href="{{ route('admin.profile') }}">
                     <div
                         class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
                         <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>

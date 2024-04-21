@@ -123,7 +123,7 @@ final class CityRepository extends CoreRepository
     }
 
     /**
-     *  Список полей с названиями, которые необходимо отобразить в списке (route "cities.index")
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "admin.cities.index")
      *
      *  [Override]
      *

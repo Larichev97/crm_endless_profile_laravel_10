@@ -20,7 +20,7 @@
                                     <p class="mb-0">Enter your email and please wait a few seconds</p>
                                 </div>
                                 <div class="card-body">
-                                    <form role="form" method="POST" action="{{ route('reset.perform') }}">
+                                    <form role="form" method="POST" action="{{ route('admin.reset.perform') }}">
                                         @csrf
                                         @method('post')
                                         <div class="flex flex-col mb-3">

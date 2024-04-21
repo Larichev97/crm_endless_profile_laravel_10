@@ -4,11 +4,11 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Редактирование заявки #'.$contactForm->id])
 
     <div class="container-fluid py-4 mt-5">
-        <form class="card p-4" action="{{ route('contact-forms.update', $contactForm->id) }}" method="POST" enctype="multipart/form-data">
+        <form class="card p-4" action="{{ route('admin.contact-forms.update', $contactForm->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
-            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('contact-forms.index') }}">Назад</a>
+            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('admin.contact-forms.index') }}">Назад</a>
 
             <div>
                 @include('components.alert')

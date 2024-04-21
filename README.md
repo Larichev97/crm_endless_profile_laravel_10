@@ -11,7 +11,7 @@
 
 ## Start "CRM Endless Profile" in PHP container:
 
-1. composer update
+1. composer install
 
 2. php artisan key:generate
 

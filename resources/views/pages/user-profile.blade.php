@@ -57,7 +57,7 @@
         <div class="row">
             <div class="col-md-8">
                 <div class="card">
-                    <form role="form" method="POST" action={{ route('profile.update') }} enctype="multipart/form-data">
+                    <form role="form" method="POST" action={{ route('admin.profile.update') }} enctype="multipart/form-data">
                         @csrf
                         <div class="card-header pb-0">
                             <div class="d-flex align-items-center">
@@ -140,16 +140,6 @@
             <div class="col-md-4">
                 <div class="card card-profile">
                     <img src="/img/bg-profile.jpg" alt="Image placeholder" class="card-img-top">
-                    <div class="row justify-content-center">
-                        <div class="col-4 col-lg-4 order-lg-2">
-                            <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
-                                <a href="javascript:;">
-                                    <img src="/img/team-2.jpg"
-                                        class="rounded-circle img-fluid border border-2 border-white">
-                                </a>
-                            </div>
-                        </div>
-                    </div>
                     <div class="card-header text-center border-0 pt-0 pt-lg-2 pb-4 pb-lg-3">
                         <div class="d-flex justify-content-between">
                             <a href="javascript:;" class="btn btn-sm btn-info mb-0 d-none d-lg-block">Connect</a>

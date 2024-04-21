@@ -50,7 +50,7 @@
                             <div class="row">
                                 <div class="col-md-6"><h5>Информация о клиенте</h5></div>
                                 <div class="col-md-6 d-flex align-items-center">
-                                    <a href="{{ route('clients.edit', $client->id) }}" class="btn btn-primary btn-sm ms-auto">Редактировать</a>
+                                    <a href="{{ route('admin.clients.edit', $client->id) }}" class="btn btn-primary btn-sm ms-auto">Редактировать</a>
                                 </div>
                             </div>
                         </div>
@@ -147,9 +147,9 @@
                                                     <span class="badge badge-sm bg-gradient-{{ $qrItem->getStatusGradientColor(intval($qrItem->id_status)) }}" style="width: 100px; padding-top: 0.74rem; padding-bottom: 0.74rem;">{{ $qrItem->statusName }}</span>
                                                 </td>
                                                 <td class="align-middle text-center">
-                                                    <form action="{{ route('qrs.destroy', $qrItem->id) }}" method="POST">
-                                                        <a class="btn btn-info btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('qrs.show', $client->id) }}"><i class="fas fa-eye"></i></a>
-                                                        <a class="btn btn-primary btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('qrs.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
+                                                    <form action="{{ route('admin.qrs.destroy', $qrItem->id) }}" method="POST">
+                                                        <a class="btn btn-info btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('admin.qrs.show', $client->id) }}"><i class="fas fa-eye"></i></a>
+                                                        <a class="btn btn-primary btn-sm" style="margin-bottom: 0; padding-left: 12px; padding-right: 12px;" href="{{ route('admin.qrs.edit', $client->id) }}"><i class="fas fa-edit"></i></a>
 
                                                         @csrf
                                                         @method('DELETE')

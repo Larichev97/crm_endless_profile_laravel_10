@@ -4,11 +4,11 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление фотографий для галереи QR-профиля #' . $idQrProfile])
 
     <div class="container-fluid py-4 mt-5">
-        <form class="card p-4" action="{{ route('qrs.store-gallery-images') }}" method="POST" enctype="multipart/form-data">
+        <form class="card p-4" action="{{ route('admin.qrs.store-gallery-images') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
-            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('qrs.show', $idQrProfile) }}">Назад</a>
+            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('admin.qrs.show', $idQrProfile) }}">Назад</a>
 
             <div>
                 @include('components.alert')

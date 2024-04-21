@@ -107,7 +107,7 @@
     </div>
 
     {{-- Пример формы с выполнением Команды:
-    <form id="form_generate_qr_codes" action="{{ route('terminal-commands.generate-qr-codes') }}" method="POST">
+    <form id="form_generate_qr_codes" action="{{ route('admin.terminal-commands.generate-qr-codes') }}" method="POST">
         @csrf
         @method('POST')
         <button

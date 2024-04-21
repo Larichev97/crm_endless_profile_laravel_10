@@ -50,7 +50,7 @@
                             <div class="row">
                                 <div class="col-md-4"><span class="text-uppercase text-sm">Информация о QR-профиле</span></div>
                                 <div class="col-md-8 d-flex align-items-center">
-                                    <a href="{{ route('qrs.edit', $qrProfile->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать QR-профиль</a>
+                                    <a href="{{ route('admin.qrs.edit', $qrProfile->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать QR-профиль</a>
                                 </div>
                             </div>
                         </div>
@@ -153,7 +153,7 @@
                         <div class="card-header pb-0">
                             <div class="row">
                                 <div class="col-md-12 align-items-center">
-                                    <a href="{{ route('qrs.generate-qr-code-image', $qrProfile->id) }}" class="btn btn-primary btn-sm w-100" style="background-color: #5e72e4;"><i class="fas fa-qrcode" style="margin-right: 5px;"></i>Сгенерировать QR-код</a>
+                                    <a href="{{ route('admin.qrs.generate-qr-code-image', $qrProfile->id) }}" class="btn btn-primary btn-sm w-100" style="background-color: #5e72e4;"><i class="fas fa-qrcode" style="margin-right: 5px;"></i>Сгенерировать QR-код</a>
                                 </div>
                             </div>
                         </div>
@@ -178,7 +178,7 @@
                             <div class="row">
                                 <div class="col-md-4"><span class="text-uppercase text-sm">Галерея QR-профиля</span></div>
                                 <div class="col-md-8 d-flex align-items-center">
-                                    <a href="{{ route('qrs.create-gallery-images', $qrProfile->id) }}" class="btn btn-success btn-sm ms-auto"><i class="fas fa-camera" style="margin-right: 10px;"></i>Добавить фотографии в галерею</a>
+                                    <a href="{{ route('admin.qrs.create-gallery-images', $qrProfile->id) }}" class="btn btn-success btn-sm ms-auto"><i class="fas fa-camera" style="margin-right: 10px;"></i>Добавить фотографии в галерею</a>
                                 </div>
                             </div>
                         </div>
@@ -198,7 +198,7 @@
 
                                         @if(!empty($fullImagePath))
                                             <div class="col-6" style="padding-left: 30px; padding-right: 30px; @if($galleryImagesCount > 2) margin-top: 80px; @else margin-top: 30px; @endif ">
-                                                <form action="{{ route('qrs.destroy-gallery-image', $qrProfileGalleryImage->id) }}" method="POST">
+                                                <form action="{{ route('admin.qrs.destroy-gallery-image', $qrProfileGalleryImage->id) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
 

@@ -15,8 +15,8 @@
                                 <h5 class="">Список заявок</h5>
                             </div>
                             <div class="col-6 d-flex">
-                            {{-- <a class="btn btn-success" href="{{ route('contact-forms.create') }}" style="margin-left: auto">Добавить заявку</a> --}}
-                                <a class="btn btn-danger ms-auto" href="{{ route('contact-forms.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
+                            {{-- <a class="btn btn-success" href="{{ route('admin.contact-forms.create') }}" style="margin-left: auto">Добавить заявку</a> --}}
+                                <a class="btn btn-danger ms-auto" href="{{ route('admin.contact-forms.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'contact-forms.index'])
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'admin.contact-forms.index'])
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <form id="contacts_filter_form" action="{{ route('contact-forms.index') }}" method="GET">
+                                            <form id="contacts_filter_form" action="{{ route('admin.contact-forms.index') }}" method="GET">
                                                 <input type="hidden" name="sort_by" value="{{ $sortBy }}">
                                                 <input type="hidden" name="sort_way" value="{{ $sortWay }}">
 
@@ -89,7 +89,7 @@
                                                     @endif
                                                 @endforeach
 
-                                                @include('components.table-with-data.table-row-actions', ['entityId' => $contactFormItem->id, 'destroyRouteName' => 'contact-forms.destroy', 'showRouteName' => 'contact-forms.show', 'editRouteName' => 'contact-forms.edit',])
+                                                @include('components.table-with-data.table-row-actions', ['entityId' => $contactFormItem->id, 'destroyRouteName' => 'admin.contact-forms.destroy', 'showRouteName' => 'admin.contact-forms.show', 'editRouteName' => 'admin.contact-forms.edit',])
                                             </tr>
                                         @endforeach
                                     </tbody>

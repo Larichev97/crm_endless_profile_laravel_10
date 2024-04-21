@@ -81,7 +81,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('register.perform') }}">
+                            <form method="POST" action="{{ route('admin.register.perform') }}">
                                 @csrf
                                 <div class="flex flex-col mb-3">
                                     <input type="text" name="username" class="form-control" placeholder="Имя пользователя" aria-label="Name" value="{{ old('username') }}" >
@@ -105,7 +105,7 @@
                                 <div class="text-center">
                                     <button type="submit" class="btn bg-gradient-dark w-100 my-4 mb-2">Зарегистрироваться</button>
                                 </div>
-                                <p class="text-sm mt-3 mb-0">У вас уже есть аккаунт? <a href="{{ route('login') }}"
+                                <p class="text-sm mt-3 mb-0">У вас уже есть аккаунт? <a href="{{ route('admin.login') }}"
                                         class="text-dark font-weight-bolder">Войти</a></p>
                             </form>
                         </div>

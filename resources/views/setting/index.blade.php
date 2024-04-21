@@ -15,7 +15,7 @@
                                 <h5 class="">Список настроек для кода</h5>
                             </div>
                             <div class="col-6 d-flex">
-                                <a class="btn btn-success" href="{{ route('settings.create') }}" style="margin-left: auto">Добавить настройку</a>
+                                <a class="btn btn-success" href="{{ route('admin.settings.create') }}" style="margin-left: auto">Добавить настройку</a>
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                                             </div>
                                         </td>
 
-                                        @include('components.table-with-data.table-row-actions', ['entityId' => $settingItem->id, 'destroyRouteName' => 'settings.destroy', 'showRouteName' => 'settings.show', 'editRouteName' => 'settings.edit',])
+                                        @include('components.table-with-data.table-row-actions', ['entityId' => $settingItem->id, 'destroyRouteName' => 'admin.settings.destroy', 'showRouteName' => 'admin.settings.show', 'editRouteName' => 'admin.settings.edit',])
                                     </tr>
                                 @endforeach
                                 </tbody>

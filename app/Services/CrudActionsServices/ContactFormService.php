@@ -122,7 +122,7 @@ final class ContactFormService
     {
         $contactFormId = (int) $contactFormModel->getKey();
 
-        $message = "\n<b><a href=\"".route('contact-forms.show', $contactFormId)."\">Новая заявка #".$contactFormId."</a></b>\n\n";
+        $message = "\n<b><a href=\"".route('admin.contact-forms.show', $contactFormId)."\">Новая заявка #".$contactFormId."</a></b>\n\n";
 
         if (!empty($contactFormModel->phone_number)) {
             $message .= "Номер телефона: ". $contactFormModel->phone_number."\n\n";

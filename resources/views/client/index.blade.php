@@ -15,8 +15,8 @@
                                 <h5>Список клиентов</h5>
                             </div>
                             <div class="col-8 d-flex">
-                                <a class="btn btn-success" href="{{ route('clients.create') }}" style="margin-left: auto">Добавить клиента</a>
-                                <a class="btn btn-danger" href="{{ route('clients.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
+                                <a class="btn btn-success" href="{{ route('admin.clients.create') }}" style="margin-left: auto">Добавить клиента</a>
+                                <a class="btn btn-danger" href="{{ route('admin.clients.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'clients.index'])
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'admin.clients.index'])
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <form id="clients_filter_form" action="{{ route('clients.index') }}" method="GET">
+                                            <form id="clients_filter_form" action="{{ route('admin.clients.index') }}" method="GET">
                                                 <input type="hidden" name="sort_by" value="{{ $sortBy }}">
                                                 <input type="hidden" name="sort_way" value="{{ $sortWay }}">
 
@@ -103,7 +103,7 @@
                                                     @endif
                                                 @endforeach
 
-                                                @include('components.table-with-data.table-row-actions', ['entityId' => $client->id, 'destroyRouteName' => 'clients.destroy', 'showRouteName' => 'clients.show', 'editRouteName' => 'clients.edit',])
+                                                @include('components.table-with-data.table-row-actions', ['entityId' => $client->id, 'destroyRouteName' => 'admin.clients.destroy', 'showRouteName' => 'admin.clients.show', 'editRouteName' => 'admin.clients.edit',])
                                             </tr>
                                         @endforeach
                                     </tbody>

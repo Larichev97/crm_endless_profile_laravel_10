@@ -15,8 +15,8 @@
                                 <h5>Список QR-профилей</h5>
                             </div>
                             <div class="col-8 d-flex">
-                                <a class="btn btn-success" href="{{ route('qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>
-                                <a class="btn btn-danger" href="{{ route('qrs.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
+                                <a class="btn btn-success" href="{{ route('admin.qrs.create') }}" style="margin-left: auto">Добавить QR-профиль</a>
+                                <a class="btn btn-danger" href="{{ route('admin.qrs.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'qrs.index'])
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'admin.qrs.index'])
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <form id="qrs_filter_form" action="{{ route('qrs.index') }}" method="GET">
+                                        <form id="qrs_filter_form" action="{{ route('admin.qrs.index') }}" method="GET">
                                             <input type="hidden" name="sort_by" value="{{ $sortBy }}">
                                             <input type="hidden" name="sort_way" value="{{ $sortWay }}">
 
@@ -114,7 +114,7 @@
                                                 @endif
                                             @endforeach
 
-                                            @include('components.table-with-data.table-row-actions', ['entityId' => $qrProfile->id, 'destroyRouteName' => 'qrs.destroy', 'showRouteName' => 'qrs.show', 'editRouteName' => 'qrs.edit',])
+                                            @include('components.table-with-data.table-row-actions', ['entityId' => $qrProfile->id, 'destroyRouteName' => 'admin.qrs.destroy', 'showRouteName' => 'admin.qrs.show', 'editRouteName' => 'admin.qrs.edit',])
                                         </tr>
                                     @endforeach
                                     </tbody>

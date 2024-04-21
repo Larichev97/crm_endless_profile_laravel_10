@@ -4,11 +4,11 @@
     @include('layouts.navbars.auth.topnav', ['title' => 'Добавление клиента'])
 
     <div class="container-fluid py-4 mt-5">
-        <form class="card p-4" action="{{ route('clients.store') }}" method="POST" enctype="multipart/form-data">
+        <form class="card p-4" action="{{ route('admin.clients.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('POST')
 
-            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('clients.index') }}">Назад</a>
+            <a style="width: fit-content;" class="btn btn-dark" href="{{ route('admin.clients.index') }}">Назад</a>
 
             <div>
                 @include('components.alert')

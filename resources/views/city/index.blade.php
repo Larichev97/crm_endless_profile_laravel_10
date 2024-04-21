@@ -15,8 +15,8 @@
                                 <h5>Список городов</h5>
                             </div>
                             <div class="col-6 d-flex">
-                                <a class="btn btn-success" href="{{ route('cities.create') }}" style="margin-left: auto">Добавить город</a>
-                                <a class="btn btn-danger" href="{{ route('cities.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
+                                <a class="btn btn-success" href="{{ route('admin.cities.create') }}" style="margin-left: auto">Добавить город</a>
+                                <a class="btn btn-danger" href="{{ route('admin.cities.index') }}" style="margin-left: 15px;">Очистить фильтр</a>
                             </div>
                         </div>
                     </div>
@@ -25,11 +25,11 @@
                             <div class="table-responsive p-0">
                                 <table class="table align-items-center mb-0">
                                     <thead>
-                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'cities.index'])
+                                        @include('components.table-with-data.table-filter-header', ['indexRouteName' => 'admin.cities.index'])
                                     </thead>
                                     <tbody>
                                     <tr>
-                                        <form id="cities_filter_form" action="{{ route('cities.index') }}" method="GET">
+                                        <form id="cities_filter_form" action="{{ route('admin.cities.index') }}" method="GET">
                                             <input type="hidden" name="sort_by" value="{{ $sortBy }}">
                                             <input type="hidden" name="sort_way" value="{{ $sortWay }}">
 
@@ -96,7 +96,7 @@
                                                 @endif
                                             @endforeach
 
-                                            @include('components.table-with-data.table-row-actions', ['entityId' => $cityItem->id, 'destroyRouteName' => 'cities.destroy', 'showRouteName' => 'cities.show', 'editRouteName' => 'cities.edit',])
+                                            @include('components.table-with-data.table-row-actions', ['entityId' => $cityItem->id, 'destroyRouteName' => 'admin.cities.destroy', 'showRouteName' => 'admin.cities.show', 'editRouteName' => 'admin.cities.edit',])
                                         </tr>
                                     @endforeach
                                     </tbody>

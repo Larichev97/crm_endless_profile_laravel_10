@@ -37,7 +37,7 @@
                             <div class="row">
                                 <div class="col-md-4"><span class="text-uppercase text-sm">Информация о заявке</span></div>
                                 <div class="col-md-8 d-flex align-items-center">
-                                    <a href="{{ route('contact-forms.edit', $contactForm->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать заявку</a>
+                                    <a href="{{ route('admin.contact-forms.edit', $contactForm->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать заявку</a>
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                         <div class="card-header pb-0">
                             <div class="row">
                                 <div class="col-md-12 align-items-center">
-                                    <a href="{{ route('clients.create',
+                                    <a href="{{ route('admin.clients.create',
                                         [
                                             'id_contact_form' => $contactForm->id,
                                             'firstname' => $contactForm->firstname,

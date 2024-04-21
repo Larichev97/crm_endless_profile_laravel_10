@@ -20,7 +20,7 @@
                                     <p class="mb-0">Введите адрес электронной почты и пароль, чтобы войти</p>
                                 </div>
                                 <div class="card-body">
-                                    <form role="form" method="POST" action="{{ route('login.perform') }}">
+                                    <form role="form" method="POST" action="{{ route('admin.login.perform') }}">
                                         @csrf
                                         @method('post')
                                         <div class="flex flex-col mb-3">
@@ -43,13 +43,13 @@
                                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                                     <p class="mb-1 text-sm mx-auto">
                                         Вы забыли пароль? Сбросить пароль
-                                        <a href="{{ route('reset-password') }}" class="text-dark text-gradient font-weight-bold">здесь</a>
+                                        <a href="{{ route('admin.reset-password') }}" class="text-dark text-gradient font-weight-bold">здесь</a>
                                     </p>
                                 </div>
                                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                                     <p class="mb-4 text-sm mx-auto">
                                         У вас нет учетной записи?
-                                        <a href="{{ route('register') }}" class="text-dark text-gradient font-weight-bold">Зарегистрироваться</a>
+                                        <a href="{{ route('admin.register') }}" class="text-dark text-gradient font-weight-bold">Зарегистрироваться</a>
                                     </p>
                                 </div>
                             </div>

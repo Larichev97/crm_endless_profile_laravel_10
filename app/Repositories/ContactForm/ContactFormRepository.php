@@ -59,7 +59,7 @@ final class ContactFormRepository extends CoreRepository
     }
 
     /**
-     *  Список полей с названиями, которые необходимо отобразить в списке (route "contact-forms.index")
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "admin.contact-forms.index")
      *
      *  [Override]
      *

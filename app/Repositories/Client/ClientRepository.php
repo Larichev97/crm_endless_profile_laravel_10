@@ -59,7 +59,7 @@ final class ClientRepository extends CoreRepository
     }
 
     /**
-     *  Список полей с названиями, которые необходимо отобразить в списке (route "clients.index")
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "admin.clients.index")
      *
      *  [Override]
      *

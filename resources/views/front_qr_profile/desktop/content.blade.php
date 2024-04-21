@@ -12,7 +12,7 @@
                         <div class="row">
                             <div class="col-12 p-3 text-center">
                                 @if (!empty($photoPath))
-                                    <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm mb-3" width="250" height="280">
+                                    <img src="{{ asset($photoPath) }}" alt="{{ $qrProfile->photo_file_name }}" class="w-100 border-radius-lg shadow-sm mb-3" width="250">
                                 @else
                                     <img src="/img/user_avatar.png" alt="user_avatar.png" class=" border-radius-lg shadow-sm mb-3" width="250" height="280">
                                 @endif

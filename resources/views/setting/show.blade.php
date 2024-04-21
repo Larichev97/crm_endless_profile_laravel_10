@@ -14,7 +14,7 @@
                             <div class="row">
                                 <div class="col-md-4"><span class="text-uppercase text-sm">Информация о настройке</span></div>
                                 <div class="col-md-8 d-flex align-items-center">
-                                    <a href="{{ route('settings.edit', $setting->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать настройку</a>
+                                    <a href="{{ route('admin.settings.edit', $setting->id) }}" class="btn btn-primary btn-sm ms-auto"><i class="fas fa-edit" style="margin-right: 5px;"></i>Редактировать настройку</a>
                                 </div>
                             </div>
                         </div>

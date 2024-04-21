@@ -102,7 +102,7 @@ final class QrProfileRepository extends CoreRepository
     }
 
     /**
-     *  Список полей с названиями, которые необходимо отобразить в списке (route "qrs.index")
+     *  Список полей с названиями, которые необходимо отобразить в списке (route "admin.qrs.index")
      *
      *  [Override]
      *

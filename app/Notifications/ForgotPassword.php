@@ -44,7 +44,7 @@ class ForgotPassword extends Notification
 
     public function toMail($notifiable)
     {
-        $url = URL::temporarySignedRoute('change-password', now()->addHours(12) ,['id' => $this->token]);
+        $url = URL::temporarySignedRoute('admin.change-password', now()->addHours(12) ,['id' => $this->token]);
         return (new MailMessage)
                     ->line('Hi!')
                     ->subject('Reset Password')
