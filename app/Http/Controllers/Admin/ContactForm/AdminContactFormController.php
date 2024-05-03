@@ -47,12 +47,12 @@ final class AdminContactFormController extends Controller
     public function index(Request $request, FilterTableService $filterTableService, UserRepository $userRepository): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $page = (int) $request->get('page', 1);
-            $sortBy = $request->get('sort_by', 'id');
-            $sortWay = $request->get('sort_way', 'desc');
+            $page = (int) $request->get(key: 'page', default: 1);
+            $sortBy = $request->get(key: 'sort_by', default: 'id');
+            $sortWay = $request->get(key: 'sort_way', default: 'desc');
 
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
-            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);
+            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject(filterFieldsArray: $filterFieldsArray);
 
             $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay,  useCache: false, filterFieldsData: $filterFieldsArray);
             $displayedFields = $this->contactFormRepository->getDisplayedFieldsOnIndexPage();
@@ -85,9 +85,7 @@ final class AdminContactFormController extends Controller
     public function store(ContactFormStoreRequest $contactFormStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $contactFormStoreDTO = new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest);
-
-            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO, settingRepository: $this->settingRepository);
+            $createContactForm = $this->contactFormService->processStore(dto: new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest));
 
             if ($createContactForm) {
                 return redirect()->route('admin.contact-forms.index')->with('success','Форма обратной связи успешно создана.');
@@ -153,9 +151,7 @@ final class AdminContactFormController extends Controller
     public function update(ContactFormUpdateRequest $contactFormUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $contactFormUpdateDTO = new ContactFormUpdateDTO(contactFormUpdateRequest: $contactFormUpdateRequest, idContactForm: (int) $id);
-
-            $updateContactForm = $this->contactFormService->processUpdate(contactFormUpdateDTO: $contactFormUpdateDTO, contactFormRepository: $this->contactFormRepository);
+            $updateContactForm = $this->contactFormService->processUpdate(dto: new ContactFormUpdateDTO(contactFormUpdateRequest: $contactFormUpdateRequest, idContactForm: (int) $id), repository: $this->contactFormRepository);
 
             if ($updateContactForm) {
                 return redirect()->route('admin.contact-forms.index')->with('success', sprintf('Данные формы обратной связи #%s успешно обновлены.', $id));
@@ -176,7 +172,7 @@ final class AdminContactFormController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteContactForm = $this->contactFormService->processDestroy(id: $id, contactFormRepository: $this->contactFormRepository);
+            $deleteContactForm = $this->contactFormService->processDestroy(id: $id, repository: $this->contactFormRepository);
 
             if ($deleteContactForm) {
                 return redirect()->route('admin.contact-forms.index')->with('success', sprintf('Форма обратной связи #%s успешно удалена.', $id));

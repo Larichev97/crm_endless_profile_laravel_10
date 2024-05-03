@@ -32,7 +32,7 @@ class AdminTerminalCommandController extends Controller
      */
     public function commandGenerateQrCodes(): RedirectResponse
     {
-        $exitCode = Artisan::call('qrs:generate');
+        $exitCode = Artisan::call(command: 'qrs:generate');
 
         // Команда выполнена успешно:
         if ($exitCode === 0) {

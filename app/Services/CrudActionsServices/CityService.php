@@ -4,22 +4,22 @@ namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\City\CityStoreDTO;
 use App\DataTransferObjects\City\CityUpdateDTO;
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Models\City;
-use App\Repositories\City\CityRepository;
+use App\Repositories\CoreRepository;
 
-final class CityService
+final readonly class CityService implements CoreCrudActionsInterface
 {
     /**
      *  Создание записи о Городе
      *
-     * @param CityStoreDTO $cityStoreDTO
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(CityStoreDTO $cityStoreDTO): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $formDataArray = $cityStoreDTO->getFormFieldsArray();
-
-        $cityModel = City::query()->create(attributes: $formDataArray);
+        /** @var CityStoreDTO $dto */
+        $cityModel = City::query()->create(attributes: $dto->getFormFieldsArray());
 
         return (bool) $cityModel;
     }
@@ -27,37 +27,37 @@ final class CityService
     /**
      *  Обновление записи о Городе
      *
-     * @param CityUpdateDTO $cityUpdateDTO
-     * @param CityRepository $cityRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(CityUpdateDTO $cityUpdateDTO, CityRepository $cityRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $cityModel = $cityRepository->getForEditModel(id: (int) $cityUpdateDTO->id_city, useCache: true);
+        /** @var CityUpdateDTO $dto */
+
+        $cityModel = $repository->getForEditModel(id: (int) $dto->id_city, useCache: true);
 
         if (empty($cityModel)) {
             return false;
         }
 
-        $formDataArray = $cityUpdateDTO->getFormFieldsArray();
-
         /** @var City $cityModel */
 
-        $updateCity = $cityModel->update(attributes: $formDataArray);
+        $updateCity = $cityModel->update(attributes: $dto->getFormFieldsArray());
 
-        return $updateCity;
+        return (bool) $updateCity;
     }
 
     /**
      *  Полное удаление записи о Стране
      *
      * @param $id
-     * @param CityRepository $cityRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, CityRepository $cityRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $cityModel = $cityRepository->getForEditModel(id: (int) $id, useCache: true);
+        $cityModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($cityModel)) {
             /** @var City $cityModel */

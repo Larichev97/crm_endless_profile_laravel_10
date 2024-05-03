@@ -83,9 +83,7 @@ final class AdminCityController extends Controller
     public function store(CityStoreRequest $cityStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $cityStoreDTO = new CityStoreDTO(cityStoreRequest: $cityStoreRequest);
-
-            $createCity = $this->cityService->processStore(cityStoreDTO: $cityStoreDTO);
+            $createCity = $this->cityService->processStore(dto: new CityStoreDTO(cityStoreRequest: $cityStoreRequest));
 
             if ($createCity) {
                 return redirect()->route(route: 'admin.cities.index')->with(key: 'success', value: 'Город успешно создан.');
@@ -151,9 +149,7 @@ final class AdminCityController extends Controller
     public function update(CityUpdateRequest $cityUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $cityUpdateDTO = new CityUpdateDTO(cityUpdateRequest: $cityUpdateRequest, id_city: (int) $id);
-
-            $updateCity = $this->cityService->processUpdate(cityUpdateDTO: $cityUpdateDTO, cityRepository: $this->cityRepository);
+            $updateCity = $this->cityService->processUpdate(dto: new CityUpdateDTO(cityUpdateRequest: $cityUpdateRequest, id_city: (int) $id), repository: $this->cityRepository);
 
             if ($updateCity) {
                 return redirect()->route(route: 'admin.cities.index')->with(key: 'success', value: sprintf('Данные города #%s успешно обновлены.', $id));
@@ -174,7 +170,7 @@ final class AdminCityController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteCity = $this->cityService->processDestroy(id: $id, cityRepository: $this->cityRepository);
+            $deleteCity = $this->cityService->processDestroy(id: $id, repository: $this->cityRepository);
 
             if ($deleteCity) {
                 return redirect()->route(route: 'admin.cities.index')->with(key: 'success', value: sprintf('Город #%s успешно удален.', $id));

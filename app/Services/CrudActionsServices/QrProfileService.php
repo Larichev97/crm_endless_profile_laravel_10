@@ -2,37 +2,48 @@
 
 namespace App\Services\CrudActionsServices;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\DataTransferObjects\QrProfile\QrProfileImageGalleryStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
 use App\Models\QrProfile;
 use App\Models\QrProfileImage;
+use App\Repositories\CoreRepository;
 use App\Repositories\QrProfile\QrProfileImageRepository;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
 use App\Services\FileService;
 
-final class QrProfileService
+final readonly class QrProfileService implements CoreCrudActionsInterface
 {
+    /**
+     * @param FileService $fileService
+     */
+    public function __construct(
+        private FileService $fileService
+    )
+    {
+    }
+
     /**
      *  Создание записи о QR-профиле
      *
-     * @param QrProfileStoreDTO $qrProfileStoreDTO
-     * @param FileService $fileService
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(QrProfileStoreDTO $qrProfileStoreDTO, FileService $fileService): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $formDataArray = $qrProfileStoreDTO->getFormFieldsArray();
+        /** @var QrProfileStoreDTO $dto */
 
-        $qrProfileModel = QrProfile::query()->create(attributes: $formDataArray);
+        $qrProfileModel = QrProfile::query()->create(attributes: $dto->getFormFieldsArray());
 
         if ($qrProfileModel) {
             /** @var QrProfile $qrProfileModel */
+
             $qrDirPath = 'qr/'.$qrProfileModel->getKey();
 
-            $formFilesNamesArray['photo_file_name'] = $fileService->processUploadFile(file: $qrProfileStoreDTO->photo_file, publicDirPath: $qrDirPath, oldFileName: '', newFileName: '', useOriginalFileName: false);
-            $formFilesNamesArray['voice_message_file_name'] = $fileService->processUploadFile(file: $qrProfileStoreDTO->voice_message_file, publicDirPath: $qrDirPath, oldFileName: '', newFileName: '', useOriginalFileName: true);
+            $formFilesNamesArray['photo_file_name'] = $this->fileService->processUploadFile(file: $dto->photo_file, publicDirPath: $qrDirPath, oldFileName: '', newFileName: '', useOriginalFileName: false);
+            $formFilesNamesArray['voice_message_file_name'] = $this->fileService->processUploadFile(file: $dto->voice_message_file, publicDirPath: $qrDirPath, oldFileName: '', newFileName: '', useOriginalFileName: true);
 
             return (bool) $qrProfileModel->update(attributes: $formFilesNamesArray);
         }
@@ -43,26 +54,27 @@ final class QrProfileService
     /**
      *  Обновление записи о QR-профиле
      *
-     * @param QrProfileUpdateDTO $qrProfileUpdateDTO
-     * @param FileService $fileService
-     * @param QrProfileRepository $qrProfileRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(QrProfileUpdateDTO $qrProfileUpdateDTO, FileService $fileService, QrProfileRepository $qrProfileRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $qrProfileModel = $qrProfileRepository->getForEditModel(id: (int) $qrProfileUpdateDTO->id_qr, useCache: true);
+        /** @var QrProfileUpdateDTO $dto */
+
+        $qrProfileModel = $repository->getForEditModel(id: (int) $dto->id_qr, useCache: true);
 
         if (empty($qrProfileModel)) {
             return false;
         }
 
-        $formDataArray = $qrProfileUpdateDTO->getFormFieldsArray();
+        $formDataArray = $dto->getFormFieldsArray();
 
         /** @var QrProfile $qrProfileModel */
         $qrDirPath = 'qr/'.$qrProfileModel->getKey();
 
-        $formDataArray['photo_file_name'] = $fileService->processUploadFile(file: $qrProfileUpdateDTO->photo_file, publicDirPath: $qrDirPath, oldFileName: $qrProfileUpdateDTO->photo_file_name, newFileName: '', useOriginalFileName: true);
-        $formDataArray['voice_message_file_name'] = $fileService->processUploadFile(file: $qrProfileUpdateDTO->voice_message_file, publicDirPath: $qrDirPath, oldFileName: $qrProfileUpdateDTO->voice_message_file_name, newFileName: '', useOriginalFileName: true);
+        $formDataArray['photo_file_name'] = $this->fileService->processUploadFile(file: $dto->photo_file, publicDirPath: $qrDirPath, oldFileName: $dto->photo_file_name, newFileName: '', useOriginalFileName: true);
+        $formDataArray['voice_message_file_name'] = $this->fileService->processUploadFile(file: $dto->voice_message_file, publicDirPath: $qrDirPath, oldFileName: $dto->voice_message_file_name, newFileName: '', useOriginalFileName: true);
 
         $updateQrProfile = $qrProfileModel->update(attributes: $formDataArray);
 
@@ -73,12 +85,12 @@ final class QrProfileService
      *  Скрытие записи о QR-профиле ("deleted_at" в таблице)
      *
      * @param $id
-     * @param QrProfileRepository $qrProfileRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, QrProfileRepository $qrProfileRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $qrProfileModel = $qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
+        $qrProfileModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($qrProfileModel)) {
             /** @var QrProfile $qrProfileModel */
@@ -98,10 +110,9 @@ final class QrProfileService
      * @param $id
      * @param QrProfileRepository $qrProfileRepository
      * @param SettingRepository $settingRepository
-     * @param FileService $fileService
      * @return bool
      */
-    public function processGenerateQrCode($id, QrProfileRepository $qrProfileRepository, SettingRepository $settingRepository, FileService $fileService): bool
+    public function processGenerateQrCode($id, QrProfileRepository $qrProfileRepository, SettingRepository $settingRepository): bool
     {
         if (!empty($id) && is_numeric($id)) {
             $id = (int) $id;
@@ -120,7 +131,7 @@ final class QrProfileService
 
             $qrProfileUrl .= $id;
 
-            $generate = $fileService->processGenerateQrCodeFile(url: $qrProfileUrl, publicDirPath: $publicDirPath, qrCodeFileName: $qrCodeFileName, qrCodeFileExtension: $qrCodeFileExtension, qrCodeSize: (int) $qrCodeSize);
+            $generate = $this->fileService->processGenerateQrCodeFile(url: $qrProfileUrl, publicDirPath: $publicDirPath, qrCodeFileName: $qrCodeFileName, qrCodeFileExtension: $qrCodeFileExtension, qrCodeSize: (int) $qrCodeSize);
 
             if ($generate) {
                 $qrProfileModel = $qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
@@ -142,10 +153,9 @@ final class QrProfileService
      *
      * @param QrProfileImageGalleryStoreDTO $qrProfileImageGalleryStoreDTO
      * @param QrProfileImageRepository $qrProfileImageRepository
-     * @param FileService $fileService
      * @return bool
      */
-    public function processStoreQrProfileGalleryPhotos(QrProfileImageGalleryStoreDTO $qrProfileImageGalleryStoreDTO, QrProfileImageRepository $qrProfileImageRepository, FileService $fileService): bool
+    public function processStoreQrProfileGalleryPhotos(QrProfileImageGalleryStoreDTO $qrProfileImageGalleryStoreDTO, QrProfileImageRepository $qrProfileImageRepository): bool
     {
         $idQrProfile = $qrProfileImageGalleryStoreDTO->id_qr_profile;
         $galleryPhotos = $qrProfileImageGalleryStoreDTO->getGalleryPhotos();
@@ -154,10 +164,10 @@ final class QrProfileService
             $publicDirPath = 'qr/'.$idQrProfile;
 
             foreach ($galleryPhotos as $key => $galleryPhoto) {
-                $galleryPhotoName = trim($fileService->processUploadFile(file: $galleryPhoto, publicDirPath: $publicDirPath, oldFileName: '', newFileName: 'gallery_photo_'.time().$key, useOriginalFileName: false));
+                $galleryPhotoName = trim($this->fileService->processUploadFile(file: $galleryPhoto, publicDirPath: $publicDirPath, oldFileName: '', newFileName: 'gallery_photo_'.time().$key, useOriginalFileName: false));
 
                 if (!empty($galleryPhotoName)) {
-                    $lastPositionNumber = (int) $qrProfileImageRepository->getLastPositionNumber($idQrProfile);
+                    $lastPositionNumber = (int) $qrProfileImageRepository->getLastPositionNumber(idQrProfile: $idQrProfile);
 
                     $lastPositionNumber++;
 
@@ -190,10 +200,9 @@ final class QrProfileService
      *
      * @param $id
      * @param QrProfileImageRepository $qrProfileImageRepository
-     * @param FileService $fileService
      * @return int
      */
-    public function processDestroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository, FileService $fileService): int
+    public function processDestroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): int
     {
         $qrProfileImageModel = $qrProfileImageRepository->getForEditModel(id: (int) $id, useCache: true);
 
@@ -208,7 +217,7 @@ final class QrProfileService
             if ($deleteImage) {
                 // some logic after delete (update image positions...)
 
-                $fileService->processDeleteOldFile($imageName, 'qr/'.$idQrProfile);
+                $this->fileService->processDeleteOldFile(oldFileName: $imageName, publicDirPath: 'qr/'.$idQrProfile);
 
                 return $idQrProfile;
             }
@@ -231,6 +240,8 @@ final class QrProfileService
 
         if (!empty($qrProfileGalleryImages)) {
             foreach ($qrProfileGalleryImages as $qrProfileGalleryImage) {
+                /** @var QrProfileImage $qrProfileGalleryImage */
+
                 if (!empty($qrProfileGalleryImage->image_name) && $qrProfileGalleryImage->is_active) {
                     $sliderGalleryImagesData[] = [
                         'imagePath' => $qrProfileGalleryImage->fullImagePath,

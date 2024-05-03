@@ -4,30 +4,39 @@ namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\Country\CountryStoreDTO;
 use App\DataTransferObjects\Country\CountryUpdateDTO;
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Models\Country;
-use App\Repositories\Country\CountryRepository;
+use App\Repositories\CoreRepository;
 use App\Services\FileService;
 
-final class CountryService
+final readonly class CountryService implements CoreCrudActionsInterface
 {
+    /**
+     * @param FileService $fileService
+     */
+    public function __construct(
+        private FileService $fileService
+    )
+    {
+    }
+
     /**
      *  Создание записи о Стране
      *
-     * @param CountryStoreDTO $countryStoreDTO
-     * @param FileService $fileService
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(CountryStoreDTO $countryStoreDTO, FileService $fileService): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $formDataArray = $countryStoreDTO->getFormFieldsArray();
+        /** @var CountryStoreDTO $dto */
 
-        $countryModel = Country::query()->create(attributes: $formDataArray);
+        $countryModel = Country::query()->create(attributes: $dto->getFormFieldsArray());
 
         if ($countryModel) {
             /** @var Country $countryModel */
             $countriesDirPath = 'images/countries/'.$countryModel->getKey();
 
-            $formFilesNamesArray['flag_file_name'] = $fileService->processUploadFile(file: $countryStoreDTO->flag_file, publicDirPath: $countriesDirPath);
+            $formFilesNamesArray['flag_file_name'] = $this->fileService->processUploadFile(file: $dto->flag_file, publicDirPath: $countriesDirPath);
 
             return (bool) $countryModel->update(attributes: $formFilesNamesArray);
         }
@@ -38,25 +47,26 @@ final class CountryService
     /**
      *  Обновление записи о Стране
      *
-     * @param CountryUpdateDTO $countryUpdateDTO
-     * @param FileService $fileService
-     * @param CountryRepository $countryRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(CountryUpdateDTO $countryUpdateDTO, FileService $fileService, CountryRepository $countryRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $countryModel = $countryRepository->getForEditModel(id: (int) $countryUpdateDTO->id_country, useCache: true);
+        /** @var CountryUpdateDTO $dto */
+
+        $countryModel = $repository->getForEditModel(id: (int) $dto->id_country, useCache: true);
 
         if (empty($countryModel)) {
             return false;
         }
 
-        $formDataArray = $countryUpdateDTO->getFormFieldsArray();
+        $formDataArray = $dto->getFormFieldsArray();
 
         /** @var Country $countryModel */
         $countriesDirPath = 'images/countries/'.$countryModel->getKey();
 
-        $formDataArray['flag_file_name'] = $fileService->processUploadFile(file: $countryUpdateDTO->flag_file, publicDirPath: $countriesDirPath, oldFileName: $countryUpdateDTO->flag_file_name, newFileName: '');
+        $formDataArray['flag_file_name'] = $this->fileService->processUploadFile(file: $dto->flag_file, publicDirPath: $countriesDirPath, oldFileName: $dto->flag_file_name, newFileName: '');
 
         $updateCountry = $countryModel->update(attributes: $formDataArray);
 
@@ -67,12 +77,12 @@ final class CountryService
      *  Полное удаление записи о Стране
      *
      * @param $id
-     * @param CountryRepository $countryRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, CountryRepository $countryRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $countryModel = $countryRepository->getForEditModel(id: (int) $id, useCache: true);
+        $countryModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($countryModel)) {
             /** @var Country $countryModel */

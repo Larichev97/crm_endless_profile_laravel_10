@@ -36,7 +36,7 @@ final class FrontQrProfileController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+            $qrProfile = $this->qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($qrProfile)) {
                 abort(404);
@@ -45,10 +45,10 @@ final class FrontQrProfileController extends Controller
             /** @var QrProfile $qrProfile */
             $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-            $photoPath = $this->fileService->processGetPublicFilePath($qrProfile->getPhotoName(), $publicDirPath);
-            $voiceMessagePath = $this->fileService->processGetPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath);
+            $photoPath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getPhotoName(), publicDirPath: $publicDirPath);
+            $voiceMessagePath = $this->fileService->processGetPublicFilePath(fileName: $qrProfile->getVoiceMessageFileName(), publicDirPath: $publicDirPath);
 
-            $sliderGalleryImagesData = $this->qrProfileService->processGetSliderGalleryImagesData($qrProfile);
+            $sliderGalleryImagesData = $this->qrProfileService->processGetSliderGalleryImagesData(qrProfile: $qrProfile);
 
             return view('front_qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'sliderGalleryImagesData']));
         } catch (Exception $exception) {

@@ -106,9 +106,7 @@ final class AdminQrProfileController extends Controller
     public function store(QrProfileStoreRequest $qrProfileStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $qrProfileStoreDTO = new QrProfileStoreDTO($qrProfileStoreRequest);
-
-            $createQrProfile = $this->qrProfileService->processStore(qrProfileStoreDTO: $qrProfileStoreDTO, fileService: $this->fileService);
+            $createQrProfile = $this->qrProfileService->processStore(dto: new QrProfileStoreDTO($qrProfileStoreRequest));
 
             if ($createQrProfile) {
                 return redirect()->route('admin.qrs.index')->with(key: 'success', value: 'QR-профиль успешно создан.');
@@ -190,9 +188,7 @@ final class AdminQrProfileController extends Controller
     public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $qrProfileUpdateDTO = new QrProfileUpdateDTO(qrProfileUpdateRequest: $qrProfileUpdateRequest, id_qr: (int) $id);
-
-            $updateQrProfile = $this->qrProfileService->processUpdate(qrProfileUpdateDTO: $qrProfileUpdateDTO, fileService: $this->fileService, qrProfileRepository: $this->qrProfileRepository);
+            $updateQrProfile = $this->qrProfileService->processUpdate(dto: new QrProfileUpdateDTO(qrProfileUpdateRequest: $qrProfileUpdateRequest, id_qr: (int) $id), repository: $this->qrProfileRepository);
 
             if ($updateQrProfile) {
                 return redirect()->route('admin.qrs.index')->with(key: 'success', value: sprintf('Данные QR-профиля #%s успешно обновлены.', $id));
@@ -213,7 +209,7 @@ final class AdminQrProfileController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteQrProfile = $this->qrProfileService->processDestroy(id: $id, qrProfileRepository: $this->qrProfileRepository);
+            $deleteQrProfile = $this->qrProfileService->processDestroy(id: $id, repository: $this->qrProfileRepository);
 
             if ($deleteQrProfile) {
                 return redirect()->route('admin.qrs.index')->with(key: 'success', value: sprintf('QR-профиль #%s успешно удалён.', $id));
@@ -232,7 +228,7 @@ final class AdminQrProfileController extends Controller
     public function generateQrCodeImage($id): JsonResponse|RedirectResponse
     {
         try {
-            $generateQrCode = $this->qrProfileService->processGenerateQrCode(id: $id, qrProfileRepository: $this->qrProfileRepository, settingRepository: $this->settingRepository, fileService: $this->fileService);
+            $generateQrCode = $this->qrProfileService->processGenerateQrCode(id: $id, qrProfileRepository: $this->qrProfileRepository, settingRepository: $this->settingRepository);
 
             if ($generateQrCode) {
                 return redirect()->route('admin.qrs.show', $id)->with(key: 'success', value: sprintf('Изображение QR-кода для профиля #%s успешно создано.', $id));
@@ -267,7 +263,7 @@ final class AdminQrProfileController extends Controller
         try {
             $qrProfileImageGalleryStoreDTO = new QrProfileImageGalleryStoreDTO($qrProfileImageGalleryStoreRequest);
 
-            $createQrProfileImagesGallery = $this->qrProfileService->processStoreQrProfileGalleryPhotos(qrProfileImageGalleryStoreDTO: $qrProfileImageGalleryStoreDTO, qrProfileImageRepository: $qrProfileImageRepository,fileService: $this->fileService);
+            $createQrProfileImagesGallery = $this->qrProfileService->processStoreQrProfileGalleryPhotos(qrProfileImageGalleryStoreDTO: $qrProfileImageGalleryStoreDTO, qrProfileImageRepository: $qrProfileImageRepository);
 
             if ($createQrProfileImagesGallery) {
                 return redirect()->route('admin.qrs.show', ['id' => $qrProfileImageGalleryStoreDTO->id_qr_profile])->with(key: 'success', value: 'Фотографии успешно добавлены в галерею QR-профиля.');
@@ -289,7 +285,7 @@ final class AdminQrProfileController extends Controller
     public function destroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
     {
         try {
-            $idQrProfileDeletedGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository, fileService: $this->fileService);
+            $idQrProfileDeletedGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository);
 
             if ($idQrProfileDeletedGalleryImage > 0) {
                 return redirect()->route('admin.qrs.show', $idQrProfileDeletedGalleryImage)->with(key: 'success', value: 'Изображение удалено из галереи QR-профиля.');

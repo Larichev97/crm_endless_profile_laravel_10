@@ -2,31 +2,36 @@
 
 namespace App\Services\CrudActionsServices;
 
-use App\DataTransferObjects\ContactForm\ContactFormStoreDTO;
-use App\DataTransferObjects\ContactForm\ContactFormUpdateDTO;
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Models\ContactForm;
-use App\Repositories\ContactForm\ContactFormRepository;
+use App\Repositories\CoreRepository;
 use App\Repositories\Setting\SettingRepository;
 use Carbon\Carbon;
 use DefStudio\Telegraph\Models\TelegraphChat;
 
-final class ContactFormService
+final readonly class ContactFormService implements CoreCrudActionsInterface
 {
+    /**
+     * @param SettingRepository $settingRepository
+     */
+    public function __construct(
+        private SettingRepository $settingRepository
+    )
+    {
+    }
+
     /**
      *  Создание записи для Формы Обратной Связи
      *
-     * @param ContactFormStoreDTO $contactFormStoreDTO
-     * @param SettingRepository $settingRepository
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(ContactFormStoreDTO $contactFormStoreDTO, SettingRepository $settingRepository): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $formDataArray = $contactFormStoreDTO->getFormFieldsArray();
-
-        $contactFormModel = ContactForm::query()->create(attributes: $formDataArray);
+        $contactFormModel = ContactForm::query()->create(attributes: $dto->getFormFieldsArray());
 
         if ($contactFormModel) {
-            $endlessProfileChannelId = $settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
+            $endlessProfileChannelId = $this->settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
 
             // Отправка уведомления в Телеграм канал только из боевого окружения:
             if (env('APP_ENV') == 'production' && !empty($endlessProfileChannelId) && class_exists('DefStudio\Telegraph\Models\TelegraphChat')) {
@@ -50,21 +55,19 @@ final class ContactFormService
     /**
      *  Обновление записи Формы Обратной Связи
      *
-     * @param ContactFormUpdateDTO $contactFormUpdateDTO
-     * @param ContactFormRepository $contactFormRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(ContactFormUpdateDTO $contactFormUpdateDTO, ContactFormRepository $contactFormRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $contactFormModel = $contactFormRepository->getForEditModel(id: (int) $contactFormUpdateDTO->idContactForm, useCache: true);
+        $contactFormModel = $repository->getForEditModel(id: (int) $dto->idContactForm, useCache: true);
 
         if (empty($contactFormModel)) {
             return false;
         }
 
-        $formDataArray = $contactFormUpdateDTO->getFormFieldsArray();
-
-        $updateContactForm = $contactFormModel->update(attributes: $formDataArray);
+        $updateContactForm = $contactFormModel->update(attributes: $dto->getFormFieldsArray());
 
         return (bool) $updateContactForm;
     }
@@ -73,12 +76,12 @@ final class ContactFormService
      *  Частичное удаление записи Формы Обратной Связи (soft delete)
      *
      * @param $id
-     * @param ContactFormRepository $contactFormRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, ContactFormRepository $contactFormRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $contactFormModel = $contactFormRepository->getForEditModel(id: (int) $id, useCache: true);
+        $contactFormModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($contactFormModel)) {
             /** @var ContactForm $contactFormModel */
@@ -99,9 +102,7 @@ final class ContactFormService
      */
     public function processSendContactFormInTelegramChannel(ContactForm $contactFormModel): void
     {
-        $settingRepository = new SettingRepository();
-
-        $endlessProfileChannelId = (string) $settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
+        $endlessProfileChannelId = (string) $this->settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
 
         if (!empty($endlessProfileChannelId)) {
             $htmlMessage = $this->processBuildTelegramHtmlMessage($contactFormModel);

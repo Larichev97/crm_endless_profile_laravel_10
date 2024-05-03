@@ -4,35 +4,44 @@ namespace App\Services\CrudActionsServices;
 
 use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Enums\ContactFormStatusEnum;
 use App\Models\Client;
 use App\Models\ContactForm;
-use App\Repositories\Client\ClientRepository;
 use App\Repositories\ContactForm\ContactFormRepository;
+use App\Repositories\CoreRepository;
 use App\Services\FileService;
 use Illuminate\Http\Request;
 
-class ClientService
+final readonly class ClientService implements CoreCrudActionsInterface
 {
+    /**
+     * @param FileService $fileService
+     * @param ContactFormRepository $contactFormRepository
+     */
+    public function __construct(
+        private FileService $fileService,
+        private ContactFormRepository $contactFormRepository
+    )
+    {
+    }
+
     /**
      *  Создание записи о клиенте
      *
-     * @param ClientStoreDTO $clientStoreDTO
-     * @param FileService $fileService
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(ClientStoreDTO $clientStoreDTO, FileService $fileService): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $clientsImagesDirPath = 'images/clients';
+        /** @var ClientStoreDTO $dto */
 
-        $formDataArray = $clientStoreDTO->getFormFieldsArray();
-
-        $clientModel = Client::query()->create(attributes: $formDataArray);
+        $clientModel = Client::query()->create(attributes: $dto->getFormFieldsArray());
 
         if ($clientModel) {
-            $this->processCompletionContactForm($clientStoreDTO->id_contact_form, $clientStoreDTO->id_user_add);
+            $this->processCompletionContactForm(idContactForm: $dto->id_contact_form, idEmployee: $dto->id_user_add);
 
-            $formFilesNamesArray['photo_name'] = $fileService->processUploadFile(file: $clientStoreDTO->image, publicDirPath: $clientsImagesDirPath, oldFileName: '', newFileName: '');
+            $formFilesNamesArray['photo_name'] = $this->fileService->processUploadFile(file: $dto->image, publicDirPath: 'images/clients', oldFileName: '', newFileName: '');
 
             return (bool) $clientModel->update(attributes: $formFilesNamesArray);
         }
@@ -43,14 +52,15 @@ class ClientService
     /**
      *  Обновление записи о клиенте
      *
-     * @param ClientUpdateDTO $clientUpdateDTO
-     * @param FileService $fileService
-     * @param ClientRepository $clientRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(ClientUpdateDTO $clientUpdateDTO, FileService $fileService, ClientRepository $clientRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $clientModel = $clientRepository->getForEditModel(id: (int) $clientUpdateDTO->id_client, useCache: true);
+        /** @var ClientUpdateDTO $dto */
+
+        $clientModel = $repository->getForEditModel(id: (int) $dto->id_client, useCache: true);
 
         if (empty($clientModel)) {
             return false;
@@ -58,11 +68,9 @@ class ClientService
 
         /** @var Client $clientModel */
 
-        $clientsImagesDirPath = 'images/clients';
+        $formDataArray = $dto->getFormFieldsArray();
 
-        $formDataArray = $clientUpdateDTO->getFormFieldsArray();
-
-        $formDataArray['photo_name'] = $fileService->processUploadFile(file: $clientUpdateDTO->image, publicDirPath: $clientsImagesDirPath, oldFileName: $clientUpdateDTO->photo_name);
+        $formDataArray['photo_name'] = $this->fileService->processUploadFile(file: $dto->image, publicDirPath: 'images/clients', oldFileName: $dto->photo_name);
 
         $updateClient = $clientModel->update(attributes: $formDataArray);
 
@@ -73,12 +81,12 @@ class ClientService
      *  Скрытие записи о Клиенте ("deleted_at" в таблице)
      *
      * @param $id
-     * @param ClientRepository $clientRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, ClientRepository $clientRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $clientModel = $clientRepository->getForEditModel(id: (int) $id, useCache: true);
+        $clientModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($clientModel)) {
             /** @var Client $clientModel */
@@ -105,7 +113,7 @@ class ClientService
         $clientFields = ['id_contact_form', 'firstname', 'lastname', 'email', 'phone_number'];
 
         foreach ($clientFields as $keyClientField => $clientFieldName) {
-            $currentFieldValue = $request->get($clientFieldName, '');
+            $currentFieldValue = $request->get(key: $clientFieldName, default: '');
 
             if (!empty($currentFieldValue)) {
                 $contactFormData[$clientFieldName] = $currentFieldValue;
@@ -125,18 +133,17 @@ class ClientService
     public function processCompletionContactForm(int $idContactForm, int $idEmployee): bool
     {
         if ($idContactForm > 0) {
-            $contactFormRepository = new ContactFormRepository();
-
-            /** @var ContactForm $contactFormModel */
-            $contactFormModel = $contactFormRepository->getForEditModel($idContactForm);
+            $contactFormModel = $this->contactFormRepository->getForEditModel(id: $idContactForm);
 
             if (!empty($contactFormModel) && is_object($contactFormModel)) {
+                /** @var ContactForm $contactFormModel */
+
                 $contactFormDataArray = [
                     'id_status' => ContactFormStatusEnum::READY->value,
                     'id_employee' => $idEmployee,
                 ];
 
-                return $contactFormModel->update($contactFormDataArray);
+                return $contactFormModel->update(attributes: $contactFormDataArray);
             }
         }
 

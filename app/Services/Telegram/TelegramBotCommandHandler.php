@@ -13,6 +13,6 @@ class TelegramBotCommandHandler extends WebhookHandler
      */
     public function hello(): void
     {
-        $this->reply('Привет от Бота "Endless Profile"!');
+        $this->reply(message: 'Привет от Бота "Endless Profile"!');
     }
 }

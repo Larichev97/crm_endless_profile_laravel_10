@@ -8,6 +8,7 @@ use App\Enums\ClientStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
+use App\Models\Client;
 use App\Repositories\City\CityRepository;
 use App\Repositories\Client\ClientRepository;
 use App\Repositories\Country\CountryRepository;
@@ -53,19 +54,19 @@ final class AdminClientController extends Controller
     public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $page = (int) $request->get('page', 1);
-            $sortBy = $request->get('sort_by', 'id');
-            $sortWay = $request->get('sort_way', 'desc');
+            $page = (int) $request->get(key: 'page', default: 1);
+            $sortBy = $request->get(key: 'sort_by', default: 'id');
+            $sortWay = $request->get(key: 'sort_way', default: 'desc');
 
-            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray($request->all());
-            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);
+            $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
+            $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject(filterFieldsArray: $filterFieldsArray);
 
-            $clients = $this->clientRepository->getAllWithPaginate(10, $page, $sortBy, $sortWay, false, $filterFieldsArray);
+            $clients = $this->clientRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, useCache: false, filterFieldsData: $filterFieldsArray);
             $displayedFields = $this->clientRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ClientStatusEnum::getStatusesList();
-            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
-            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+            $citiesListData = $this->cityRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
             return view('client.index', compact(['clients', 'displayedFields','filterFieldsObject', 'statusesListData', 'countriesListData', 'citiesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
@@ -81,12 +82,12 @@ final class AdminClientController extends Controller
      */
     public function create(Request $request): Application|Factory|View|\Illuminate\Foundation\Application
     {
-        $contactFormDataArray = $this->clientService->processGetContactFormData($request);
+        $contactFormDataArray = $this->clientService->processGetContactFormData(request: $request);
 
         $idStatusNew = ClientStatusEnum::NEW->value;
 
-        $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
-        $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+        $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+        $citiesListData = $this->cityRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
         return view('client.create', compact('idStatusNew', 'countriesListData', 'citiesListData'), $contactFormDataArray);
     }
@@ -100,9 +101,7 @@ final class AdminClientController extends Controller
     public function store(ClientStoreRequest $clientStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $clientStoreDTO = new ClientStoreDTO($clientStoreRequest);
-
-            $createClient = $this->clientService->processStore($clientStoreDTO, $this->fileService);
+            $createClient = $this->clientService->processStore(dto: new ClientStoreDTO(clientStoreRequest: $clientStoreRequest));
 
             if ($createClient) {
                 return redirect()->route('admin.clients.index')->with('success','Клиент успешно создан.');
@@ -123,13 +122,15 @@ final class AdminClientController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $client = $this->clientRepository->getForEditModel((int) $id, true);
+            $client = $this->clientRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($client)) {
                 abort(404);
             }
 
-            $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
+            /** @var Client $client */
+
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath(fileName: $client->getPhotoName(), publicDirPath: $this->publicDirPath);
 
             return view('client.show',compact(['client', 'clientPhotoPath']));
         } catch (Exception $exception) {
@@ -152,11 +153,13 @@ final class AdminClientController extends Controller
                 abort(404);
             }
 
-            $clientPhotoPath = $this->fileService->processGetPublicFilePath($client->getPhotoName(), $this->publicDirPath);
+            /** @var Client $client */
+
+            $clientPhotoPath = $this->fileService->processGetPublicFilePath(fileName: $client->getPhotoName(), publicDirPath: $this->publicDirPath);
 
             $statusesListData = ClientStatusEnum::getStatusesList();
-            $countriesListData = $this->countryRepository->getForDropdownList('id', 'name', true);
-            $citiesListData = $this->cityRepository->getForDropdownList('id', 'name', true);
+            $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
+            $citiesListData = $this->cityRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
             return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
@@ -174,9 +177,7 @@ final class AdminClientController extends Controller
     public function update(ClientUpdateRequest $clientUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $clientUpdateDTO = new ClientUpdateDTO($clientUpdateRequest, (int) $id);
-
-            $updateClient = $this->clientService->processUpdate($clientUpdateDTO, $this->fileService, $this->clientRepository);
+            $updateClient = $this->clientService->processUpdate(dto: new ClientUpdateDTO(clientStoreRequest: $clientUpdateRequest, id_client: (int) $id), repository: $this->clientRepository);
 
             if ($updateClient) {
                 return redirect()->route('admin.clients.index')->with('success', sprintf('Данные клиента #%s успешно обновлены.', $id));
@@ -197,7 +198,7 @@ final class AdminClientController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteClient = $this->clientService->processDestroy($id, $this->clientRepository);
+            $deleteClient = $this->clientService->processDestroy(id: $id, repository: $this->clientRepository);
 
             if ($deleteClient) {
                 return redirect()->route('admin.clients.index')->with('success', sprintf('Клиент #%s успешно удалён.', $id));

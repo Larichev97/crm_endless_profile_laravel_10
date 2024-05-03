@@ -2,24 +2,25 @@
 
 namespace App\Services\CrudActionsServices;
 
+use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\DataTransferObjects\Setting\SettingStoreDTO;
 use App\DataTransferObjects\Setting\SettingUpdateDTO;
 use App\Models\Setting;
-use App\Repositories\Setting\SettingRepository;
+use App\Repositories\CoreRepository;
 
-final class SettingService
+final readonly class SettingService implements CoreCrudActionsInterface
 {
     /**
      *  Создание записи о Настройке
      *
-     * @param SettingStoreDTO $settingStoreDTO
+     * @param FormFieldsDtoInterface $dto
      * @return bool
      */
-    public function processStore(SettingStoreDTO $settingStoreDTO): bool
+    public function processStore(FormFieldsDtoInterface $dto): bool
     {
-        $formDataArray = $settingStoreDTO->getFormFieldsArray();
+        /** @var SettingStoreDTO $dto */
 
-        $settingModel = Setting::query()->create(attributes: $formDataArray);
+        $settingModel = Setting::query()->create(attributes: $dto->getFormFieldsArray());
 
         return (bool) $settingModel;
     }
@@ -27,23 +28,23 @@ final class SettingService
     /**
      *  Обновление записи о Настройке
      *
-     * @param SettingUpdateDTO $settingUpdateDTO
-     * @param SettingRepository $settingRepository
+     * @param FormFieldsDtoInterface $dto
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processUpdate(SettingUpdateDTO $settingUpdateDTO, SettingRepository $settingRepository): bool
+    public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
-        $settingModel = $settingRepository->getForEditModel(id: (int) $settingUpdateDTO->id_setting, useCache: true);
+        /** @var SettingUpdateDTO $dto */
+
+        $settingModel = $repository->getForEditModel(id: (int) $dto->id_setting, useCache: true);
 
         if (empty($settingModel)) {
             return false;
         }
 
-        $formDataArray = $settingUpdateDTO->getFormFieldsArray();
-
         /** @var Setting $settingModel */
 
-        $updateSetting = $settingModel->update(attributes: $formDataArray);
+        $updateSetting = $settingModel->update(attributes: $dto->getFormFieldsArray());
 
         return (bool) $updateSetting;
     }
@@ -52,12 +53,12 @@ final class SettingService
      *  Полное удаление записи о Настройке
      *
      * @param $id
-     * @param SettingRepository $settingRepository
+     * @param CoreRepository $repository
      * @return bool
      */
-    public function processDestroy($id, SettingRepository $settingRepository): bool
+    public function processDestroy($id, CoreRepository $repository): bool
     {
-        $settingModel = $settingRepository->getForEditModel(id: (int) $id, useCache: true);
+        $settingModel = $repository->getForEditModel(id: (int) $id, useCache: true);
 
         if (!empty($settingModel)) {
             /** @var Setting $settingModel */

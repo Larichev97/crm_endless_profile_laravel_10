@@ -49,7 +49,7 @@ abstract class CoreRepository implements CoreRepositoryInterface
 
     public function __construct()
     {
-        $this->model = app($this->getModelClass()); // Создание объекта при помощи метода из Laravel
+        $this->model = app(abstract: $this->getModelClass()); // Создание объекта при помощи метода из Laravel
     }
 
     /**
@@ -80,10 +80,10 @@ abstract class CoreRepository implements CoreRepositoryInterface
     {
         if ($useCache) {
             $result = Cache::remember($this->getModelClass().'-getForEditModel-'.$id, $this->cacheLife, function () use ($id) {
-                return $this->startConditions()->query()->find($id);
+                return $this->startConditions()->query()->find(id: $id);
             });
         } else {
-            $result = $this->startConditions()->query()->find($id);
+            $result = $this->startConditions()->query()->find(id: $id);
         }
 
         return $result;
@@ -130,7 +130,7 @@ abstract class CoreRepository implements CoreRepositoryInterface
 
         $query->select($fields_array);
 
-        $this->setCustomQueryFilters($query, $filterFieldsData);
+        $this->setCustomQueryFilters(query: $query, filterFieldsData: $filterFieldsData);
 
         $orderBy = strtolower($orderBy);
         $orderWay = strtolower($orderWay);
@@ -143,17 +143,17 @@ abstract class CoreRepository implements CoreRepositoryInterface
             $orderWay = 'desc';
         }
 
-        $query->orderBy($orderBy, $orderWay);
+        $query->orderBy(column: $orderBy, direction: $orderWay);
 
         // File или Redis кэширование не поддерживает тегирование:
         if ($useCache && Cache::supportsTags()) {
             $result = Cache::tags($this->getModelClass().'-getAllWithPaginate')->remember('page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
                 function () use($query, $fields_array, $perPage, $page) {
-                    return $query->paginate($perPage, $fields_array, 'page', $page);
+                    return $query->paginate(perPage: $perPage, columns: $fields_array, pageName: 'page', page: $page);
                 }
             );
         } else {
-            $result = $query->paginate($perPage, $fields_array, 'page', $page);
+            $result = $query->paginate(perPage: $perPage, columns: $fields_array, pageName: 'page', page: $page);
         }
 
         return $result;
@@ -174,11 +174,11 @@ abstract class CoreRepository implements CoreRepositoryInterface
         if ($useCache) {
             $result = Cache::remember($this->getModelClass().'-getForDropdownList', $this->cacheLife,
                 function () use($columns) {
-                    return $this->startConditions()->query()->selectRaw($columns)->orderBy('id', 'asc')->toBase()->get();
+                    return $this->startConditions()->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
                 }
             );
         } else {
-            $result = $this->startConditions()->query()->selectRaw($columns)->orderBy('id', 'asc')->toBase()->get();
+            $result = $this->startConditions()->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
         }
 
         return $result;
@@ -226,11 +226,11 @@ abstract class CoreRepository implements CoreRepositoryInterface
             foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
                 if (!empty($filterFieldValue)) {
                     if (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
-                        $query->whereDate((string) $filterFieldName, '=', (string) $filterFieldValue);
+                        $query->whereDate(column: (string) $filterFieldName, operator: '=', value: (string) $filterFieldValue);
                     } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
-                        $query->where((string) $filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
+                        $query->where(column: (string) $filterFieldName, operator: 'LIKE', value: '%'.$filterFieldValue.'%');
                     } else {
-                        $query->where((string) $filterFieldName, '=', $filterFieldValue);
+                        $query->where(column: (string) $filterFieldName, operator: '=', value: $filterFieldValue);
                     }
                 }
             }

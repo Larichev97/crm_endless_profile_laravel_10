@@ -21,7 +21,7 @@ final class FileService
     public function processGenerateQrCodeFile(string $url, string $publicDirPath, string $qrCodeFileName, string $qrCodeFileExtension, int $qrCodeSize = 300): bool
     {
         if (!empty($url) && !empty($qrCodeFileName) && in_array($qrCodeFileExtension, ['png', 'svg', 'eps'])) {
-            $publicDirPath = $this->processPreparePath($publicDirPath);
+            $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
             $qrCodeFileNameWithExtension = $qrCodeFileName.'.'.$qrCodeFileExtension;
             $qrCodeFilePathWithName = storage_path(path: 'app/public/'.$publicDirPath.'/'.$qrCodeFileNameWithExtension);
@@ -105,7 +105,7 @@ final class FileService
             $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
             // Проверка наличия файла и его удаление, если он существует:
-            $oldPhotoPath = storage_path('app/public/'.$publicDirPath.'/'.$oldFileName);
+            $oldPhotoPath = storage_path(path: 'app/public/'.$publicDirPath.'/'.$oldFileName);
 
             if (File::exists($oldPhotoPath)) {
                 return (bool) File::delete(paths: $oldPhotoPath);
@@ -128,7 +128,7 @@ final class FileService
 
         $publicDirPath = $this->processPreparePath(dirPath: $publicDirPath);
 
-        if (!empty($fileName) && File::exists(storage_path('app/public/'.$publicDirPath.'/'.$fileName))) {
+        if (!empty($fileName) && File::exists(storage_path(path: 'app/public/'.$publicDirPath.'/'.$fileName))) {
             $filePath = $publicDirPath.'/'.$fileName;
         }
 

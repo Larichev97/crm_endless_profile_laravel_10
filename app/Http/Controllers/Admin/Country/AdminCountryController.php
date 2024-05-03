@@ -45,7 +45,7 @@ final class AdminCountryController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $countries = $this->countryRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
+            $countries = $this->countryRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc', useCache: true);
 
             return view('country.index',compact('countries'));
         } catch (Exception $exception) {
@@ -72,9 +72,7 @@ final class AdminCountryController extends Controller
     public function store(CountryStoreRequest $countryStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $countryStoreDTO = new CountryStoreDTO($countryStoreRequest);
-
-            $createCountry = $this->countryService->processStore($countryStoreDTO, $this->fileService);
+            $createCountry = $this->countryService->processStore(dto: new CountryStoreDTO(countryStoreRequest: $countryStoreRequest));
 
             if ($createCountry) {
                 return redirect()->route('admin.countries.index')->with('success','Страна успешно создана.');
@@ -95,7 +93,7 @@ final class AdminCountryController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $country = $this->countryRepository->getForEditModel((int) $id, true);
+            $country = $this->countryRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($country)) {
                 abort(404);
@@ -104,7 +102,7 @@ final class AdminCountryController extends Controller
             /** @var Country $country */
             $countryPublicDirPath = $this->publicDirPath.'/'.$country->getKey();
 
-            $flagFilePath = $this->fileService->processGetPublicFilePath($country->getFlagName(), $countryPublicDirPath);
+            $flagFilePath = $this->fileService->processGetPublicFilePath(fileName: $country->getFlagName(), publicDirPath: $countryPublicDirPath);
 
             return view('country.show',compact(['country', 'flagFilePath']));
         } catch (Exception $exception) {
@@ -121,7 +119,7 @@ final class AdminCountryController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $country = $this->countryRepository->getForEditModel((int) $id, true);
+            $country = $this->countryRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($country)) {
                 abort(404);
@@ -130,7 +128,7 @@ final class AdminCountryController extends Controller
             /** @var Country $country */
             $countryPublicDirPath = $this->publicDirPath.'/'.$country->getKey();
 
-            $flagFilePath = $this->fileService->processGetPublicFilePath($country->getFlagName(), $countryPublicDirPath);
+            $flagFilePath = $this->fileService->processGetPublicFilePath(fileName: $country->getFlagName(), publicDirPath: $countryPublicDirPath);
 
             return view('country.edit',compact(['country', 'flagFilePath',]));
         } catch (Exception $exception) {
@@ -148,9 +146,7 @@ final class AdminCountryController extends Controller
     public function update(CountryUpdateRequest $countryUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $countryUpdateDTO = new CountryUpdateDTO($countryUpdateRequest, (int) $id);
-
-            $updateCountry = $this->countryService->processUpdate($countryUpdateDTO, $this->fileService, $this->countryRepository);
+            $updateCountry = $this->countryService->processUpdate(dto: new CountryUpdateDTO(countryUpdateRequest: $countryUpdateRequest, id_country: (int) $id), repository: $this->countryRepository);
 
             if ($updateCountry) {
                 return redirect()->route('admin.countries.index')->with('success', sprintf('Данные страны #%s успешно обновлены.', $id));
@@ -171,7 +167,7 @@ final class AdminCountryController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteCountry = $this->countryService->processDestroy($id, $this->countryRepository);
+            $deleteCountry = $this->countryService->processDestroy(id: $id, repository: $this->countryRepository);
 
             if ($deleteCountry) {
                 return redirect()->route('admin.countries.index')->with('success', sprintf('Страна #%s успешно удалена.', $id));

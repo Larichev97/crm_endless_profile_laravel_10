@@ -34,7 +34,7 @@ final class ContactFormController extends Controller
         try {
             $contactFormStoreDTO = new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest);
 
-            $createContactForm = $this->contactFormService->processStore(contactFormStoreDTO: $contactFormStoreDTO, settingRepository: $this->settingRepository);
+            $createContactForm = $this->contactFormService->processStore(dto: $contactFormStoreDTO);
 
             if ($createContactForm) {
                 return response()->json(['success' => true, 'message' => 'Форма зворотного зв\'язку успішно створена.'], 201);

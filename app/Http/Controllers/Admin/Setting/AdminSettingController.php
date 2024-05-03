@@ -39,7 +39,7 @@ final class AdminSettingController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $settings = $this->settingRepository->getAllWithPaginate(10, (int) $request->get('page', 1), 'id', 'asc', true);
+            $settings = $this->settingRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc', useCache: true);
 
             return view('setting.index',compact('settings'));
         } catch (Exception $exception) {
@@ -66,9 +66,7 @@ final class AdminSettingController extends Controller
     public function store(SettingStoreRequest $settingStoreRequest): RedirectResponse|JsonResponse
     {
         try {
-            $settingStoreDTO = new SettingStoreDTO($settingStoreRequest);
-
-            $createSetting = $this->settingService->processStore($settingStoreDTO);
+            $createSetting = $this->settingService->processStore(dto: new SettingStoreDTO($settingStoreRequest));
 
             if ($createSetting) {
                 return redirect()->route('admin.settings.index')->with('success','Настройка успешно создана.');
@@ -89,7 +87,7 @@ final class AdminSettingController extends Controller
     public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $setting = $this->settingRepository->getForEditModel((int) $id, true);
+            $setting = $this->settingRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($setting)) {
                 abort(404);
@@ -110,7 +108,7 @@ final class AdminSettingController extends Controller
     public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
     {
         try {
-            $setting = $this->settingRepository->getForEditModel((int) $id, true);
+            $setting = $this->settingRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($setting)) {
                 abort(404);
@@ -132,9 +130,7 @@ final class AdminSettingController extends Controller
     public function update(SettingUpdateRequest $settingUpdateRequest, $id): RedirectResponse|JsonResponse
     {
         try {
-            $settingUpdateDTO = new SettingUpdateDTO($settingUpdateRequest, (int) $id);
-
-            $updateSetting = $this->settingService->processUpdate($settingUpdateDTO, $this->settingRepository);
+            $updateSetting = $this->settingService->processUpdate(dto: new SettingUpdateDTO(settingUpdateRequest: $settingUpdateRequest, id_setting: (int) $id), repository: $this->settingRepository);
 
             if ($updateSetting) {
                 return redirect()->route('admin.settings.index')->with('success', sprintf('Данные настройки #%s успешно обновлены.', $id));
@@ -155,7 +151,7 @@ final class AdminSettingController extends Controller
     public function destroy($id): RedirectResponse|JsonResponse
     {
         try {
-            $deleteSetting = $this->settingService->processDestroy($id, $this->settingRepository);
+            $deleteSetting = $this->settingService->processDestroy(id: $id, repository: $this->settingRepository);
 
             if ($deleteSetting) {
                 return redirect()->route('admin.settings.index')->with('success', sprintf('Настройка #%s успешно удалена.', $id));
