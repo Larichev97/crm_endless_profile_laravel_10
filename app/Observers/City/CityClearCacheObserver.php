@@ -17,10 +17,6 @@ class CityClearCacheObserver
     {
         Cache::forget($cityModel::class.'-getModelCollection');
         Cache::forget($cityModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($cityModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -34,10 +30,6 @@ class CityClearCacheObserver
         Cache::forget($cityModel::class.'-getModelCollection');
         Cache::forget($cityModel::class.'-getForEditModel-'.$cityModel->getKey());
         Cache::forget($cityModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($cityModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -51,9 +43,5 @@ class CityClearCacheObserver
         Cache::forget($cityModel::class.'-getModelCollection');
         Cache::forget($cityModel::class.'-getForEditModel-'.$cityModel->getKey());
         Cache::forget($cityModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($cityModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

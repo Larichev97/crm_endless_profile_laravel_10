@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
-class FilterTableService
+final class FilterTableService
 {
     /**
-     * @param array $allFieldsData
+     * @param array $allFieldsData Массив полей и их значения из {$request->all()}
      * @return array
      */
     public function processPrepareFilterFieldsArray(array $allFieldsData): array

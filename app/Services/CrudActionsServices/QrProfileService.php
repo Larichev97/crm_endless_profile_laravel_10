@@ -17,12 +17,13 @@ use App\Services\FileService;
 final readonly class QrProfileService implements CoreCrudActionsInterface
 {
     /**
-     * @param FileService $fileService
+     * @var FileService
      */
-    public function __construct(
-        private FileService $fileService
-    )
+    private FileService $fileService;
+
+    public function __construct()
     {
+        $this->fileService = new FileService();
     }
 
     /**

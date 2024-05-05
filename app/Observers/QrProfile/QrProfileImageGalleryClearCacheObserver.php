@@ -18,9 +18,5 @@ class QrProfileImageGalleryClearCacheObserver
         Cache::forget($qrProfileImageModel::class.'-getModelCollection');
         Cache::forget($qrProfileImageModel::class.'-getForEditModel-'.$qrProfileImageModel->getKey());
         Cache::forget($qrProfileImageModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($qrProfileImageModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

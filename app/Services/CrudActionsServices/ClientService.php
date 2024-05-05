@@ -16,14 +16,19 @@ use Illuminate\Http\Request;
 final readonly class ClientService implements CoreCrudActionsInterface
 {
     /**
-     * @param FileService $fileService
-     * @param ContactFormRepository $contactFormRepository
+     * @var FileService
      */
-    public function __construct(
-        private FileService $fileService,
-        private ContactFormRepository $contactFormRepository
-    )
+    private FileService $fileService;
+
+    /**
+     * @var ContactFormRepository
+     */
+    private ContactFormRepository $contactFormRepository;
+
+    public function __construct()
     {
+        $this->fileService = new FileService();
+        $this->contactFormRepository = new ContactFormRepository();
     }
 
     /**

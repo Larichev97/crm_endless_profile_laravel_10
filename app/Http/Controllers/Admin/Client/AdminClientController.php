@@ -61,7 +61,7 @@ final class AdminClientController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject(filterFieldsArray: $filterFieldsArray);
 
-            $clients = $this->clientRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, useCache: false, filterFieldsData: $filterFieldsArray);
+            $clients = $this->clientRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, filterFieldsData: $filterFieldsArray);
             $displayedFields = $this->clientRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ClientStatusEnum::getStatusesList();

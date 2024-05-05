@@ -45,7 +45,7 @@ final class AdminCountryController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $countries = $this->countryRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc', useCache: true);
+            $countries = $this->countryRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc');
 
             return view('country.index',compact('countries'));
         } catch (Exception $exception) {

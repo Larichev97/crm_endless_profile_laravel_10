@@ -17,10 +17,6 @@ class QrProfileClearCacheObserver
     {
         Cache::forget($qrProfileModel::class.'-getModelCollection');
         Cache::forget($qrProfileModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -34,10 +30,6 @@ class QrProfileClearCacheObserver
         Cache::forget($qrProfileModel::class.'-getModelCollection');
         Cache::forget($qrProfileModel::class.'-getForEditModel-'.$qrProfileModel->getKey());
         Cache::forget($qrProfileModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -51,9 +43,5 @@ class QrProfileClearCacheObserver
         Cache::forget($qrProfileModel::class.'-getModelCollection');
         Cache::forget($qrProfileModel::class.'-getForEditModel-'.$qrProfileModel->getKey());
         Cache::forget($qrProfileModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($qrProfileModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

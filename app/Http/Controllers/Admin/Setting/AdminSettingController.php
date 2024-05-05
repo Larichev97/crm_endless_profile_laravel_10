@@ -39,7 +39,7 @@ final class AdminSettingController extends Controller
     public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
     {
         try {
-            $settings = $this->settingRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc', useCache: true);
+            $settings = $this->settingRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc');
 
             return view('setting.index',compact('settings'));
         } catch (Exception $exception) {

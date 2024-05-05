@@ -17,10 +17,6 @@ class ContactFormClearCacheObserver
     {
         Cache::forget($contactFormModel::class.'-getModelCollection');
         Cache::forget($contactFormModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($contactFormModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -34,10 +30,6 @@ class ContactFormClearCacheObserver
         Cache::forget($contactFormModel::class.'-getModelCollection');
         Cache::forget($contactFormModel::class.'-getForEditModel-'.$contactFormModel->getKey());
         Cache::forget($contactFormModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($contactFormModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -51,9 +43,5 @@ class ContactFormClearCacheObserver
         Cache::forget($contactFormModel::class.'-getModelCollection');
         Cache::forget($contactFormModel::class.'-getForEditModel-'.$contactFormModel->getKey());
         Cache::forget($contactFormModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($contactFormModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

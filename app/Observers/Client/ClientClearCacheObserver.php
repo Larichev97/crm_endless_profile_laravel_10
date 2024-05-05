@@ -17,10 +17,6 @@ class ClientClearCacheObserver
     {
         Cache::forget($clientModel::class.'-getModelCollection');
         Cache::forget($clientModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($clientModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -34,10 +30,6 @@ class ClientClearCacheObserver
         Cache::forget($clientModel::class.'-getModelCollection');
         Cache::forget($clientModel::class.'-getForEditModel-'.$clientModel->getKey());
         Cache::forget($clientModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($clientModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -51,9 +43,5 @@ class ClientClearCacheObserver
         Cache::forget($clientModel::class.'-getModelCollection');
         Cache::forget($clientModel::class.'-getForEditModel-'.$clientModel->getKey());
         Cache::forget($clientModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($clientModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

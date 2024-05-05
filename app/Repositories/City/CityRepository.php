@@ -36,17 +36,18 @@ final class CityRepository extends CoreRepository
     }
 
     /**
+     *  [Override]
+     *
      * @param int|null $perPage
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param bool $useCache
      * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $useCache, $filterFieldsData);
+        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
     }
 
     /**
@@ -59,12 +60,14 @@ final class CityRepository extends CoreRepository
      */
     public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
+        $model = $this->startConditions();
+
         $columns = implode(', ', ['cities.'.$fieldId, 'cities.'.$fieldName, 'countries.name AS  country_name']);
 
         if ($useCache) {
             $result = Cache::remember($this->getModelClass().'-getForDropdownList', $this->cacheLife,
-                function () use($columns) {
-                    return $this->startConditions()->query()
+                function () use($model, $columns) {
+                    return $model->query()
                         ->selectRaw($columns)
                         ->join('countries', 'cities.id_country', '=', 'countries.id')
                         ->orderBy('cities.id_country', 'asc')
@@ -74,7 +77,7 @@ final class CityRepository extends CoreRepository
                 }
             );
         } else {
-            $result = $this->startConditions()->query()
+            $result = $model->query()
                 ->selectRaw($columns)
                 ->join('countries', 'cities.id_country', '=', 'countries.id')
                 ->orderBy('cities.id_country', 'asc')

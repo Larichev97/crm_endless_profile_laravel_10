@@ -78,12 +78,14 @@ abstract class CoreRepository implements CoreRepositoryInterface
      */
     public function getForEditModel(int $id, bool $useCache = true): mixed
     {
+        $model = $this->startConditions();
+
         if ($useCache) {
-            $result = Cache::remember($this->getModelClass().'-getForEditModel-'.$id, $this->cacheLife, function () use ($id) {
-                return $this->startConditions()->query()->find(id: $id);
+            $result = Cache::remember($this->getModelClass().'-getForEditModel-'.$id, $this->cacheLife, function () use ($model, $id) {
+                return $model->query()->find(id: $id);
             });
         } else {
-            $result = $this->startConditions()->query()->find(id: $id);
+            $result = $model->query()->find(id: $id);
         }
 
         return $result;
@@ -97,12 +99,14 @@ abstract class CoreRepository implements CoreRepositoryInterface
      */
     public function getModelCollection(bool $useCache = true): Collection
     {
+        $model = $this->startConditions();
+
         if ($useCache) {
-            $result = Cache::remember($this->getModelClass().'-getModelCollection', $this->cacheLife, function () {
-                return $this->startConditions()->all();
+            $result = Cache::remember($this->getModelClass().'-getModelCollection', $this->cacheLife, function () use ($model) {
+                return $model->all();
             });
         } else {
-            $result = $this->startConditions()->all();
+            $result = $model->all();
         }
 
         return $result;
@@ -115,46 +119,36 @@ abstract class CoreRepository implements CoreRepositoryInterface
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param bool $useCache
      * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', bool $useCache = true, array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
     {
         $model = $this->startConditions();
 
-        $fields_array = $model->getFillable();
+        $fieldsArray = $model->getFillable();
 
         /** @var Builder $query */
         $query = $model->query();
 
-        $query->select($fields_array);
+        $query->select(columns: $fieldsArray);
 
         $this->setCustomQueryFilters(query: $query, filterFieldsData: $filterFieldsData);
 
         $orderBy = strtolower($orderBy);
         $orderWay = strtolower($orderWay);
 
-        if ($orderBy !== 'id' && !in_array($orderBy, $fields_array)) {
+        if ($orderBy !== 'id' && !in_array($orderBy, $fieldsArray)) {
             $orderBy = 'id';
         }
 
-        if (!in_array(strtolower($orderWay), ['asc', 'desc'])) {
+        if (!in_array($orderWay, ['asc', 'desc'])) {
             $orderWay = 'desc';
         }
 
         $query->orderBy(column: $orderBy, direction: $orderWay);
 
-        // File или Redis кэширование не поддерживает тегирование:
-        if ($useCache && Cache::supportsTags()) {
-            $result = Cache::tags($this->getModelClass().'-getAllWithPaginate')->remember('page-'.$page.'-perPage-'.(int) $perPage, $this->cacheLife,
-                function () use($query, $fields_array, $perPage, $page) {
-                    return $query->paginate(perPage: $perPage, columns: $fields_array, pageName: 'page', page: $page);
-                }
-            );
-        } else {
-            $result = $query->paginate(perPage: $perPage, columns: $fields_array, pageName: 'page', page: $page);
-        }
+        $result = $query->paginate(perPage: $perPage, columns: $fieldsArray, pageName: 'page', page: $page);
 
         return $result;
     }
@@ -169,16 +163,18 @@ abstract class CoreRepository implements CoreRepositoryInterface
      */
     public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
+        $model = $this->startConditions();
+
         $columns = implode(', ', [$fieldId, $fieldName]);
 
         if ($useCache) {
             $result = Cache::remember($this->getModelClass().'-getForDropdownList', $this->cacheLife,
-                function () use($columns) {
-                    return $this->startConditions()->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
+                function () use($model, $columns) {
+                    return $model->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
                 }
             );
         } else {
-            $result = $this->startConditions()->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
+            $result = $model->query()->selectRaw(expression: $columns)->orderBy(column: 'id', direction: 'asc')->toBase()->get();
         }
 
         return $result;
@@ -207,10 +203,6 @@ abstract class CoreRepository implements CoreRepositoryInterface
     {
         Cache::forget($this->getModelClass().'-getModelCollection');
         Cache::forget($this->getModelClass().'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($this->getModelClass().'-getAllWithPaginate')->flush();
-        }
     }
 
     /**

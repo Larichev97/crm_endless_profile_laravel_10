@@ -2,22 +2,25 @@
 
 namespace App\Services\CrudActionsServices;
 
+use App\DataTransferObjects\ContactForm\ContactFormStoreDTO;
+use App\DataTransferObjects\ContactForm\ContactFormUpdateDTO;
 use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Models\ContactForm;
 use App\Repositories\CoreRepository;
 use App\Repositories\Setting\SettingRepository;
-use Carbon\Carbon;
 use DefStudio\Telegraph\Models\TelegraphChat;
+use Illuminate\Support\Facades\Pipeline;
 
 final readonly class ContactFormService implements CoreCrudActionsInterface
 {
     /**
-     * @param SettingRepository $settingRepository
+     * @var SettingRepository
      */
-    public function __construct(
-        private SettingRepository $settingRepository
-    )
+    private SettingRepository $settingRepository;
+
+    public function __construct()
     {
+        $this->settingRepository = new SettingRepository();
     }
 
     /**
@@ -28,23 +31,12 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
      */
     public function processStore(FormFieldsDtoInterface $dto): bool
     {
+        /** @var ContactFormStoreDTO $dto */
+
         $contactFormModel = ContactForm::query()->create(attributes: $dto->getFormFieldsArray());
 
-        if ($contactFormModel) {
-            $endlessProfileChannelId = $this->settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
-
-            // Отправка уведомления в Телеграм канал только из боевого окружения:
-            if (env('APP_ENV') == 'production' && !empty($endlessProfileChannelId) && class_exists('DefStudio\Telegraph\Models\TelegraphChat')) {
-                /** @var TelegraphChat $channelEndlessProfile */
-                $channelEndlessProfile = TelegraphChat::query()->where('chat_id', '=', $endlessProfileChannelId)->first();
-
-                if ($channelEndlessProfile) {
-                    /** @var ContactForm $contactFormModel */
-                    $htmlMessage = $this->processBuildTelegramHtmlMessage($contactFormModel);
-
-                    $channelEndlessProfile->message($htmlMessage)->send();
-                }
-            }
+        if ($contactFormModel instanceof ContactForm) {
+            $this->processSendContactFormInTelegramChannel($contactFormModel);
 
             return true;
         }
@@ -61,6 +53,8 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
      */
     public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): bool
     {
+        /** @var ContactFormUpdateDTO $dto */
+
         $contactFormModel = $repository->getForEditModel(id: (int) $dto->idContactForm, useCache: true);
 
         if (empty($contactFormModel)) {
@@ -102,14 +96,24 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
      */
     public function processSendContactFormInTelegramChannel(ContactForm $contactFormModel): void
     {
-        $endlessProfileChannelId = (string) $this->settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
+        $endlessProfileChannelId = $this->settingRepository->getSettingValueByName(name: 'TELEGRAM_CHANNEL_ID', useCache: true);
 
-        if (!empty($endlessProfileChannelId)) {
-            $htmlMessage = $this->processBuildTelegramHtmlMessage($contactFormModel);
-
-            /** @var TelegraphChat $channelEndlessProfile */
+        if (
+            env('APP_ENV') == 'production' &&
+            !empty($endlessProfileChannelId) &&
+            class_exists('DefStudio\Telegraph\Models\TelegraphChat')
+        ) {
             $channelEndlessProfile = TelegraphChat::query()->where('chat_id', '=', $endlessProfileChannelId)->first();
-            $channelEndlessProfile?->message($htmlMessage)->send();
+
+            if ($channelEndlessProfile) {
+                /** @var TelegraphChat $channelEndlessProfile */
+
+                $htmlMessage = $this->processBuildTelegramHtmlMessage($contactFormModel);
+
+                if (!empty($htmlMessage)) {
+                    $channelEndlessProfile->message($htmlMessage)->send();
+                }
+            }
         }
     }
 
@@ -121,36 +125,29 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
      */
     public function processBuildTelegramHtmlMessage(ContactForm $contactFormModel): string
     {
-        $contactFormId = (int) $contactFormModel->getKey();
+        $data = [
+            'contact_form_object' => $contactFormModel,
+            'message' => '',
+        ];
 
-        $message = "\n<b><a href=\"".route('admin.contact-forms.show', $contactFormId)."\">Новая заявка #".$contactFormId."</a></b>\n\n";
+        return Pipeline::send($data)
+            ->through([
+                \App\Services\Telegram\ContactFormMessagePipes\TitlePipe::class,
+                \App\Services\Telegram\ContactFormMessagePipes\ClientPhoneNumberPipe::class,
+                \App\Services\Telegram\ContactFormMessagePipes\ClientEmailPipe::class,
+                \App\Services\Telegram\ContactFormMessagePipes\ClientNamePipe::class,
+                \App\Services\Telegram\ContactFormMessagePipes\ClientCommentPipe::class,
+                \App\Services\Telegram\ContactFormMessagePipes\DateCreatePipe::class,
+            ])
+            ->then(function (array $data) {
+                $message = $data['message'];
 
-        if (!empty($contactFormModel->phone_number)) {
-            $message .= "Номер телефона: ". $contactFormModel->phone_number."\n\n";
-        }
+                if (is_string($message) && !empty($message)) {
+                    return $message;
+                }
 
-        if (!empty($contactFormModel->email)) {
-            $message .= "Email: ". $contactFormModel->email."\n\n";
-        }
-
-        if (!empty($contactFormModel->firstname)) {
-            $message .= "Имя : ". $contactFormModel->firstname."\n\n";
-        }
-
-        if (!empty($contactFormModel->lastname)) {
-            $message .= "Фамилия : ". $contactFormModel->lastname."\n\n";
-        }
-
-        $comment = strip_tags(trim($contactFormModel->comment));
-
-        if (!empty($comment)) {
-            $message .= "Комментарий : ". $comment."\n\n";
-        }
-
-        if (!empty($contactFormModel->created_at)) {
-            $message .= "Дата создания: ". Carbon::parse($contactFormModel->created_at)->format('d.m.Y H:i:s');
-        }
-
-        return $message;
+                return '';
+            })
+        ;
     }
 }

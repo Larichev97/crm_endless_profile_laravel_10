@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Repositories\Setting\SettingRepository;
 use App\Services\CrudActionsServices\QrProfileService;
-use App\Services\FileService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -36,9 +35,6 @@ class ProcessQrCodes extends Command
 
             if (!empty($qrProfileIds)) {
                 $qrProfileService = new QrProfileService();
-                $qrProfileRepository = new QrProfileRepository();
-                $settingRepository = new SettingRepository();
-                $fileService = new FileService();
 
                 $bar = $this->output->createProgressBar(count($qrProfileIds));
 
@@ -46,7 +42,7 @@ class ProcessQrCodes extends Command
 
                 // Применение функции processGenerateQrCode для каждого id
                 foreach ($qrProfileIds as $id) {
-                    $generateQrCode = $qrProfileService->processGenerateQrCode((int) $id, $qrProfileRepository, $settingRepository, $fileService);
+                    $generateQrCode = $qrProfileService->processGenerateQrCode((int) $id, new QrProfileRepository(), new SettingRepository());
 
                     if ($generateQrCode) {
                         $this->info(sprintf('The image for the QR code #%s has been successfully created.', (int) $id));

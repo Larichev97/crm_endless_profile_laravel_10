@@ -17,10 +17,6 @@ class CountryClearCacheObserver
     {
         Cache::forget($countryModel::class.'-getModelCollection');
         Cache::forget($countryModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -34,10 +30,6 @@ class CountryClearCacheObserver
         Cache::forget($countryModel::class.'-getModelCollection');
         Cache::forget($countryModel::class.'-getForEditModel-'.$countryModel->getKey());
         Cache::forget($countryModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 
     /**
@@ -51,9 +43,5 @@ class CountryClearCacheObserver
         Cache::forget($countryModel::class.'-getModelCollection');
         Cache::forget($countryModel::class.'-getForEditModel-'.$countryModel->getKey());
         Cache::forget($countryModel::class.'-getForDropdownList');
-
-        if (Cache::supportsTags()) {
-            Cache::tags($countryModel::class.'-getAllWithPaginate')->flush();
-        }
     }
 }

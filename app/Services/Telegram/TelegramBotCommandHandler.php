@@ -4,7 +4,7 @@ namespace App\Services\Telegram;
 
 use DefStudio\Telegraph\Handlers\WebhookHandler;
 
-class TelegramBotCommandHandler extends WebhookHandler
+final class TelegramBotCommandHandler extends WebhookHandler
 {
     /**
      *  Test command to Bot '/hello':
