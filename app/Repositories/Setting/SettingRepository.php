@@ -10,11 +10,6 @@ use Illuminate\Support\Facades\Cache;
 
 final class SettingRepository extends CoreRepository
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * App\Models\Setting
      *
@@ -32,12 +27,11 @@ final class SettingRepository extends CoreRepository
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
+        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay);
     }
 
     /**

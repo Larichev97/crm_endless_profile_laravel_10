@@ -7,32 +7,10 @@ use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Pipeline;
 
 final class QrProfileRepository extends CoreRepository
 {
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchDateFieldsArray = ['birth_date', 'death_date',];
-
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchLikeFieldsArray = ['name', 'firstname', 'lastname', 'surname',];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * App\Models\QrProfile
      *
@@ -50,12 +28,51 @@ final class QrProfileRepository extends CoreRepository
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
+        $model = $this->startConditions();
+
+        $fieldsArray = $model->getFillable();
+
+        /** @var Builder $query */
+        $query = $model->query();
+
+        $query->select(columns: $fieldsArray);
+
+        // Custom filters via Pipes:
+        Pipeline::send($query)
+            ->through([
+                \App\Services\ModelQueryFilters\ByIdFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByFirstnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByLastnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\BySurnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByDeathDateFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdCountryFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdClientFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByWithQrCodeFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdStatusFilterPipe::class,
+            ])
+            ->thenReturn()
+        ;
+
+        $orderBy = strtolower($orderBy);
+        $orderWay = strtolower($orderWay);
+
+        if ($orderBy !== 'id' && !in_array($orderBy, $fieldsArray)) {
+            $orderBy = 'id';
+        }
+
+        if (!in_array($orderWay, ['asc', 'desc'])) {
+            $orderWay = 'desc';
+        }
+
+        $query->orderBy(column: $orderBy, direction: $orderWay);
+
+        $result = $query->paginate(perPage: $perPage, columns: $fieldsArray, pageName: 'page', page: $page);
+
+        return $result;
     }
 
     /**
@@ -69,39 +86,6 @@ final class QrProfileRepository extends CoreRepository
     public function getForDropdownList(string $fieldId, string $fieldName, bool $useCache = true): Collection
     {
         return parent::getForDropdownList($fieldId, $fieldName, $useCache);
-    }
-
-    /**
-     *  [Override]
-     *
-     * @param Builder $query
-     * @param array $filterFieldsData
-     * @return Builder
-     */
-    protected function setCustomQueryFilters(Builder $query, array $filterFieldsData): Builder
-    {
-        if (!empty($filterFieldsData)) {
-            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
-                if (!empty($filterFieldValue)) {
-                    if ((string) $filterFieldName == 'with_qr_code') { // Есть "QR-Код":
-                        if ((int) $filterFieldValue == 1) { // "Да"
-                            $query->havingNotNull('qr_code_file_name');
-                        } else { // "2" (Нет)
-                            $query->orHavingNull('qr_code_file_name');
-                            $query->orHaving('qr_code_file_name', '=', '');
-                        }
-                    } elseif (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
-                        $query->whereDate((string) $filterFieldName, '=', (string) $filterFieldValue);
-                    } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
-                        $query->where((string) $filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
-                    } else {
-                        $query->where((string) $filterFieldName, '=', $filterFieldValue);
-                    }
-                }
-            }
-        }
-
-        return $query;
     }
 
     /**

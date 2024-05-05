@@ -54,7 +54,7 @@ final class AdminContactFormController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject(filterFieldsArray: $filterFieldsArray);
 
-            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, filterFieldsData: $filterFieldsArray);
+            $contactForms = $this->contactFormRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay);
             $displayedFields = $this->contactFormRepository->getDisplayedFieldsOnIndexPage();
 
             $statusesListData = ContactFormStatusEnum::getStatusesList();

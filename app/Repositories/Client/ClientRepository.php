@@ -5,24 +5,12 @@ namespace App\Repositories\Client;
 use App\Models\Client as Model;
 use App\Repositories\CoreRepository;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Pipeline;
 
 final class ClientRepository extends CoreRepository
 {
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'surname', 'email',];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * App\Models\Client
      *
@@ -40,12 +28,51 @@ final class ClientRepository extends CoreRepository
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
+        $model = $this->startConditions();
+
+        $fieldsArray = $model->getFillable();
+
+        /** @var Builder $query */
+        $query = $model->query();
+
+        $query->select(columns: $fieldsArray);
+
+        // Custom filters via Pipes:
+        Pipeline::send($query)
+            ->through([
+                \App\Services\ModelQueryFilters\ByIdFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByFirstnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByLastnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\BySurnameFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByEmailFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByPhoneNumberFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdCountryFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdCityFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdStatusFilterPipe::class,
+            ])
+            ->thenReturn()
+        ;
+
+        $orderBy = strtolower($orderBy);
+        $orderWay = strtolower($orderWay);
+
+        if ($orderBy !== 'id' && !in_array($orderBy, $fieldsArray)) {
+            $orderBy = 'id';
+        }
+
+        if (!in_array($orderWay, ['asc', 'desc'])) {
+            $orderWay = 'desc';
+        }
+
+        $query->orderBy(column: $orderBy, direction: $orderWay);
+
+        $result = $query->paginate(perPage: $perPage, columns: $fieldsArray, pageName: 'page', page: $page);
+
+        return $result;
     }
 
     /**

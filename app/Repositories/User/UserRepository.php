@@ -10,29 +10,6 @@ use Illuminate\Support\Collection;
 final class UserRepository extends CoreRepository
 {
     /**
-     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchDateFieldsArray = ['created_at', 'updated_at',];
-
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchLikeFieldsArray = ['firstname', 'lastname', 'email', 'about', 'address', 'username'];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * App\Models\User
      *
      * @return string
@@ -49,12 +26,11 @@ final class UserRepository extends CoreRepository
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
+        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay);
     }
 
     /**

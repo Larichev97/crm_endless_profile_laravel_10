@@ -29,20 +29,6 @@ abstract class CoreRepository implements CoreRepositoryInterface
     protected int $cacheLife = 30 * 24 * 60 * 60; // 30 дней * 24 часа * 60 минут * 60 секунд;
 
     /**
-     *  Список полей, у которых поиск в значениях выполняется по "DATE(field_name) = ..."
-     *
-     * @var array
-     */
-    protected array $searchDateFieldsArray = [];
-
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     * @var array
-     */
-    protected array $searchLikeFieldsArray = [];
-
-    /**
      * @var Model
      */
     protected Model $model;
@@ -119,10 +105,9 @@ abstract class CoreRepository implements CoreRepositoryInterface
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
         $model = $this->startConditions();
 
@@ -132,8 +117,6 @@ abstract class CoreRepository implements CoreRepositoryInterface
         $query = $model->query();
 
         $query->select(columns: $fieldsArray);
-
-        $this->setCustomQueryFilters(query: $query, filterFieldsData: $filterFieldsData);
 
         $orderBy = strtolower($orderBy);
         $orderWay = strtolower($orderWay);
@@ -203,31 +186,5 @@ abstract class CoreRepository implements CoreRepositoryInterface
     {
         Cache::forget($this->getModelClass().'-getModelCollection');
         Cache::forget($this->getModelClass().'-getForDropdownList');
-    }
-
-    /**
-     *  Метод добавляет к запросу дополнительные условия из массива {$filterFieldsData}
-     *
-     * @param Builder $query
-     * @param array $filterFieldsData
-     * @return Builder
-     */
-    protected function setCustomQueryFilters(Builder $query, array $filterFieldsData): Builder
-    {
-        if (!empty($filterFieldsData)) {
-            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
-                if (!empty($filterFieldValue)) {
-                    if (in_array((string) $filterFieldName, $this->searchDateFieldsArray)) {
-                        $query->whereDate(column: (string) $filterFieldName, operator: '=', value: (string) $filterFieldValue);
-                    } elseif (in_array((string) $filterFieldName, $this->searchLikeFieldsArray)) {
-                        $query->where(column: (string) $filterFieldName, operator: 'LIKE', value: '%'.$filterFieldValue.'%');
-                    } else {
-                        $query->where(column: (string) $filterFieldName, operator: '=', value: $filterFieldValue);
-                    }
-                }
-            }
-        }
-
-        return $query;
     }
 }

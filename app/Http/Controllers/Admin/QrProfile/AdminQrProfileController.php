@@ -68,7 +68,7 @@ final class AdminQrProfileController extends Controller
             $filterFieldsArray = $filterTableService->processPrepareFilterFieldsArray(allFieldsData: $request->all());
             $filterFieldsObject = $filterTableService->processConvertFilterFieldsToObject($filterFieldsArray);
 
-            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay, filterFieldsData: $filterFieldsArray);
+            $qrProfiles = $this->qrProfileRepository->getAllWithPaginate(perPage: 10, page: $page, orderBy: $sortBy, orderWay: $sortWay);
             $displayedFields = $this->qrProfileRepository->getDisplayedFieldsOnIndexPage();
 
             $clientsListData = $this->clientRepository->getForDropdownList(fieldId: 'id', fieldName: 'CONCAT(lastname, " ", firstname, " ", surname) AS name', useCache: true);

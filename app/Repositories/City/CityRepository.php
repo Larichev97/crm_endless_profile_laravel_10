@@ -8,23 +8,10 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Pipeline;
 
 final class CityRepository extends CoreRepository
 {
-    /**
-     *  Список полей, у которых поиск в значениях выполняется по "field_name LIKE %...%"
-     *
-     *  [Override]
-     *
-     * @var array|string[]
-     */
-    protected array $searchLikeFieldsArray = ['name',];
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      * App\Models\City
      *
@@ -42,12 +29,46 @@ final class CityRepository extends CoreRepository
      * @param int $page
      * @param string $orderBy
      * @param string $orderWay
-     * @param array $filterFieldsData
      * @return LengthAwarePaginator
      */
-    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc', array $filterFieldsData = []): LengthAwarePaginator
+    public function getAllWithPaginate(int|null $perPage, int $page, string $orderBy = 'id', string $orderWay = 'desc'): LengthAwarePaginator
     {
-        return parent::getAllWithPaginate($perPage, $page, $orderBy, $orderWay, $filterFieldsData);
+        $model = $this->startConditions();
+
+        $fieldsArray = $model->getFillable();
+
+        /** @var Builder $query */
+        $query = $model->query();
+
+        $query->select(columns: $fieldsArray);
+
+        // Custom filters via Pipes:
+        Pipeline::send($query)
+            ->through([
+                \App\Services\ModelQueryFilters\ByIdFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByNameFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIdCountryFilterPipe::class,
+                \App\Services\ModelQueryFilters\ByIsActiveFilterPipe::class
+            ])
+            ->thenReturn()
+        ;
+
+        $orderBy = strtolower($orderBy);
+        $orderWay = strtolower($orderWay);
+
+        if ($orderBy !== 'id' && !in_array($orderBy, $fieldsArray)) {
+            $orderBy = 'id';
+        }
+
+        if (!in_array($orderWay, ['asc', 'desc'])) {
+            $orderWay = 'desc';
+        }
+
+        $query->orderBy(column: $orderBy, direction: $orderWay);
+
+        $result = $query->paginate(perPage: $perPage, columns: $fieldsArray, pageName: 'page', page: $page);
+
+        return $result;
     }
 
     /**
@@ -87,42 +108,6 @@ final class CityRepository extends CoreRepository
         }
 
         return $result;
-    }
-
-    /**
-     *  [Override]
-     *
-     * @param Builder $query
-     * @param array $filterFieldsData
-     * @return Builder
-     */
-    protected function setCustomQueryFilters(Builder $query, array $filterFieldsData): Builder
-    {
-        if (!empty($filterFieldsData)) {
-            foreach ($filterFieldsData as $filterFieldName => $filterFieldValue) {
-                if (!empty($filterFieldValue)) {
-                    $filterFieldName = (string) $filterFieldName;
-
-                    if ($filterFieldName == 'is_active') {
-                        $realValue = 0;
-
-                        if ((int) $filterFieldValue == 1) { // "Да" (1)
-                            $realValue = 1;
-                        }
-
-                        $query->where($filterFieldName, '=', $realValue);
-                    } elseif (in_array($filterFieldName, $this->searchDateFieldsArray)) {
-                        $query->whereDate($filterFieldName, '=', (string) $filterFieldValue);
-                    } elseif (in_array($filterFieldName, $this->searchLikeFieldsArray)) {
-                        $query->where($filterFieldName, 'LIKE', '%'.$filterFieldValue.'%');
-                    } else {
-                        $query->where($filterFieldName, '=', $filterFieldValue);
-                    }
-                }
-            }
-        }
-
-        return $query;
     }
 
     /**

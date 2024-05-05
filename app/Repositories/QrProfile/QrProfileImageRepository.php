@@ -7,11 +7,6 @@ use App\Repositories\CoreRepository;
 
 final class QrProfileImageRepository extends CoreRepository
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     /**
      *  App\Models\QrProfileImage
      *
