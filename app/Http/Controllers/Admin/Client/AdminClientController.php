@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Client;
 use App\DataTransferObjects\Client\ClientStoreDTO;
 use App\DataTransferObjects\Client\ClientUpdateDTO;
 use App\Enums\ClientStatusEnum;
+use App\Exceptions\Client\ClientNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ClientStoreRequest;
 use App\Http\Requests\Client\ClientUpdateRequest;
@@ -19,7 +20,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -49,9 +49,9 @@ final class AdminClientController extends Controller
      *
      * @param Request $request
      * @param FilterTableService $filterTableService
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             $page = (int) $request->get(key: 'page', default: 1);
@@ -70,7 +70,7 @@ final class AdminClientController extends Controller
 
             return view('client.index', compact(['clients', 'displayedFields','filterFieldsObject', 'statusesListData', 'countriesListData', 'citiesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -96,9 +96,9 @@ final class AdminClientController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ClientStoreRequest $clientStoreRequest
-     * @return RedirectResponse|JsonResponse
+     * @return View|Factory|\Illuminate\Foundation\Application|Application|RedirectResponse
      */
-    public function store(ClientStoreRequest $clientStoreRequest): RedirectResponse|JsonResponse
+    public function store(ClientStoreRequest $clientStoreRequest): View|Factory|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $createClient = $this->clientService->processStore(dto: new ClientStoreDTO(clientStoreRequest: $clientStoreRequest));
@@ -109,7 +109,7 @@ final class AdminClientController extends Controller
 
             return back()->with('error','Ошибка! Клиент не создан.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -117,15 +117,15 @@ final class AdminClientController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $client = $this->clientRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($client)) {
-                abort(404);
+                throw new ClientNotFoundException(sprintf('Клиент #%s не найден.', $id));
             }
 
             /** @var Client $client */
@@ -134,7 +134,7 @@ final class AdminClientController extends Controller
 
             return view('client.show',compact(['client', 'clientPhotoPath']));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -142,15 +142,15 @@ final class AdminClientController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $client = $this->clientRepository->getForEditModel((int) $id, true);
 
             if (empty($client)) {
-                abort(404);
+                throw new ClientNotFoundException(sprintf('Клиент #%s не найден.', $id));
             }
 
             /** @var Client $client */
@@ -163,7 +163,7 @@ final class AdminClientController extends Controller
 
             return view('client.edit',compact(['client', 'clientPhotoPath', 'statusesListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -172,9 +172,9 @@ final class AdminClientController extends Controller
      *
      * @param ClientUpdateRequest $clientUpdateRequest
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return View|Factory|\Illuminate\Foundation\Application|Application|RedirectResponse
      */
-    public function update(ClientUpdateRequest $clientUpdateRequest, $id): RedirectResponse|JsonResponse
+    public function update(ClientUpdateRequest $clientUpdateRequest, $id): View|Factory|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $updateClient = $this->clientService->processUpdate(dto: new ClientUpdateDTO(clientStoreRequest: $clientUpdateRequest, id_client: (int) $id), repository: $this->clientRepository);
@@ -185,7 +185,7 @@ final class AdminClientController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Данные клиента #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -193,9 +193,9 @@ final class AdminClientController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return \Illuminate\Foundation\Application|Factory|View|RedirectResponse|Application
      */
-    public function destroy($id): RedirectResponse|JsonResponse
+    public function destroy($id): \Illuminate\Foundation\Application|Factory|View|RedirectResponse|Application
     {
         try {
             $deleteClient = $this->clientService->processDestroy(id: $id, repository: $this->clientRepository);
@@ -206,7 +206,7 @@ final class AdminClientController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Клиент #%s не удалён.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 }

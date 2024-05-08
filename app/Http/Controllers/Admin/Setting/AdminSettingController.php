@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Setting;
 
 use App\DataTransferObjects\Setting\SettingStoreDTO;
 use App\DataTransferObjects\Setting\SettingUpdateDTO;
+use App\Exceptions\Setting\SettingNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Setting\SettingStoreRequest;
 use App\Http\Requests\Setting\SettingUpdateRequest;
@@ -13,7 +14,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -34,16 +34,16 @@ final class AdminSettingController extends Controller
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             $settings = $this->settingRepository->getAllWithPaginate(perPage: 10, page: (int) $request->get('page', 1), orderBy: 'id', orderWay: 'asc');
 
             return view('setting.index',compact('settings'));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -61,9 +61,9 @@ final class AdminSettingController extends Controller
      * Store a newly created resource in storage.
      *
      * @param SettingStoreRequest $settingStoreRequest
-     * @return RedirectResponse|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
      */
-    public function store(SettingStoreRequest $settingStoreRequest): RedirectResponse|JsonResponse
+    public function store(SettingStoreRequest $settingStoreRequest): Factory|View|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $createSetting = $this->settingService->processStore(dto: new SettingStoreDTO($settingStoreRequest));
@@ -74,7 +74,7 @@ final class AdminSettingController extends Controller
 
             return back()->with('error','Ошибка! Настройка не создана.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -82,20 +82,20 @@ final class AdminSettingController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $setting = $this->settingRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($setting)) {
-                abort(404);
+                throw new SettingNotFoundException(sprintf('Настройка #%s не найдена.', $id));
             }
 
             return view('setting.show',compact(['setting',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -103,20 +103,20 @@ final class AdminSettingController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $setting = $this->settingRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($setting)) {
-                abort(404);
+                throw new SettingNotFoundException(sprintf('Настройка #%s не найдена.', $id));
             }
 
             return view('setting.edit',compact(['setting',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -125,9 +125,9 @@ final class AdminSettingController extends Controller
      *
      * @param SettingUpdateRequest $settingUpdateRequest
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
      */
-    public function update(SettingUpdateRequest $settingUpdateRequest, $id): RedirectResponse|JsonResponse
+    public function update(SettingUpdateRequest $settingUpdateRequest, $id): Factory|View|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $updateSetting = $this->settingService->processUpdate(dto: new SettingUpdateDTO(settingUpdateRequest: $settingUpdateRequest, id_setting: (int) $id), repository: $this->settingRepository);
@@ -138,7 +138,7 @@ final class AdminSettingController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Данные настройки #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -146,9 +146,9 @@ final class AdminSettingController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return \Illuminate\Foundation\Application|Factory|View|Application|RedirectResponse
      */
-    public function destroy($id): RedirectResponse|JsonResponse
+    public function destroy($id): \Illuminate\Foundation\Application|Factory|View|Application|RedirectResponse
     {
         try {
             $deleteSetting = $this->settingService->processDestroy(id: $id, repository: $this->settingRepository);
@@ -159,7 +159,7 @@ final class AdminSettingController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Настройка #%s не удалена.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 }

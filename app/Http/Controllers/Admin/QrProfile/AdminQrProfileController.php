@@ -6,6 +6,7 @@ use App\DataTransferObjects\QrProfile\QrProfileImageGalleryStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
 use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
 use App\Enums\QrStatusEnum;
+use App\Exceptions\QrProfile\QrProfileNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\QrProfile\QrProfileImageGalleryStoreRequest;
 use App\Http\Requests\QrProfile\QrProfileStoreRequest;
@@ -24,7 +25,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -56,9 +56,9 @@ final class AdminQrProfileController extends Controller
      *
      * @param Request $request
      * @param FilterTableService $filterTableService
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             $page = (int) $request->get('page', 1);
@@ -77,7 +77,7 @@ final class AdminQrProfileController extends Controller
 
             return view('qr_profile.index',compact(['qrProfiles', 'displayedFields', 'filterFieldsObject', 'clientsListData', 'statusesListData', 'countriesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -101,9 +101,9 @@ final class AdminQrProfileController extends Controller
      * Store a newly created resource in storage.
      *
      * @param QrProfileStoreRequest $qrProfileStoreRequest
-     * @return RedirectResponse|JsonResponse
+     * @return View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
      */
-    public function store(QrProfileStoreRequest $qrProfileStoreRequest): RedirectResponse|JsonResponse
+    public function store(QrProfileStoreRequest $qrProfileStoreRequest): View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
     {
         try {
             $createQrProfile = $this->qrProfileService->processStore(dto: new QrProfileStoreDTO($qrProfileStoreRequest));
@@ -114,7 +114,7 @@ final class AdminQrProfileController extends Controller
 
             return back()->with(key: 'error', value: 'Ошибка! QR-профиль не создан.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -122,15 +122,15 @@ final class AdminQrProfileController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $qrProfile = $this->qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($qrProfile)) {
-                abort(404);
+                throw new QrProfileNotFoundException(sprintf('QR-профиль #%s не найден.', $id));
             }
 
             /** @var QrProfile $qrProfile */
@@ -142,7 +142,7 @@ final class AdminQrProfileController extends Controller
 
             return view('qr_profile.show',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'qrCodePath']));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -150,15 +150,15 @@ final class AdminQrProfileController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $qrProfile = $this->qrProfileRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($qrProfile)) {
-                abort(404);
+                throw new QrProfileNotFoundException(sprintf('QR-профиль #%s не найден.', $id));
             }
 
             /** @var QrProfile $qrProfile */
@@ -174,7 +174,7 @@ final class AdminQrProfileController extends Controller
 
             return view('qr_profile.edit',compact(['qrProfile', 'photoPath', 'voiceMessagePath', 'statusesListData', 'clientsListData', 'countriesListData', 'citiesListData',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -183,9 +183,9 @@ final class AdminQrProfileController extends Controller
      *
      * @param QrProfileUpdateRequest $qrProfileUpdateRequest
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
      */
-    public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id): RedirectResponse|JsonResponse
+    public function update(QrProfileUpdateRequest $qrProfileUpdateRequest, $id): View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
     {
         try {
             $updateQrProfile = $this->qrProfileService->processUpdate(dto: new QrProfileUpdateDTO(qrProfileUpdateRequest: $qrProfileUpdateRequest, id_qr: (int) $id), repository: $this->qrProfileRepository);
@@ -196,7 +196,7 @@ final class AdminQrProfileController extends Controller
 
             return back()->with(key: 'error', value: 'Ошибка! Данные QR-профиля не обновлены.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -204,9 +204,9 @@ final class AdminQrProfileController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
      */
-    public function destroy($id): RedirectResponse|JsonResponse
+    public function destroy($id): Factory|View|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $deleteQrProfile = $this->qrProfileService->processDestroy(id: $id, repository: $this->qrProfileRepository);
@@ -217,15 +217,15 @@ final class AdminQrProfileController extends Controller
 
             return back()->with(key: 'error', value: sprintf('Ошибка! QR-профиль #%s не удалён.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
     /**
      * @param $id
-     * @return JsonResponse|RedirectResponse
+     * @return Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
      */
-    public function generateQrCodeImage($id): JsonResponse|RedirectResponse
+    public function generateQrCodeImage($id): Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
     {
         try {
             $generateQrCode = $this->qrProfileService->processGenerateQrCode(id: $id, qrProfileRepository: $this->qrProfileRepository, settingRepository: $this->settingRepository);
@@ -236,7 +236,7 @@ final class AdminQrProfileController extends Controller
 
             return redirect()->route('admin.qrs.show', $id)->with(key: 'error', value: sprintf('Ошибка! Изображение QR-кода для профиля #%s не создано.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -256,9 +256,9 @@ final class AdminQrProfileController extends Controller
      *
      * @param QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest
      * @param QrProfileImageRepository $qrProfileImageRepository
-     * @return RedirectResponse|JsonResponse
+     * @return View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
      */
-    public function storeGalleryImages(QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
+    public function storeGalleryImages(QrProfileImageGalleryStoreRequest $qrProfileImageGalleryStoreRequest, QrProfileImageRepository $qrProfileImageRepository): View|\Illuminate\Foundation\Application|Factory|Application|RedirectResponse
     {
         try {
             $qrProfileImageGalleryStoreDTO = new QrProfileImageGalleryStoreDTO($qrProfileImageGalleryStoreRequest);
@@ -271,7 +271,7 @@ final class AdminQrProfileController extends Controller
 
             return back()->with(key: 'error', value: 'Ошибка! Фотографии не добавлены в галерею QR-профиля.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -280,9 +280,9 @@ final class AdminQrProfileController extends Controller
      *
      * @param $id
      * @param QrProfileImageRepository $qrProfileImageRepository
-     * @return RedirectResponse|JsonResponse
+     * @return Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
      */
-    public function destroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): RedirectResponse|JsonResponse
+    public function destroyGalleryImage($id, QrProfileImageRepository $qrProfileImageRepository): Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
     {
         try {
             $idQrProfileDeletedGalleryImage = $this->qrProfileService->processDestroyGalleryImage(id: $id, qrProfileImageRepository: $qrProfileImageRepository);
@@ -293,7 +293,7 @@ final class AdminQrProfileController extends Controller
 
             return back()->with(key: 'error', value: 'Ошибка! Изображение не удалено из галереи QR-профиля');
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\ContactForm;
 use App\DataTransferObjects\ContactForm\ContactFormStoreDTO;
 use App\DataTransferObjects\ContactForm\ContactFormUpdateDTO;
 use App\Enums\ContactFormStatusEnum;
+use App\Exceptions\ContactForm\ContactFormNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ContactForm\ContactFormStoreRequest;
 use App\Http\Requests\ContactForm\ContactFormUpdateRequest;
@@ -17,7 +18,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -42,9 +42,9 @@ final class AdminContactFormController extends Controller
      * @param Request $request
      * @param FilterTableService $filterTableService
      * @param UserRepository $userRepository
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(Request $request, FilterTableService $filterTableService, UserRepository $userRepository): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService, UserRepository $userRepository): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             $page = (int) $request->get(key: 'page', default: 1);
@@ -62,7 +62,7 @@ final class AdminContactFormController extends Controller
 
             return view('contact_form.index',compact(['contactForms', 'displayedFields', 'filterFieldsObject', 'statusesListData', 'employeesListData', 'sortBy', 'sortWay',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -80,9 +80,9 @@ final class AdminContactFormController extends Controller
      * Store a newly created resource in storage.
      *
      * @param ContactFormStoreRequest $contactFormStoreRequest
-     * @return RedirectResponse|JsonResponse
+     * @return View|Factory|\Illuminate\Foundation\Application|RedirectResponse|Application
      */
-    public function store(ContactFormStoreRequest $contactFormStoreRequest): RedirectResponse|JsonResponse
+    public function store(ContactFormStoreRequest $contactFormStoreRequest): View|Factory|\Illuminate\Foundation\Application|RedirectResponse|Application
     {
         try {
             $createContactForm = $this->contactFormService->processStore(dto: new ContactFormStoreDTO(contactFormStoreRequest: $contactFormStoreRequest));
@@ -93,7 +93,7 @@ final class AdminContactFormController extends Controller
 
             return back()->with('error','Ошибка! Форма обратной связи не создана.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -101,20 +101,20 @@ final class AdminContactFormController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $contactForm = $this->contactFormRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($contactForm)) {
-                abort(404);
+                throw new ContactFormNotFoundException(sprintf('Заявка из формы обратной связи #%s не найдена.', $id));
             }
 
             return view('contact_form.show',compact(['contactForm',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -122,22 +122,22 @@ final class AdminContactFormController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $contactForm = $this->contactFormRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($contactForm)) {
-                abort(404);
+                throw new ContactFormNotFoundException(sprintf('Заявка из формы обратной связи #%s не найдена.', $id));
             }
 
             $statusesListData = ContactFormStatusEnum::getStatusesList();
 
             return view('contact_form.edit',compact(['contactForm', 'statusesListData',]));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -146,9 +146,9 @@ final class AdminContactFormController extends Controller
      *
      * @param ContactFormUpdateRequest $contactFormUpdateRequest
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return View|Factory|\Illuminate\Foundation\Application|RedirectResponse|Application
      */
-    public function update(ContactFormUpdateRequest $contactFormUpdateRequest, $id): RedirectResponse|JsonResponse
+    public function update(ContactFormUpdateRequest $contactFormUpdateRequest, $id): View|Factory|\Illuminate\Foundation\Application|RedirectResponse|Application
     {
         try {
             $updateContactForm = $this->contactFormService->processUpdate(dto: new ContactFormUpdateDTO(contactFormUpdateRequest: $contactFormUpdateRequest, idContactForm: (int) $id), repository: $this->contactFormRepository);
@@ -159,7 +159,7 @@ final class AdminContactFormController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Данные формы обратной связи #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -167,9 +167,9 @@ final class AdminContactFormController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return \Illuminate\Foundation\Application|View|Factory|Application|RedirectResponse
      */
-    public function destroy($id): RedirectResponse|JsonResponse
+    public function destroy($id): \Illuminate\Foundation\Application|View|Factory|Application|RedirectResponse
     {
         try {
             $deleteContactForm = $this->contactFormService->processDestroy(id: $id, repository: $this->contactFormRepository);
@@ -180,7 +180,7 @@ final class AdminContactFormController extends Controller
 
             return back()->with('error', sprintf('Ошибка! Форма обратной связи #%s не удалена.', $id));
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 }

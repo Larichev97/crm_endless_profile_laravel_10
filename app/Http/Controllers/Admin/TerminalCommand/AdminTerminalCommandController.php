@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Artisan;
 
@@ -16,14 +15,14 @@ class AdminTerminalCommandController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             return view('terminal_command.index');
         } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 

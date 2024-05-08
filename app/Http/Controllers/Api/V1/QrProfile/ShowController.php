@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\V1\QrProfile;
 
+use App\Exceptions\QrProfile\QrProfileNotFoundJsonException;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Api\V1\QrProfileResource;
 use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
-use Exception;
 use Illuminate\Http\JsonResponse;
 use OpenApi\Annotations as OA;
 
@@ -92,26 +92,23 @@ class ShowController extends Controller
      *
      * @param $id
      * @return QrProfileResource|JsonResponse
+     * @throws QrProfileNotFoundJsonException
      */
     public function show($id): QrProfileResource|JsonResponse
     {
-        try {
-            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+        $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
-            if (empty($qrProfile)) {
-                return response()->json(['error' => true, 'message' => 'QR Profile not found.', 'id' => (int) $id], 404);
-            }
-
-            /** @var QrProfile $qrProfile */
-            $publicDirPath = 'qr/'.$qrProfile->getKey();
-
-            $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
-            $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
-            $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
-
-            return new QrProfileResource($qrProfile);
-        } catch (Exception $exception) {
-            return response()->json(['error' => $exception->getMessage()], 401);
+        if (empty($qrProfile)) {
+            throw new QrProfileNotFoundJsonException();
         }
+
+        /** @var QrProfile $qrProfile */
+        $publicDirPath = 'qr/'.$qrProfile->getKey();
+
+        $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
+        $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
+        $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
+
+        return new QrProfileResource($qrProfile);
     }
 }

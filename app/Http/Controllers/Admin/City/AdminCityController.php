@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\City;
 
 use App\DataTransferObjects\City\CityStoreDTO;
 use App\DataTransferObjects\City\CityUpdateDTO;
+use App\Exceptions\City\CityNotFoundException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\City\CityStoreRequest;
 use App\Http\Requests\City\CityUpdateRequest;
@@ -15,7 +16,6 @@ use Exception;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -39,9 +39,9 @@ final class AdminCityController extends Controller
      *
      * @param Request $request
      * @param FilterTableService $filterTableService
-     * @return \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+     * @return \Illuminate\Foundation\Application|View|Factory|Application
      */
-    public function index(Request $request, FilterTableService $filterTableService,): \Illuminate\Foundation\Application|View|Factory|JsonResponse|Application
+    public function index(Request $request, FilterTableService $filterTableService,): \Illuminate\Foundation\Application|View|Factory|Application
     {
         try {
             $page = (int) $request->get(key: 'page', default: 1);
@@ -58,7 +58,7 @@ final class AdminCityController extends Controller
 
             return view(view: 'city.index', data: compact(['cities', 'displayedFields', 'filterFieldsObject', 'sortBy', 'sortWay', 'countriesListData',]));
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -78,9 +78,9 @@ final class AdminCityController extends Controller
      * Store a newly created resource in storage.
      *
      * @param CityStoreRequest $cityStoreRequest
-     * @return RedirectResponse|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application|RedirectResponse
      */
-    public function store(CityStoreRequest $cityStoreRequest): RedirectResponse|JsonResponse
+    public function store(CityStoreRequest $cityStoreRequest): Factory|View|\Illuminate\Foundation\Application|Application|RedirectResponse
     {
         try {
             $createCity = $this->cityService->processStore(dto: new CityStoreDTO(cityStoreRequest: $cityStoreRequest));
@@ -91,7 +91,7 @@ final class AdminCityController extends Controller
 
             return back()->with(key: 'error', value: 'Ошибка! Город не создан.')->withInput();
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -99,20 +99,20 @@ final class AdminCityController extends Controller
      * Display the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function show($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $city = $this->cityRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($city)) {
-                abort(code: 404);
+                throw new CityNotFoundException(sprintf('Город #%s не найден.', $id));
             }
 
             return view(view: 'city.show', data: compact(['city',]));
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -120,22 +120,22 @@ final class AdminCityController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param $id
-     * @return Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+     * @return Application|Factory|View|\Illuminate\Foundation\Application
      */
-    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application|JsonResponse
+    public function edit($id): Application|Factory|View|\Illuminate\Foundation\Application
     {
         try {
             $city = $this->cityRepository->getForEditModel(id: (int) $id, useCache: true);
 
             if (empty($city)) {
-                abort(code: 404);
+                throw new CityNotFoundException(sprintf('City #%s not found.', $id));
             }
 
             $countriesListData = $this->countryRepository->getForDropdownList(fieldId: 'id', fieldName: 'name', useCache: true);
 
             return view(view: 'city.edit', data: compact(['city', 'countriesListData',]));
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -144,9 +144,9 @@ final class AdminCityController extends Controller
      *
      * @param CityUpdateRequest $cityUpdateRequest
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
      */
-    public function update(CityUpdateRequest $cityUpdateRequest, $id): RedirectResponse|JsonResponse
+    public function update(CityUpdateRequest $cityUpdateRequest, $id): Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
     {
         try {
             $updateCity = $this->cityService->processUpdate(dto: new CityUpdateDTO(cityUpdateRequest: $cityUpdateRequest, id_city: (int) $id), repository: $this->cityRepository);
@@ -157,7 +157,7 @@ final class AdminCityController extends Controller
 
             return back()->with(key: 'error', value: sprintf('Ошибка! Данные города #%s не обновлены.', $id))->withInput();
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 
@@ -165,9 +165,9 @@ final class AdminCityController extends Controller
      * Remove the specified resource from storage.
      *
      * @param $id
-     * @return RedirectResponse|JsonResponse
+     * @return Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
      */
-    public function destroy($id): RedirectResponse|JsonResponse
+    public function destroy($id): Factory|\Illuminate\Foundation\Application|View|Application|RedirectResponse
     {
         try {
             $deleteCity = $this->cityService->processDestroy(id: $id, repository: $this->cityRepository);
@@ -178,7 +178,7 @@ final class AdminCityController extends Controller
 
             return back()->with(key: 'error', value: sprintf('Ошибка! Город #%s не удален.', $id));
         } catch (Exception $exception) {
-            return response()->json(data: ['error' => $exception->getMessage()], status: 401);
+            return view(view: 'pages.exception', data: ['error_message' => $exception->getMessage(), 'error_code' => $exception->getCode()]);
         }
     }
 }
