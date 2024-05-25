@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 /**
  * @OA\Post(
  *     path="/api/v1/qrs",
- *     summary="Создание нового QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
+ *     summary="Создание нового QR-профиля (необходим Bearer Token)",
  *     tags={"QR Profile"},
  *     @OA\RequestBody(
  *         required=true,
@@ -93,7 +93,7 @@ use Symfony\Component\HttpFoundation\Response;
  *         description="Невалидные данные",
  *         @OA\JsonContent(
  *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Unable to create a Qr Profile due to incorrect data"),
+ *             @OA\Property(property="message", type="string", example="Unable to create a Qr Profile due to incorrect data."),
  *         ),
  *     ),
  *     @OA\Response(
@@ -101,7 +101,7 @@ use Symfony\Component\HttpFoundation\Response;
  *         description="Внутренняя ошибка сервера",
  *         @OA\JsonContent(
  *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Something went wrong"),
+ *             @OA\Property(property="message", type="string", example="Something went wrong."),
  *         ),
  *     ),
  *     security={{"bearerAuth":{}}}
@@ -145,11 +145,11 @@ class StoreController extends Controller
                 return $qrProfileJsonResource->response()->setStatusCode(Response::HTTP_CREATED);
             }
 
-            return response()->json(data: ['error' => true, 'message' => __('Unable to create a Qr Profile due to incorrect data'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(data: ['error' => true, 'message' => __('Unable to create a Qr Profile due to incorrect data.'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $exception) {
             Log::error('File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
 
-            return response()->json(data: ['error' => true, 'message' => __('Something went wrong')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(data: ['error' => true, 'message' => __('Something went wrong.')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

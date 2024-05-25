@@ -180,14 +180,34 @@
                                 }
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
                     }
                 }
             },
-            "put": {
+            "post": {
                 "tags": [
                     "QR Profile"
                 ],
-                "summary": "Обновление существующего QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
+                "summary": "Обновление существующего QR-профиля (необходим Bearer Token)",
                 "operationId": "32726c4b62554950fdb86d5335083464",
                 "parameters": [
                     {
@@ -473,7 +493,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Unable to update a Qr Profile due to incorrect data"
+                                            "example": "Unable to update a Qr Profile due to incorrect data."
                                         }
                                     },
                                     "type": "object"
@@ -493,7 +513,130 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Something went wrong"
+                                            "example": "Something went wrong."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "QR Profile"
+                ],
+                "summary": "Удаление существующего QR-профиля (необходим Bearer Token)",
+                "operationId": "02a5305bd5daf65fd754218b4163755c",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID QR-профиля",
+                        "required": true,
+                        "example": 1
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "QR-профиль успешно удалён",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "integer",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "QR Profile deleted successfully."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неавторизованный",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found 404",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "QR Profile not found."
+                                        },
+                                        "id": {
+                                            "type": "integer",
+                                            "example": "1"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Невалидные данные",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unable to delete a Qr Profile due to incorrect data."
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "error": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Something went wrong."
                                         }
                                     },
                                     "type": "object"
@@ -514,7 +657,7 @@
                 "tags": [
                     "QR Profile"
                 ],
-                "summary": "Создание нового QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
+                "summary": "Создание нового QR-профиля (необходим Bearer Token)",
                 "operationId": "f88c82aa17aa03a3d7bf31f72a17533f",
                 "requestBody": {
                     "required": true,
@@ -775,7 +918,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Unable to create a Qr Profile due to incorrect data"
+                                            "example": "Unable to create a Qr Profile due to incorrect data."
                                         }
                                     },
                                     "type": "object"
@@ -795,7 +938,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Something went wrong"
+                                            "example": "Something went wrong."
                                         }
                                     },
                                     "type": "object"

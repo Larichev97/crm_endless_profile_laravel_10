@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\QrProfile\DeleteController;
 use App\Http\Controllers\Api\V1\QrProfile\ShowController;
 use App\Http\Controllers\Api\V1\QrProfile\UpdateController;
 use App\Http\Controllers\Api\V1\QrProfile\StoreController;
@@ -20,8 +21,11 @@ Route::prefix('qrs')->group(function () {
     // Получение данных конкретного QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
     Route::get('/{id}', [ShowController::class, 'show'])->name('api.qrs.show');
 
-    // Обновление данных у конкретного QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
-    Route::put('/{id}', [UpdateController::class, 'update'])->name('api.qrs.update')->middleware('auth.api.token');
+    // Обновление данных у конкретного QR-профиля (POST вместо PUT из-за возможной загрузки Файлов) [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
+    Route::post('/{id}', [UpdateController::class, 'update'])->name('api.qrs.update')->middleware('auth.api.token');
+
+    // Удаление (скрытие) конкретного QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
+    Route::delete('/{id}', [DeleteController::class, 'destroy'])->name('api.qrs.destroy')->middleware('auth.api.token');
 
     // Создание нового QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs]:
     Route::post('/', [StoreController::class, 'store'])->name('api.qrs.store')->middleware('auth.api.token');

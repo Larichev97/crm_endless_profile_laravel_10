@@ -1,0 +1,100 @@
+<?php
+
+namespace App\Http\Controllers\Api\V1\QrProfile;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\QrProfile\QrProfileRepository;
+use App\Services\CrudActionsServices\Api\QrProfileApiService;
+use Exception;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
+use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\Response;
+
+/**
+ * @OA\Delete(
+ *     path="/api/v1/qrs/{id}",
+ *     summary="Удаление существующего QR-профиля (необходим Bearer Token)",
+ *     tags={"QR Profile"},
+ *     @OA\Parameter(description="ID QR-профиля", in="path", name="id", required=true, example=1),
+ *     @OA\Response(
+ *         response="204",
+ *         description="QR-профиль успешно удалён",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="integer", example=false),
+ *             @OA\Property(property="message", type="string", example="QR Profile deleted successfully."),
+ *         ),
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Неавторизованный",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="message", type="string", example="Unauthenticated."),
+ *         ),
+ *     ),
+ *     @OA\Response(
+ *         response=404,
+ *         description="Not Found 404",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="QR Profile not found."),
+ *             @OA\Property(property="id", type="integer", example="1"),
+ *         ),
+ *     ),
+ *     @OA\Response(
+ *         response=422,
+ *         description="Невалидные данные",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="Unable to delete a Qr Profile due to incorrect data."),
+ *         ),
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Внутренняя ошибка сервера",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="Something went wrong."),
+ *         ),
+ *     ),
+ *     security={{"bearerAuth":{}}}
+ * ),
+ */
+class DeleteController extends Controller
+{
+    /**
+     * @param QrProfileApiService $qrProfileApiService
+     * @param QrProfileRepository $qrProfileRepository
+     */
+    public function __construct(
+        readonly QrProfileApiService $qrProfileApiService,
+        readonly QrProfileRepository $qrProfileRepository
+    )
+    {
+    }
+
+    /**
+     *  Remove the specified resource from storage.
+     *
+     * @param $id
+     * @return JsonResponse
+     */
+    public function destroy($id): JsonResponse
+    {
+        try {
+            if (is_numeric($id)) {
+                $deleteProduct = $this->qrProfileApiService->processDestroy(id: (int) $id, repository: $this->qrProfileRepository);
+
+                if ($deleteProduct) {
+                    return response()->json(data: ['error' => false, 'message' => __('QR Profile deleted successfully.'),], status: Response::HTTP_NO_CONTENT);
+                }
+            }
+
+            return response()->json(data: ['error' => true, 'message' => __('Unable to delete a QR Profile due to incorrect data.'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (Exception $exception) {
+            Log::error('File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
+
+            return response()->json(data: ['error' => true, 'message' => __('Something went wrong.')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+}

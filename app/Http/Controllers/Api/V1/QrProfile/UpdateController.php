@@ -17,9 +17,9 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @OA\Put(
+ * @OA\Post(
  *     path="/api/v1/qrs/{id}",
- *     summary="Обновление существующего QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
+ *     summary="Обновление существующего QR-профиля (необходим Bearer Token)",
  *     tags={"QR Profile"},
  *     @OA\Parameter(description="ID QR-профиля", in="path", name="id", required=true, example=3),
  *     @OA\RequestBody(
@@ -102,7 +102,7 @@ use Symfony\Component\HttpFoundation\Response;
  *         description="Невалидные данные",
  *         @OA\JsonContent(
  *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Unable to update a Qr Profile due to incorrect data"),
+ *             @OA\Property(property="message", type="string", example="Unable to update a Qr Profile due to incorrect data."),
  *         ),
  *     ),
  *     @OA\Response(
@@ -110,7 +110,7 @@ use Symfony\Component\HttpFoundation\Response;
  *         description="Внутренняя ошибка сервера",
  *         @OA\JsonContent(
  *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Something went wrong"),
+ *             @OA\Property(property="message", type="string", example="Something went wrong."),
  *         ),
  *     ),
  *     security={{"bearerAuth":{}}}
@@ -155,11 +155,11 @@ class UpdateController extends Controller
                 return $qrProfileJsonResource->response()->setStatusCode(code: Response::HTTP_OK);
             }
 
-            return response()->json(data: ['error' => true, 'message' => __('Unable to update a Qr Profile due to incorrect data'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(data: ['error' => true, 'message' => __('Unable to update a Qr Profile due to incorrect data.'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $exception) {
             Log::error(message: 'File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
 
-            return response()->json(data: ['error' => true, 'message' => __('Something went wrong')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
+            return response()->json(data: ['error' => true, 'message' => __('Something went wrong.')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

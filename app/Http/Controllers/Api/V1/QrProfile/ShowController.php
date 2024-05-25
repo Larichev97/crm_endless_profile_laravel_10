@@ -9,8 +9,11 @@ use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
 use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
+use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @OA\Get(
@@ -68,7 +71,15 @@ use OpenApi\Annotations as OA;
  *             @OA\Property(property="message", type="string", example="QR Profile not found."),
  *             @OA\Property(property="id", type="integer", example="1"),
  *         ),
- *     )
+ *     ),
+ *     @OA\Response(
+ *         response=500,
+ *         description="Внутренняя ошибка сервера",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="Something went wrong."),
+ *         ),
+ *      ),
  * ),
  */
 class ShowController extends Controller
@@ -95,19 +106,27 @@ class ShowController extends Controller
      */
     public function show($id): QrProfileResource|JsonResponse
     {
-        $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
+        try {
+            $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
 
-        if (empty($qrProfile)) {
-            throw new QrProfileNotFoundJsonException();
+            if (empty($qrProfile)) {
+                throw new QrProfileNotFoundJsonException();
+            }
+
+            /** @var QrProfile $qrProfile */
+            $publicDirPath = 'qr/'.$qrProfile->getKey();
+
+            $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
+            $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
+            $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
+
+            $qrProfileJsonResource = new QrProfileResource($qrProfile);
+
+            return $qrProfileJsonResource->response()->setStatusCode(Response::HTTP_OK);
+        } catch (Exception $exception) {
+            Log::error('File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
+
+            return response()->json(data: ['error' => true, 'message' => __('Something went wrong.')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        /** @var QrProfile $qrProfile */
-        $publicDirPath = 'qr/'.$qrProfile->getKey();
-
-        $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
-        $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
-        $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
-
-        return new QrProfileResource($qrProfile);
     }
 }
