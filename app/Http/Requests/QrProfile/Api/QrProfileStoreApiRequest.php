@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests\QrProfile;
+namespace App\Http\Requests\QrProfile\Api;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-final class QrProfileStoreRequest extends FormRequest
+final class QrProfileStoreApiRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,7 +23,6 @@ final class QrProfileStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_status' => 'required|min:1|integer',
             'id_client' => 'required|min:1|integer',
             'id_country' => 'required|min:1|integer',
             'id_city' => 'required|min:1|integer',
@@ -38,17 +37,13 @@ final class QrProfileStoreRequest extends FormRequest
             'biography' => 'nullable|string',
             'last_wish' => 'nullable|string|max:255',
             'favourite_music_artist' => 'nullable|string|max:255',
-            'link' => 'nullable|string|max:255|url:http,https',
+            'link' => 'nullable|string|max:255|url:https',
             'geo_latitude' => 'nullable|string|max:255',
             'geo_longitude' => 'nullable|string|max:255',
-            'photo_file_name' => 'nullable|string|max:255',
             'photo_file' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:2048',
-            'voice_message_file_name' => 'nullable|string|max:255',
-            'voice_message_file' => 'nullable|mimes:mp3,wav,ogg,flac|max:10240',
-            'qr_code_file_name' => 'nullable|string|max:255',
-            'id_user_add' => 'required|min:1|integer',
-            'id_user_update' => 'required|min:0|integer',
-            'gallery_photos.*' => 'nullable|image|mimes:jpg,jpeg,png,heic,heif|max:4048',
+            'voice_message_file' => 'nullable||mimes:mp3,wav,ogg,flac|max:10240',
+            'id_user_add' => 'nullable|min:1|integer',
+            'id_user_update' => 'nullable|min:1|integer',
         ];
     }
 
@@ -58,9 +53,11 @@ final class QrProfileStoreRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'gallery_photos.*.image' => 'Каждый файл в поле :attribute должен быть изображением',
-            'gallery_photos.*.mimes' => 'Каждый файл в поле :attribute должен быть одним из следующих форматов: jpg, jpeg, png, heic, heif',
-            'gallery_photos.*.max' => 'Каждый файл в поле :attribute не должен превышать размер 4 МБ',
+            'photo_file.image' => __('Файл в поле :attribute должен быть изображением'),
+            'photo_file.mimes' => __('Файл в поле :attribute должен быть одним из следующих форматов: jpg, jpeg, png, heic, heif'),
+            'photo_file.max' => __('Файл в поле :attribute не должен превышать размер 4 МБ'),
+            'voice_message_file.mimes' => __('Файл в поле :attribute должен быть одним из следующих форматов: mp3, wav, ogg, flac'),
+            'voice_message_file.max' => __('Файл в поле :attribute не должен превышать размер 10 МБ'),
         ];
     }
 }

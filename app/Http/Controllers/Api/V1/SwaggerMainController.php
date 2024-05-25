@@ -10,6 +10,11 @@ use OpenApi\Annotations as OA;
  *     title="Endless Profile API documentation",
  *     version="1.0.0"
  * ),
+ * @OAS\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer"
+ * )
  * @OA\PathItem(
  *     path="/api/v1/"
  * )

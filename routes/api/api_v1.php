@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\QrProfile\ShowController;
+use App\Http\Controllers\Api\V1\QrProfile\StoreController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('qrs')->group(function () {
-    // http://crm-qr-laravel.loc/api/v1/qrs/1
-    Route::get('/{id}', [ShowController::class, 'show'])->name('show');
+    // https://crm-qr-laravel.loc/api/v1/qrs/1:
+    Route::get('/{id}', [ShowController::class, 'show'])->name('api.qrs.show');
+
+    // https://crm-qr-laravel.loc/api/v1/qrs:
+    Route::post('/', [StoreController::class, 'store'])->name('api.qrs.store')->middleware('auth.api.token');
 });

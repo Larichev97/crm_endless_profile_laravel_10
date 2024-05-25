@@ -57,4 +57,13 @@ enum QrStatusEnum: int
             ['id' => QrStatusEnum::WRONG_URL->value, 'name' => QrStatusEnum::WRONG_URL->getStatusName()],
         ];
     }
+
+    /**
+     * @param int $value
+     * @return bool
+     */
+    public static function isValidStatus(int $value): bool
+    {
+        return in_array($value, array_column(self::cases(), 'value'), true);
+    }
 }
