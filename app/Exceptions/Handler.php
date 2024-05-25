@@ -2,11 +2,23 @@
 
 namespace App\Exceptions;
 
+use App\Exceptions\QrProfile\QrProfileNotFoundJsonException;
+use App\Exceptions\QrProfile\QrProfileUpdatedWithAnotherClientJsonException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Http\Request;
 use Throwable;
 
 class Handler extends ExceptionHandler
 {
+    /**
+     * A list of the exception types that are not reported.
+     *
+     * @var array
+     */
+    protected $dontReport = [
+        //
+    ];
+
     /**
      * The list of the inputs that are never flashed to the session on validation exceptions.
      *
@@ -26,5 +38,16 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // *** Custom exceptions for QrProfile Entity (API):
+        $this->renderable(function (QrProfileNotFoundJsonException $e, Request $request) {
+            return $e->render($request);
+        });
+
+        $this->renderable(function (QrProfileUpdatedWithAnotherClientJsonException $e, Request $request) {
+            return $e->render($request);
+        });
+        // ***
+
     }
 }

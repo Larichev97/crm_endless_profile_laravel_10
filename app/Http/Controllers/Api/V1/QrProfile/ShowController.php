@@ -11,6 +11,7 @@ use App\Services\CrudActionsServices\QrProfileService;
 use App\Services\FileService;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
@@ -100,11 +101,11 @@ class ShowController extends Controller
     /**
      *  Display the specified resource.
      *
+     * @param Request $request
      * @param $id
      * @return QrProfileResource|JsonResponse
-     * @throws QrProfileNotFoundJsonException
      */
-    public function show($id): QrProfileResource|JsonResponse
+    public function show(Request $request, $id): QrProfileResource|JsonResponse
     {
         try {
             $qrProfile = $this->qrProfileRepository->getForEditModel((int) $id, true);
@@ -123,6 +124,8 @@ class ShowController extends Controller
             $qrProfileJsonResource = new QrProfileResource($qrProfile);
 
             return $qrProfileJsonResource->response()->setStatusCode(Response::HTTP_OK);
+        } catch (QrProfileNotFoundJsonException $exception) {
+            return $exception->render($request);
         } catch (Exception $exception) {
             Log::error('File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
 

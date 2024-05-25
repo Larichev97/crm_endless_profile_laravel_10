@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\V1\QrProfile;
 
+use App\Exceptions\QrProfile\QrProfileNotFoundJsonException;
+use App\Exceptions\QrProfile\QrProfileUpdatedWithAnotherClientJsonException;
 use App\Http\Controllers\Controller;
 use App\DataTransferObjects\QrProfile\Api\QrProfileUpdateApiDTO;
 use App\Http\Requests\QrProfile\Api\QrProfileUpdateApiRequest;
@@ -15,6 +17,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
+use function Termwind\render;
 
 /**
  * @OA\Post(
@@ -156,6 +159,8 @@ class UpdateController extends Controller
             }
 
             return response()->json(data: ['error' => true, 'message' => __('Unable to update a Qr Profile due to incorrect data.'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+        } catch (QrProfileNotFoundJsonException|QrProfileUpdatedWithAnotherClientJsonException $exception) {
+            return $exception->render($qrProfileUpdateApiRequest);
         } catch (Exception $exception) {
             Log::error(message: 'File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
 
