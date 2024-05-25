@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\QrProfile\ShowController;
+use App\Http\Controllers\Api\V1\QrProfile\UpdateController;
 use App\Http\Controllers\Api\V1\QrProfile\StoreController;
 use Illuminate\Support\Facades\Route;
 
@@ -16,9 +17,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::prefix('qrs')->group(function () {
-    // https://crm-qr-laravel.loc/api/v1/qrs/1:
+    // Получение данных конкретного QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
     Route::get('/{id}', [ShowController::class, 'show'])->name('api.qrs.show');
 
-    // https://crm-qr-laravel.loc/api/v1/qrs:
+    // Обновление данных у конкретного QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs/:id]:
+    Route::put('/{id}', [UpdateController::class, 'update'])->name('api.qrs.update')->middleware('auth.api.token');
+
+    // Создание нового QR-профиля [https://crm-qr-laravel.loc/api/v1/qrs]:
     Route::post('/', [StoreController::class, 'store'])->name('api.qrs.store')->middleware('auth.api.token');
 });

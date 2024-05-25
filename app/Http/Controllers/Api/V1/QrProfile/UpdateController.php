@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1\QrProfile;
 
-use App\DataTransferObjects\QrProfile\Api\QrProfileStoreApiDTO;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\QrProfile\Api\QrProfileStoreApiRequest;
+use App\DataTransferObjects\QrProfile\Api\QrProfileUpdateApiDTO;
+use App\Http\Requests\QrProfile\Api\QrProfileUpdateApiRequest;
 use App\Http\Resources\Api\V1\QrProfileResource;
 use App\Models\QrProfile;
 use App\Repositories\QrProfile\QrProfileRepository;
@@ -17,17 +17,18 @@ use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * @OA\Post(
- *     path="/api/v1/qrs",
- *     summary="Создание нового QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
+ * @OA\Put(
+ *     path="/api/v1/qrs/{id}",
+ *     summary="Обновление существующего QR-профиля (необходим Bearer Token: a1b2c3d4e5f6g7h8i9j0)",
  *     tags={"QR Profile"},
+ *     @OA\Parameter(description="ID QR-профиля", in="path", name="id", required=true, example=3),
  *     @OA\RequestBody(
  *         required=true,
  *         @OA\MediaType(
  *             mediaType="multipart/form-data",
  *             @OA\Schema(
- *                 required={"id_client", "id_country", "id_city", "firstname", "lastname"},
- *                 @OA\Property(property="id_client", type="integer", example=1, description="ID клиента, с которым будет связан QR-профиль человека"),
+ *                 required={"id_client"},
+ *                 @OA\Property(property="id_client", type="integer", example=1, description="ID клиента, с которым связан QR-профиль человека"),
  *                 @OA\Property(property="id_country", type="integer", example=1, description="ID страны, в которой был рождён человек из QR-профиля"),
  *                 @OA\Property(property="id_city", type="integer", example=1, description="ID города, в котором был рождён человек из QR-профиля"),
  *                 @OA\Property(property="firstname", type="string", example="Мария", description="Имя человека из QR-профиля"),
@@ -50,8 +51,8 @@ use Symfony\Component\HttpFoundation\Response;
  *         ),
  *     ),
  *     @OA\Response(
- *         response="201",
- *         description="QR-профиль успешно создан",
+ *         response="200",
+ *         description="QR-профиль успешно обновлён",
  *         @OA\JsonContent(
  *             @OA\Property(property="data", type="object",
  *                 @OA\Property(property="id", type="integer", example=1),
@@ -89,11 +90,19 @@ use Symfony\Component\HttpFoundation\Response;
  *         ),
  *     ),
  *     @OA\Response(
+ *         response=403,
+ *         description="Входящий ID клиента не совпадает с текущим ID клиента QR-профиля",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="Access Error. You cannot modify this QR Profile."),
+ *         ),
+ *      ),
+ *     @OA\Response(
  *         response=422,
  *         description="Невалидные данные",
  *         @OA\JsonContent(
  *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Unable to create a Qr Profile due to incorrect data"),
+ *             @OA\Property(property="message", type="string", example="Unable to update a Qr Profile due to incorrect data"),
  *         ),
  *     ),
  *     @OA\Response(
@@ -107,7 +116,7 @@ use Symfony\Component\HttpFoundation\Response;
  *     security={{"bearerAuth":{}}}
  * ),
  */
-class StoreController extends Controller
+class UpdateController extends Controller
 {
     /**
      * @param FileService $fileService
@@ -123,31 +132,32 @@ class StoreController extends Controller
     }
 
     /**
-     *  Store a newly created resource in storage.
+     *  Update the specified resource in storage.
      *
-     * @param QrProfileStoreApiRequest $qrProfileStoreApiRequest
+     * @param QrProfileUpdateApiRequest $qrProfileUpdateApiRequest
+     * @param $id
      * @return QrProfileResource|JsonResponse
      */
-    public function store(QrProfileStoreApiRequest $qrProfileStoreApiRequest): QrProfileResource|JsonResponse
+    public function update(QrProfileUpdateApiRequest $qrProfileUpdateApiRequest, $id): QrProfileResource|JsonResponse
     {
         try {
-            $qrProfile = $this->qrProfileApiService->processStore(dto: new QrProfileStoreApiDTO($qrProfileStoreApiRequest));
+            $qrProfile = $this->qrProfileApiService->processUpdate(dto: new QrProfileUpdateApiDTO(qrProfileUpdateApiRequest: $qrProfileUpdateApiRequest, qr_profile_id: (int) $id), repository: $this->qrProfileRepository);
 
             if ($qrProfile instanceof QrProfile && $qrProfile->getKey() > 0) {
                 $publicDirPath = 'qr/'.$qrProfile->getKey();
 
-                $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath($qrProfile->getPhotoName(), $publicDirPath));
-                $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getVoiceMessageFileName(), $publicDirPath));
-                $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath($qrProfile->getQrCodeFileName(), $publicDirPath));
+                $qrProfile->setPhotoPath($this->fileService->processGetFrontPublicFilePath(fileName: $qrProfile->getPhotoName(), publicDirPath: $publicDirPath));
+                $qrProfile->setVoiceMessagePath($this->fileService->processGetFrontPublicFilePath(fileName: $qrProfile->getVoiceMessageFileName(), publicDirPath: $publicDirPath));
+                $qrProfile->setQrCodePath($this->fileService->processGetFrontPublicFilePath(fileName: $qrProfile->getQrCodeFileName(), publicDirPath: $publicDirPath));
 
-                $qrProfileJsonResource = new QrProfileResource($qrProfile);
+                $qrProfileJsonResource = new QrProfileResource(resource: $qrProfile);
 
-                return $qrProfileJsonResource->response()->setStatusCode(Response::HTTP_CREATED);
+                return $qrProfileJsonResource->response()->setStatusCode(code: Response::HTTP_OK);
             }
 
-            return response()->json(data: ['error' => true, 'message' => __('Unable to create a Qr Profile due to incorrect data'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
+            return response()->json(data: ['error' => true, 'message' => __('Unable to update a Qr Profile due to incorrect data'),], status: Response::HTTP_UNPROCESSABLE_ENTITY);
         } catch (Exception $exception) {
-            Log::error('File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
+            Log::error(message: 'File: '.$exception->getFile().' ; Line: '.$exception->getLine().' ; Message: '.$exception->getMessage());
 
             return response()->json(data: ['error' => true, 'message' => __('Something went wrong')], status: Response::HTTP_INTERNAL_SERVER_ERROR);
         }

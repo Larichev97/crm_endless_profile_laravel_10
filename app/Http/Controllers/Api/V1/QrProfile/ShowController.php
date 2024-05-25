@@ -61,16 +61,15 @@ use OpenApi\Annotations as OA;
  *         description="Bad request",
  *     ),
  *     @OA\Response(
- *          response=404,
- *          description="Not Found 404",
- *          @OA\JsonContent(
- *              @OA\Property(property="error", type="bool", example=true),
- *              @OA\Property(property="message", type="string", example="QR Profile not found."),
- *              @OA\Property(property="id", type="integer", example="1"),
- *          ),
- *      ),
+ *         response=404,
+ *         description="Not Found 404",
+ *         @OA\JsonContent(
+ *             @OA\Property(property="error", type="bool", example=true),
+ *             @OA\Property(property="message", type="string", example="QR Profile not found."),
+ *             @OA\Property(property="id", type="integer", example="1"),
+ *         ),
+ *     )
  * ),
- *
  */
 class ShowController extends Controller
 {
@@ -88,7 +87,7 @@ class ShowController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     *  Display the specified resource.
      *
      * @param $id
      * @return QrProfileResource|JsonResponse

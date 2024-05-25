@@ -3,9 +3,10 @@
 namespace App\Services\CrudActionsServices\Api;
 
 use App\DataTransferObjects\FormFieldsDtoInterface;
-use App\DataTransferObjects\QrProfile\QrProfileStoreDTO;
-use App\DataTransferObjects\QrProfile\QrProfileUpdateDTO;
+use App\DataTransferObjects\QrProfile\Api\QrProfileStoreApiDTO;
+use App\DataTransferObjects\QrProfile\Api\QrProfileUpdateApiDTO;
 use App\Exceptions\QrProfile\QrProfileNotFoundJsonException;
+use App\Exceptions\QrProfile\QrProfileUpdatedWithAnotherClientJsonException;
 use App\Models\QrProfile;
 use App\Repositories\CoreRepository;
 use App\Services\CrudActionsServices\CoreCrudActionsApiInterface;
@@ -32,7 +33,7 @@ final readonly class QrProfileApiService implements CoreCrudActionsApiInterface
      */
     public function processStore(FormFieldsDtoInterface $dto): Model|false
     {
-        /** @var QrProfileStoreDTO $dto */
+        /** @var QrProfileStoreApiDTO $dto */
 
         $qrProfileModel = QrProfile::query()->create(attributes: $dto->getFormFieldsArray());
 
@@ -61,23 +62,35 @@ final readonly class QrProfileApiService implements CoreCrudActionsApiInterface
      * @param CoreRepository $repository
      * @return Model|false
      * @throws QrProfileNotFoundJsonException
+     * @throws QrProfileUpdatedWithAnotherClientJsonException
      */
     public function processUpdate(FormFieldsDtoInterface $dto, CoreRepository $repository): Model|false
     {
-        /** @var QrProfileUpdateDTO $dto */
-        $qrProfileModel = $repository->getForEditModel(id: (int) $dto->id_qr, useCache: true);
+        /** @var QrProfileUpdateApiDTO $dto */
+        $qrProfileModel = $repository->getForEditModel(id: (int) $dto->qr_profile_id, useCache: true);
 
         if (empty($qrProfileModel)) {
             throw new QrProfileNotFoundJsonException();
         }
 
+        /** @var QrProfile $qrProfileModel */
+
         $formDataArray = $dto->getFormFieldsArray();
 
-        /** @var QrProfile $qrProfileModel */
+        // Check permission:
+        if ((int) $qrProfileModel->id_client !== (int) $formDataArray['id_client']) {
+            throw new QrProfileUpdatedWithAnotherClientJsonException();
+        }
+
         $qrDirPath = 'qr/'.$qrProfileModel->getKey();
 
-        $formDataArray['photo_file_name'] = $this->fileService->processUploadFile(file: $dto->photo_file, publicDirPath: $qrDirPath, oldFileName: $dto->photo_file_name, newFileName: '', useOriginalFileName: true);
-        $formDataArray['voice_message_file_name'] = $this->fileService->processUploadFile(file: $dto->voice_message_file, publicDirPath: $qrDirPath, oldFileName: $dto->voice_message_file_name, newFileName: '', useOriginalFileName: true);
+        if (!empty($dto->photo_file)) {
+            $formDataArray['photo_file_name'] = $this->fileService->processUploadFile(file: $dto->photo_file, publicDirPath: $qrDirPath, oldFileName: $qrProfileModel->photo_file_name, newFileName: '', useOriginalFileName: true);
+        }
+
+        if (!empty($dto->voice_message_file)) {
+            $formDataArray['voice_message_file_name'] = $this->fileService->processUploadFile(file: $dto->voice_message_file, publicDirPath: $qrDirPath, oldFileName: $qrProfileModel->voice_message_file_name, newFileName: '', useOriginalFileName: true);
+        }
 
         $updateQrProfile = $qrProfileModel->update(attributes: $formDataArray);
 
