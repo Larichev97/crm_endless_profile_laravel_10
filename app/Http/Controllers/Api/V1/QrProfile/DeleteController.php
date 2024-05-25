@@ -10,58 +10,9 @@ use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use OpenApi\Annotations as OA;
 use Symfony\Component\HttpFoundation\Response;
 
-/**
- * @OA\Delete(
- *     path="/api/v1/qrs/{id}",
- *     summary="Удаление существующего QR-профиля (необходим Bearer Token)",
- *     tags={"QR Profile"},
- *     @OA\Parameter(description="ID QR-профиля", in="path", name="id", required=true, example=1),
- *     @OA\Response(
- *         response="204",
- *         description="QR-профиль успешно удалён",
- *         @OA\JsonContent(
- *             @OA\Property(property="error", type="integer", example=false),
- *             @OA\Property(property="message", type="string", example="QR Profile deleted successfully."),
- *         ),
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Неавторизованный",
- *         @OA\JsonContent(
- *             @OA\Property(property="message", type="string", example="Unauthenticated."),
- *         ),
- *     ),
- *     @OA\Response(
- *         response=404,
- *         description="Not Found 404",
- *         @OA\JsonContent(
- *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="QR Profile not found."),
- *             @OA\Property(property="id", type="integer", example="1"),
- *         ),
- *     ),
- *     @OA\Response(
- *         response=422,
- *         description="Невалидные данные",
- *         @OA\JsonContent(
- *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Unable to delete a Qr Profile due to incorrect data."),
- *         ),
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Внутренняя ошибка сервера",
- *         @OA\JsonContent(
- *             @OA\Property(property="error", type="bool", example=true),
- *             @OA\Property(property="message", type="string", example="Something went wrong."),
- *         ),
- *     ),
- *     security={{"bearerAuth":{}}}
- * ),
- */
+
 class DeleteController extends Controller
 {
     /**
