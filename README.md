@@ -31,9 +31,14 @@
 
 - php artisan optimize
 
+## Тестирование
+
+- php artisan test
+
 ## Релизы
 
 - release/1.0.0 - init releases
+- release/1.1.0_phpunit - adding PHPUnit tests
 
 ## About Laravel
 
