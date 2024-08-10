@@ -119,7 +119,6 @@ class DatabaseSeeder extends Seeder
             ],
         ]);
 
-
         if (in_array(env('APP_ENV'), ['loc', 'local', 'dev', 'develop'])) {
             DB::table('clients')->insert([
                 [
