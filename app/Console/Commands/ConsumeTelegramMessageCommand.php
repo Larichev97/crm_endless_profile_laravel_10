@@ -43,8 +43,6 @@ class ConsumeTelegramMessageCommand extends Command
 
         $channel = $connection->channel();
 
-        $channel->queue_declare('telegram', false, true, false, false);
-
         echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
         $callback = function ($msg) {

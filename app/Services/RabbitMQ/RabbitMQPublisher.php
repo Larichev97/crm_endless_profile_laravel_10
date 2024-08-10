@@ -23,11 +23,14 @@ class RabbitMQPublisher
             $connection = new AMQPStreamConnection('172.16.238.210', 5672, 'guest', 'guest', 'my_vhost');
 
             $channel = $connection->channel();
+            $channel->exchange_declare('telegram', 'fanout', false, true, false);
             $channel->queue_declare('telegram', false, true, false, false);
+
+            $channel->queue_bind('telegram', 'telegram');
 
             $msg = new AMQPMessage($message);
 
-            $channel->basic_publish($msg, '', 'telegram');
+            $channel->basic_publish($msg, 'telegram');
             $channel->close();
 
             $connection->close();
