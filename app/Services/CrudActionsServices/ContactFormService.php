@@ -8,6 +8,7 @@ use App\DataTransferObjects\FormFieldsDtoInterface;
 use App\Models\ContactForm;
 use App\Repositories\CoreRepository;
 use App\Repositories\Setting\SettingRepository;
+use App\Services\RabbitMQ\RabbitMQPublisher;
 use DefStudio\Telegraph\Models\TelegraphChat;
 use Illuminate\Support\Facades\Pipeline;
 
@@ -18,9 +19,15 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
      */
     private SettingRepository $settingRepository;
 
+    /**
+     * @var RabbitMQPublisher
+     */
+    private RabbitMQPublisher $rabbitMQPublisher;
+
     public function __construct()
     {
         $this->settingRepository = new SettingRepository();
+        $this->rabbitMQPublisher = new RabbitMQPublisher();
     }
 
     /**
@@ -36,7 +43,14 @@ final readonly class ContactFormService implements CoreCrudActionsInterface
         $contactFormModel = ContactForm::query()->create(attributes: $dto->getFormFieldsArray());
 
         if ($contactFormModel instanceof ContactForm) {
+            // Usage via RabbitMQ queues:
+            if ($contactFormModel->id > 0) {
+                $this->rabbitMQPublisher->publishTelegramMessage((string) $contactFormModel->id);
+            }
+
+            /* // Default usage:
             $this->processSendContactFormInTelegramChannel($contactFormModel);
+            */
 
             return true;
         }

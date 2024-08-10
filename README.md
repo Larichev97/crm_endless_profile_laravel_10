@@ -31,6 +31,10 @@
 
 - php artisan optimize
 
+## Работа с очередями через RabbitMQ
+
+- php artisan rabbitmq:consume-telegram-message (запуск команды для выполнения очередей из channel "<b>telagram</b>" - происходит отправка сообщения с данными о "Форме обратной связи" в Telegram канал)
+
 ## Релизы
 
 - release/1.0.0 - init releases
