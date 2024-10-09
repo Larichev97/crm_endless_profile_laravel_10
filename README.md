@@ -48,7 +48,7 @@
 
 5. php artisan l5-swagger:generate (если нужно обновить документацию API)
 
-## Очистка кэша
+## Очистка кэша (полезные команды)
 
 1. php artisan cache:clear
 2. php artisan config:clear
