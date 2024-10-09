@@ -9,7 +9,34 @@
 
 ## Для проекта необходима версия PHP 8.2
 
-## Start "CRM Endless Profile" in PHP container:
+## Start via Docker + Linux:
+
+1. Открыть терминал в Linux: 
+ - Выполнить команду: sudo nano /etc/hosts
+ - Добавить хост для проекта: 127.0.0.1 endless-profile.loc
+ - Сохранить изменения и выйти сочетаниями клавиш: "CTRL+X" ---> "Y" ---> "Enter";
+ - Закрыть терминал;
+
+2. Установить "Make" для Linux, чтобы работали команды из Makefile (пропустить, если уже есть): 
+ - sudo apt-get update 
+ - sudo apt-get -y install make
+
+3. Открыть терминал в PhpStorm (в корне проекта) и выполнить следующие `make` команды:
+ - make build-containers
+ - make build-project
+ - make build-database
+
+4. Перейти в админ панель: http://endless-profile.loc/login
+ - Email: admin@endless-profile.com
+ - Passw: secret
+
+5. Настроить X-Debug в PhpStorm:
+ - Перейти в File ---> Settings ---> PHP>Debug;
+ - В пункте `Max.simultaneous connections` указать "1" (по умолчанию указано "3");
+ - В пункте `Xdebug` у поля Debug port через "," дописать порт 9001 (если его там не было);
+ - Нажать кнопку `Apply` и `OK`;
+
+## Start via `Devilbox` (inside PHP container):
 
 1. composer install
 

@@ -1,0 +1,53 @@
+networks:
+  endless_profile:
+
+services:
+  php:
+    build:
+      dockerfile: docker/php/Dockerfile
+    container_name: endless_profile_php
+    restart: unless-stopped
+    tty: true
+    working_dir: /var/www/html
+    volumes:
+      - './:/var/www/html'
+    networks:
+      - endless_profile
+    depends_on:
+      - mysql
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - '80:80'
+    container_name: endless_profile_nginx
+    restart: unless-stopped
+    tty: true
+    volumes:
+      - './:/var/www/html'
+      - './docker/nginx/conf.d:/etc/nginx/conf.d'
+    networks:
+      - endless_profile
+    depends_on:
+      - php
+
+  mysql:
+    image: mysql:8
+    ports:
+      - '3306:3306'
+    container_name: endless_profile_mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    volumes:
+      - './docker/volume/mysql:/var/lib/mysql/'
+      - './docker/mysql/conf.d/custom.conf:/etc/mysql/custom.conf'
+    networks:
+      - endless_profile
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - '9090:80'
+    environment:
+      - PMA_HOST=mysql
+      - PMA_PORT=3306

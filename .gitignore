@@ -20,3 +20,6 @@ yarn-error.log
 composer.phar
 .htaccess
 .DS_Store
+
+# Docker local DB:
+/docker/volume/mysql/*
