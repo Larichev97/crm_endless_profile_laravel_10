@@ -1,4 +1,4 @@
-@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100'])
+@extends('layouts.app', ['class' => 'g-sidenav-show bg-gray-100', 'showGoogleTag' => true])
 
 @if(Agent::isTablet())
     <!-- Tablet content -->
